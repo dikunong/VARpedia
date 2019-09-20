@@ -5,28 +5,25 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.ToolBar?>
-<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="varpedia.controllers.MainScreenController">
-   <children>
-      <VBox prefHeight="400.0" prefWidth="600.0">
+<VBox prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="varpedia.controllers.MainScreenController">
          <children>
             <Label text="Existing Creations:">
                <VBox.margin>
                   <Insets left="8.0" top="8.0" />
                </VBox.margin>
             </Label>
-            <ListView prefHeight="353.0" prefWidth="400.0">
+            <ListView>
                <VBox.margin>
                   <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
                </VBox.margin>
             </ListView>
             <ToolBar prefHeight="40.0" prefWidth="200.0">
               <items>
-                  <Button mnemonicParsing="false" prefWidth="100.0" text="Play" />
-                  <Button mnemonicParsing="false" prefWidth="100.0" text="Delete" />
-                  <Button mnemonicParsing="false" prefWidth="100.0" text="Create New..." />
+                  <Button fx:id="playBtn" mnemonicParsing="false" onAction="#pressPlayButton" prefWidth="100.0" text="Play" />
+                  <Button fx:id="deleteBtn" mnemonicParsing="false" onAction="#pressDeleteButton" prefWidth="100.0" text="Delete" />
+                  <Button fx:id="createBtn" mnemonicParsing="false" onAction="#pressCreateButton" prefWidth="100.0" text="Create New..." />
               </items>
                <VBox.margin>
                   <Insets />
@@ -37,5 +34,3 @@
             </ToolBar>
          </children>
       </VBox>
-   </children>
-</AnchorPane>
