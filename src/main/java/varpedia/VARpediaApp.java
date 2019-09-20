@@ -6,6 +6,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.io.IOException;
+
 public class VARpediaApp extends Application {
 
     @Override
@@ -17,7 +19,7 @@ public class VARpediaApp extends Application {
             primaryStage.setTitle("VARpedia");
             primaryStage.setScene(new Scene(layout));
             primaryStage.show();
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

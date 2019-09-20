@@ -6,7 +6,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 
-public class MainScreenController {
+public class MainScreenController extends Controller {
 
     @FXML
     private Button playBtn;
@@ -36,5 +36,6 @@ public class MainScreenController {
     @FXML
     private void pressCreateButton (ActionEvent event) {
         // open WikitSearchScreen
+        changeScene(event, "../WikitSearchScreen.fxml");
     }
 }

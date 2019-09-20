@@ -5,7 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 
-public class WikitSearchScreenController {
+public class WikitSearchScreenController extends Controller {
 
     @FXML
     private TextField searchTextField;
@@ -30,5 +30,6 @@ public class WikitSearchScreenController {
     private void pressCancelButton (ActionEvent event) {
         // discard all existing temp files etc
         // open MainScreen
+        changeScene(event, "../MainScreen.fxml");
     }
 }
