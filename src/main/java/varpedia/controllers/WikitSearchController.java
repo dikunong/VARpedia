@@ -5,7 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 
-public class WikitSearchScreenController extends Controller {
+public class WikitSearchController extends Controller {
 
     @FXML
     private TextField searchTextField;
@@ -20,14 +20,15 @@ public class WikitSearchScreenController extends Controller {
     }
 
     @FXML
-    private void pressSearchButton (ActionEvent event) {
+    private void pressSearchButton(ActionEvent event) {
         // perform Wikit search
         // display loading icon during search?
         // open TextEditorScreen
+        changeScene(event, "../TextEditorScreen.fxml");
     }
 
     @FXML
-    private void pressCancelButton (ActionEvent event) {
+    private void pressCancelButton(ActionEvent event) {
         // discard all existing temp files etc
         // open MainScreen
         changeScene(event, "../MainScreen.fxml");

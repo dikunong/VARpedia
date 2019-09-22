@@ -6,7 +6,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextArea;
 
-public class TextEditorScreenController extends Controller {
+public class TextEditorController extends Controller {
 
     @FXML
     private TextArea wikiTextArea;
@@ -42,6 +42,7 @@ public class TextEditorScreenController extends Controller {
     @FXML
     private void pressAssembleButton(ActionEvent event) {
         // open ChunkAssemblerScreen
+        changeScene(event, "../ChunkAssemblerScreen.fxml");
     }
 
     @FXML
