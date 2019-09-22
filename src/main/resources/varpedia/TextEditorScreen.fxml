@@ -15,13 +15,13 @@
             <Insets bottom="8.0" />
          </VBox.margin>
       </Label>
-      <TextArea VBox.vgrow="SOMETIMES" />
+      <TextArea fx:id="wikiTextArea" VBox.vgrow="SOMETIMES" />
       <HBox alignment="TOP_RIGHT">
          <children>
             <VBox prefWidth="100.0">
                <children>
-                  <Button mnemonicParsing="false" text="Preview" />
-                  <Button mnemonicParsing="false" text="Save Chunk">
+                  <Button fx:id="previewBtn" mnemonicParsing="false" onAction="#pressPreviewButton" text="Preview" />
+                  <Button fx:id="saveBtn" mnemonicParsing="false" onAction="#pressSaveButton" text="Save Chunk">
                      <VBox.margin>
                         <Insets top="8.0" />
                      </VBox.margin></Button>
@@ -35,13 +35,18 @@
                            <HBox.margin>
                               <Insets right="4.0" top="4.0" />
                            </HBox.margin></Label>
-                        <ChoiceBox prefWidth="150.0" />
+                        <ChoiceBox fx:id="voiceChoiceBox" prefWidth="150.0" />
                      </children>
                   </HBox>
-                  <Button mnemonicParsing="false" text="Assemble Chunks">
+                  <Button fx:id="assembleBtn" mnemonicParsing="false" onAction="#pressAssembleButton" text="Assemble Chunks">
                      <VBox.margin>
                         <Insets top="8.0" />
                      </VBox.margin></Button>
+                  <Button fx:id="cancelBtn" mnemonicParsing="false" onAction="#pressCancelButton" text="Cancel">
+                     <VBox.margin>
+                        <Insets top="8.0" />
+                     </VBox.margin>
+                  </Button>
                </children>
             </VBox>
          </children>
