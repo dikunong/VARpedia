@@ -23,6 +23,9 @@ public class VARpediaApp extends Application {
             primaryStage.setScene(new Scene(layout));
             primaryStage.show();
 
+            primaryStage.setMinHeight(200);
+            primaryStage.setMinWidth(520);
+
             // an early attempt at something that will allow passing the video name from MainController to PlaybackController
             _mainController = loader.getController();
             /* hypothetically, you could now add a getter method to this class
@@ -30,6 +33,10 @@ public class VARpediaApp extends Application {
             or something like that. there must be a better solution though...
             https://coderanch.com/t/701958/java/Passing-Data-Controller-Controller-JavaFx
             */
+
+            // just had a Big Brain moment - we might well be passing data between Controllers multiple times
+            // e.g. entering the name of the creation on one screen --> making the creation the next screen
+            // hmm there must be a better way
 
         } catch (IOException e) {
             e.printStackTrace();

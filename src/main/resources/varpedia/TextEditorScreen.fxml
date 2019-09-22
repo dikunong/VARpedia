@@ -18,37 +18,51 @@
       <TextArea fx:id="wikiTextArea" VBox.vgrow="SOMETIMES" />
       <HBox alignment="TOP_RIGHT">
          <children>
-            <VBox prefWidth="100.0">
+            <HBox HBox.hgrow="ALWAYS">
                <children>
-                  <Button fx:id="previewBtn" mnemonicParsing="false" onAction="#pressPreviewButton" text="Preview" />
-                  <Button fx:id="saveBtn" mnemonicParsing="false" onAction="#pressSaveButton" text="Save Chunk">
-                     <VBox.margin>
-                        <Insets top="8.0" />
-                     </VBox.margin></Button>
-               </children>
-            </VBox>
-            <VBox alignment="TOP_RIGHT">
-               <children>
-                  <HBox>
+                  <VBox prefWidth="100.0">
                      <children>
-                        <Label text="Voice:">
-                           <HBox.margin>
-                              <Insets right="4.0" top="4.0" />
-                           </HBox.margin></Label>
-                        <ChoiceBox fx:id="voiceChoiceBox" prefWidth="150.0" />
+                        <Button fx:id="previewBtn" mnemonicParsing="false" onAction="#pressPreviewButton" prefWidth="100.0" text="Preview" />
+                        <Button fx:id="saveBtn" mnemonicParsing="false" onAction="#pressSaveButton" prefWidth="100.0" text="Save Chunk">
+                           <VBox.margin>
+                              <Insets top="4.0" />
+                           </VBox.margin>
+                        </Button>
                      </children>
-                  </HBox>
-                  <Button fx:id="assembleBtn" mnemonicParsing="false" onAction="#pressAssembleButton" text="Assemble Chunks">
-                     <VBox.margin>
-                        <Insets top="8.0" />
-                     </VBox.margin></Button>
-                  <Button fx:id="cancelBtn" mnemonicParsing="false" onAction="#pressCancelButton" text="Cancel">
-                     <VBox.margin>
-                        <Insets top="8.0" />
-                     </VBox.margin>
-                  </Button>
+                  </VBox>
                </children>
-            </VBox>
+            </HBox>
+            <HBox alignment="BOTTOM_RIGHT" HBox.hgrow="ALWAYS">
+               <children>
+                  <VBox alignment="TOP_RIGHT">
+                     <children>
+                        <HBox alignment="TOP_RIGHT">
+                           <children>
+                              <Label text="Voice:">
+                                 <HBox.margin>
+                                    <Insets right="4.0" top="4.0" />
+                                 </HBox.margin>
+                              </Label>
+                              <ChoiceBox fx:id="voiceChoiceBox" prefWidth="150.0" />
+                           </children>
+                        </HBox>
+                        <HBox>
+                           <children>
+                              <Button fx:id="assembleBtn" mnemonicParsing="false" onAction="#pressAssembleButton" text="Assemble Creation!">
+                                 <HBox.margin>
+                                    <Insets right="8.0" />
+                                 </HBox.margin>
+                              </Button>
+                              <Button fx:id="cancelBtn" mnemonicParsing="false" onAction="#pressCancelButton" prefWidth="100.0" text="Cancel" />
+                           </children>
+                           <VBox.margin>
+                              <Insets top="4.0" />
+                           </VBox.margin>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
          </children>
          <VBox.margin>
             <Insets top="8.0" />

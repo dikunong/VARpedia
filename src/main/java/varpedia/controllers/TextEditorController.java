@@ -2,9 +2,7 @@ package varpedia.controllers;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 
 public class TextEditorController extends Controller {
 
@@ -48,8 +46,13 @@ public class TextEditorController extends Controller {
     @FXML
     private void pressCancelButton(ActionEvent event) {
         // ask for confirmation first!
-        // discard all existing temp files etc
-        changeScene(event, "../MainScreen.fxml");
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to cancel making " +
+                "the current creation?", ButtonType.YES, ButtonType.CANCEL);
+        alert.showAndWait();
+        if (alert.getResult() == ButtonType.YES) {
+            // discard all existing temp files etc
+            changeScene(event, "../MainScreen.fxml");
+        }
     }
 
 }
