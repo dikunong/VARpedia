@@ -1,13 +1,16 @@
 package varpedia.controllers;
 
+import javafx.beans.Observable;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Bounds;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
@@ -20,6 +23,8 @@ public class PlaybackController extends Controller {
 
     @FXML
     private MediaView mediaView;
+    @FXML
+    private Pane mediaPane;
     @FXML
     private Button playBtn;
     @FXML
@@ -43,13 +48,14 @@ public class PlaybackController extends Controller {
     
     @FXML
     private void initialize() {
-        // mediaView.setMediaPlayer(player);
-        // playMedia(new File("video.mp4"));
-        // it seems it's not possible to chuck parameters into initialize()
-        // see VARpediaApp for an early idea on how to pass the video filename from MainController to PlaybackController
-
-        // Tudor's code - adding event listeners???
-        // particularly stuff regarding the sliders and MediaView sizing
+        mediaPane.layoutBoundsProperty().addListener((Observable arg0) -> {
+			Bounds newBounds = mediaPane.getLayoutBounds();
+			mediaView.setFitWidth(newBounds.getWidth());
+			mediaView.setFitHeight(newBounds.getHeight());
+			Bounds bounds = mediaView.getLayoutBounds();
+			mediaView.setLayoutX((newBounds.getWidth() - bounds.getWidth()) / 2);
+			mediaView.setLayoutY((newBounds.getHeight() - bounds.getHeight()) / 2);
+		});
     	
 		timeSlider.valueProperty().addListener(_timeListener);
 		timeSlider.addEventFilter(MouseEvent.MOUSE_PRESSED, (MouseEvent e) -> {timeSlider.setValueChanging(true);});
@@ -69,6 +75,8 @@ public class PlaybackController extends Controller {
 			_player.setVolume(newValue.doubleValue() / 100);
 		});
 		
+		// it seems it's not possible to chuck parameters into initialize()
+        // see VARpediaApp for an early idea on how to pass the video filename from MainController to PlaybackController
 		playMedia(new File("video.mp4"));
     }
 
@@ -95,10 +103,6 @@ public class PlaybackController extends Controller {
         changeScene(event, "../MainScreen.fxml");
     }
 
-    // NOTE - missing @FXML methods for the time and volume sliders
-    // I'm not sure which methods are the best equivalent to valueChangingProperty() and valueProperty()
-    // let's figure this out in our meeting tomorrow
-
     public void playMedia(File file) {
 		Media media = new Media(file.toURI().toString());
 		_player = new MediaPlayer(media);
@@ -107,6 +111,9 @@ public class PlaybackController extends Controller {
 		_player.setOnReady(() -> {
 			_duration = media.getDuration();
 			timeSlider.setDisable(false);
+			double oldHeight = mediaPane.getHeight();
+			mediaPane.resize(mediaPane.getWidth(), 0);
+			mediaPane.resize(mediaPane.getWidth(), oldHeight);
 		});
 		
 		_player.currentTimeProperty().addListener((ObservableValue<? extends Duration> observable, Duration oldValue, Duration newValue) -> {
