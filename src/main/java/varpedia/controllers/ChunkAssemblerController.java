@@ -22,6 +22,8 @@ public class ChunkAssemblerController extends Controller {
     private Button createBtn;
     @FXML
     private Button cancelBtn;
+    @FXML
+    private Button backBtn;
 
     @FXML
     private void initialize() {
@@ -47,5 +49,10 @@ public class ChunkAssemblerController extends Controller {
             // discard all existing temp files etc
             changeScene(event, "../MainScreen.fxml");
         }
+    }
+
+    @FXML
+    private void pressBackButton(ActionEvent event) {
+        changeScene(event, "../TextEditorScreen.fxml");
     }
 }
