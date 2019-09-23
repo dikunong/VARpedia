@@ -11,7 +11,11 @@ import java.io.IOException;
 
 public class VARpediaApp extends Application {
 
-    private MainController _mainController;
+    private static MainController _mainController;
+
+    public static MainController getMainController() {
+    	return _mainController;
+    }
 
     @Override
     public void start(Stage primaryStage) {

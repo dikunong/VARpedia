@@ -16,6 +16,7 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.scene.media.MediaPlayer.Status;
 import javafx.util.Duration;
+import varpedia.VARpediaApp;
 
 import java.io.File;
 
@@ -77,7 +78,7 @@ public class PlaybackController extends Controller {
 		
 		// it seems it's not possible to chuck parameters into initialize()
         // see VARpediaApp for an early idea on how to pass the video filename from MainController to PlaybackController
-		playMedia(new File("video.mp4"));
+		playMedia(new File(VARpediaApp.getMainController().getCreationFileName()));
     }
 
     @FXML

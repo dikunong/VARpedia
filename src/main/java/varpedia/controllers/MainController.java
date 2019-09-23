@@ -46,4 +46,8 @@ public class MainController extends Controller {
         // open WikitSearchScreen
         changeScene(event, "../WikitSearchScreen.fxml");
     }
+
+    public String getCreationFileName() {
+    	return "video.mp4";
+    }
 }
