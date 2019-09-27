@@ -55,6 +55,12 @@ public class ChunkAssemblerController extends Controller {
             _createTask.setOnCancelled(ev -> {
                 System.out.println("Cancel");
                 _createTask = null;
+            });
+            
+            _createTask.setOnFailed(ev -> {
+                System.out.println("Fail");
+                _createTask.getException().printStackTrace();
+                _createTask = null;
             });	
     	} else {
     		_createTask.cancel(true);

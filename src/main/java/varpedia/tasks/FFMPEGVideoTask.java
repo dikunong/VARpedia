@@ -1,8 +1,11 @@
 package varpedia.tasks;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,8 +31,21 @@ public class FFMPEGVideoTask extends Task<Void> {
 			return new ArrayList<String>();
 		}
 		
+		String key = null;
+		String secret = null;
+		
+		try (BufferedReader keys = new BufferedReader(new InputStreamReader(FFMPEGVideoTask.class.getResourceAsStream("/varpedia/key.txt"))))
+		{
+			key = keys.readLine();
+			secret = keys.readLine();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+		
 		List<String> list = new ArrayList<String>();
-		Flickr f = new Flickr("9babcbe979fd6fadead2c06ad346bbc2", "b690a901bd52d58d", new REST());
+		Flickr f = new Flickr(key, secret, new REST());
 		PhotosInterface photos = f.getPhotosInterface();
 		SearchParameters params = new SearchParameters();
 		params.setText(term);
@@ -82,19 +98,22 @@ public class FFMPEGVideoTask extends Task<Void> {
 			id++;
 		}
 		
-		Command audio = null;
+		Command audio = new Command("ffmpeg", "-y", "-f", "concat", "-protocol_whitelist", "file,pipe", "-i", "-", "appfiles/audio.wav");
+		audio.run();
 		
-		try {
-			audio = new Command("ffmpeg", "-y", "-f", "concat", "-protocol_whitelist", "file,pipe", "-i", "-", "appfiles/audio.wav");
-			audio.run();
-			
-			for (String s : _chunks) {
-				audio.writeString("file 'appfiles/audio/" + s.replace("'", "'\\''") + ".wav'");
+		for (String s : _chunks) {
+			if (isCancelled()) {
+				audio.end();
+				return null;
 			}
 			
-			audio.getProcess().getOutputStream().close();
-			audio.getError(); //FFmpeg needs its stderr to be emptied
-			
+			audio.writeString("file 'appfiles/audio/" + s.replace("'", "'\\''") + ".wav'");
+		}
+		
+		audio.getProcess().getOutputStream().close();
+		new Thread(() -> {audio.getError();}).start(); //FFmpeg needs its stderr to be emptied
+
+		try {
 			if (audio.getProcess().waitFor() != 0) {
 				throw new Exception("Failed to merge audio " + audio.getProcess().exitValue());
 			}
@@ -105,25 +124,30 @@ public class FFMPEGVideoTask extends Task<Void> {
 		
 		AudioFileFormat file = AudioSystem.getAudioFileFormat(new File("appfiles/audio.wav"));
 		float length = file.getFrameLength() / file.getFormat().getFrameRate();
-		Command video = null;
+		Command video;
 		
-		try {	
-			if (id > 0) {
-				video = new Command("ffmpeg", "-y", "-f", "concat", "-protocol_whitelist", "file,pipe", "-i", "-", "-i", "appfiles/audio.wav", "-vf", "scale=w=min(iw*540/ih\\,960):h=min(540\\,ih*960/iw),pad=w=960:h=540:x=(960-iw)/2:y=(540-ih)/2,drawtext=text='" + _term + "':x=(w-text_w)/2:y=(h-text_h)/2:fontsize=72:borderw=2:bordercolor=white:expansion=none", "creations/" + _creation + ".mp4");
-			} else {
-				video = new Command("ffmpeg", "-y", "-f", "lavfi", "-t", Float.toString(length), "-i", "color=color=white:size=960x540", "-i", "appfiles/audio.wav", "-vf", "drawtext=text='" + _term + "':x=(w-text_w)/2:y=(h-text_h)/2:fontsize=72:expansion=none", "creations/" + _creation + ".mp4");
+		if (id > 0) {
+			video = new Command("ffmpeg", "-y", "-f", "concat", "-protocol_whitelist", "file,pipe", "-i", "-", "-i", "appfiles/audio.wav", "-vf", "scale=w=min(iw*540/ih\\,960):h=min(540\\,ih*960/iw),pad=w=960:h=540:x=(960-iw)/2:y=(540-ih)/2,drawtext=text='" + _term + "':x=(w-text_w)/2:y=(h-text_h)/2:fontsize=72:borderw=2:bordercolor=white:expansion=none", "creations/" + _creation + ".mp4");
+		} else {
+			video = new Command("ffmpeg", "-y", "-f", "lavfi", "-t", Float.toString(length), "-i", "color=color=white:size=960x540", "-i", "appfiles/audio.wav", "-vf", "drawtext=text='" + _term + "':x=(w-text_w)/2:y=(h-text_h)/2:fontsize=72:expansion=none", "creations/" + _creation + ".mp4");
+		}
+		
+		video.run();
+		
+		for (int i = 0; i < id; i++) {
+			if (isCancelled()) {
+				video.end();
+				return null;
 			}
 			
-			video.run();
+			video.writeString("file '" + "appfiles/image" + Integer.toString(i) + ".jpg" + "'");
+			video.writeString("duration " + (length / id));
+		}
+		
+		video.getProcess().getOutputStream().close();
+		new Thread(() -> {video.getError();}).start(); //FFmpeg needs its stderr to be emptied
 			
-			for (int i = 0; i < id; i++) {
-				video.writeString("file '" + "appfiles/image" + Integer.toString(i) + ".jpg" + "'");
-				video.writeString("duration " + (length / id));
-			}
-			
-			video.getProcess().getOutputStream().close();
-			video.getError(); //FFmpeg needs its stderr to be emptied
-			
+		try {
 			if (video.getProcess().waitFor() != 0) {
 				throw new Exception("Failed to merge video" + video.getProcess().exitValue());
 			}
