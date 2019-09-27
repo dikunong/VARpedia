@@ -35,18 +35,26 @@ public class MainController extends Controller {
 
     @FXML
     private void pressPlayButton(ActionEvent event) {
-        // open PlaybackScreen
-        changeScene(event, "../PlaybackScreen.fxml");
-    }
+        // check if an item is actually selected first
+        if (checkCreationSelected()) {
+            sendDataToFile("creations/" + creationListView.getSelectionModel().getSelectedItem());
+            // open PlaybackScreen
+            changeScene(event, "../PlaybackScreen.fxml");
+        }
+}
 
     @FXML
     private void pressDeleteButton(ActionEvent event) {
-        // ask for confirmation
-        Alert alert = new Alert(Alert.AlertType.WARNING, "Are you sure you want to delete the " +
-                "selected creation?", ButtonType.YES, ButtonType.CANCEL); // add selected creation name here later
-        alert.showAndWait();
-        if (alert.getResult() == ButtonType.YES) {
-            // delete creation file
+        // check if an item is actually selected first
+        if (checkCreationSelected()) {
+            // ask for confirmation
+            Alert alert = new Alert(Alert.AlertType.WARNING, "Are you sure you want to delete the " +
+                    "selected creation?", ButtonType.YES, ButtonType.CANCEL); // add selected creation name here later
+            alert.showAndWait();
+            if (alert.getResult() == ButtonType.YES) {
+                //setSelectedCreation();
+                // delete creation file
+            }
         }
     }
 
@@ -56,9 +64,20 @@ public class MainController extends Controller {
         changeScene(event, "../WikitSearchScreen.fxml");
     }
 
-    public String getCreationFileName() {
-    	return "video.mp4";
+    private boolean checkCreationSelected() {
+        // check if an item is actually selected first
+        if (creationListView.getSelectionModel().getSelectedItem() == null) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Please select a creation first.");
+            alert.showAndWait();
+            return false;
+        } else {
+            return true;
+        }
     }
+
+    /*public void setSelectedCreation() {
+        _selectedFile = "creations/" + creationListView.getSelectionModel().getSelectedItem();
+    }*/
 
     private void populateList() {
         File creationsDir = new File("creations");
