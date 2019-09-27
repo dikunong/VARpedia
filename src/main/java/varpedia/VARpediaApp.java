@@ -6,7 +6,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import varpedia.controllers.MainController;
 
 import java.io.IOException;
 /*import java.util.concurrent.ExecutorService;
@@ -14,12 +13,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;*/
 
 public class VARpediaApp extends Application {
-
-    private static MainController _mainController;
-
-    public static MainController getMainController() {
-    	return _mainController;
-    }
 
     // This is how Tudor managed threads in his A2
     // Would be good to use this method but currently can't use it as Controllers are static
@@ -52,19 +45,6 @@ public class VARpediaApp extends Application {
 
             primaryStage.setMinHeight(200);
             primaryStage.setMinWidth(520);
-
-            // an early attempt at something that will allow passing the video name from MainController to PlaybackController
-            _mainController = loader.getController();
-            /* hypothetically, you could now add a getter method to this class
-            and then do string = VARpediaApp.getMainController().getCreationFileName(); in PlaybackController
-            or something like that. there must be a better solution though...
-            https://coderanch.com/t/701958/java/Passing-Data-Controller-Controller-JavaFx
-            */
-
-            // just had a Big Brain moment - we might well be passing data between Controllers multiple times
-            // e.g. entering the name of the creation on one screen --> making the creation the next screen
-            // hmm there must be a better way
-
         } catch (IOException e) {
             e.printStackTrace();
         }
