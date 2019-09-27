@@ -40,7 +40,7 @@ public class TextEditorController extends Controller {
     @FXML
     private void pressAssembleButton(ActionEvent event) {
         // open ChunkAssemblerScreen
-        changeScene(event, "../ChunkAssemblerScreen.fxml");
+        changeScene(event, "/varpedia/ChunkAssemblerScreen.fxml");
     }
 
     @FXML
@@ -51,7 +51,7 @@ public class TextEditorController extends Controller {
         alert.showAndWait();
         if (alert.getResult() == ButtonType.YES) {
             // discard all existing temp files etc
-            changeScene(event, "../MainScreen.fxml");
+            changeScene(event, "/varpedia/MainScreen.fxml");
         }
     }
 

@@ -50,12 +50,12 @@ public class ChunkAssemblerController extends Controller {
         alert.showAndWait();
         if (alert.getResult() == ButtonType.YES) {
             // discard all existing temp files etc
-            changeScene(event, "../MainScreen.fxml");
+            changeScene(event, "/varpedia/MainScreen.fxml");
         }
     }
 
     @FXML
     private void pressBackButton(ActionEvent event) {
-        changeScene(event, "../TextEditorScreen.fxml");
+        changeScene(event, "/varpedia/TextEditorScreen.fxml");
     }
 }

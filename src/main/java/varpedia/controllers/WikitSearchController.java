@@ -24,13 +24,13 @@ public class WikitSearchController extends Controller {
         // perform Wikit search
         // display loading icon during search?
         // open TextEditorScreen
-        changeScene(event, "../TextEditorScreen.fxml");
+        changeScene(event, "/varpedia/TextEditorScreen.fxml");
     }
 
     @FXML
     private void pressCancelButton(ActionEvent event) {
         // discard all existing temp files etc
         // open MainScreen
-        changeScene(event, "../MainScreen.fxml");
+        changeScene(event, "/varpedia/MainScreen.fxml");
     }
 }

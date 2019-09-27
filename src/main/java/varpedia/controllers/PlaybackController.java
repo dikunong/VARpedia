@@ -101,7 +101,7 @@ public class PlaybackController extends Controller {
 		_player = null;
 		mediaView.setMediaPlayer(null);
 		timeSlider.setDisable(true);
-        changeScene(event, "../MainScreen.fxml");
+        changeScene(event, "/varpedia/MainScreen.fxml");
     }
 
     public void playMedia(File file) {
