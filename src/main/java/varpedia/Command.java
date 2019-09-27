@@ -43,4 +43,31 @@ public class Command {
         }
         return output;
     }
+    
+    public String getError() {
+        String output = null;
+        try {
+            InputStream out = _process.getErrorStream();
+            BufferedReader stdout = new BufferedReader(new InputStreamReader(out));
+            String line = null;
+            while ((line = stdout.readLine()) != null ) {
+                output += line + "\n";
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return output;
+    }
+    
+    public void writeString(String str) {
+    	if (!str.endsWith("\n")) {
+    		str = str + '\n';
+    	}
+    	
+    	try {
+			_process.getOutputStream().write(str.getBytes());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+    }
 }
