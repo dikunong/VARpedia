@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 public class Command {
 
     private String[] _cmd;
+    private Process _process;
 
     public Command(String... cmd) {
         _cmd = cmd;
@@ -16,18 +17,22 @@ public class Command {
     public Process run() {
         try {
             ProcessBuilder pb = new ProcessBuilder(_cmd);
-            Process process = pb.start();
-            return process;
+            _process = pb.start();
+            return _process;
         } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public String getOutput(Process process) {
+    public Process getProcess() {
+    	return _process;
+    }
+    
+    public String getOutput() {
         String output = null;
         try {
-            InputStream out = process.getInputStream();
+            InputStream out = _process.getInputStream();
             BufferedReader stdout = new BufferedReader(new InputStreamReader(out));
             String line = null;
             while ((line = stdout.readLine()) != null ) {
@@ -37,5 +42,32 @@ public class Command {
             e.printStackTrace();
         }
         return output;
+    }
+    
+    public String getError() {
+        String output = null;
+        try {
+            InputStream out = _process.getErrorStream();
+            BufferedReader stdout = new BufferedReader(new InputStreamReader(out));
+            String line = null;
+            while ((line = stdout.readLine()) != null ) {
+                output += line + "\n";
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return output;
+    }
+    
+    public void writeString(String str) {
+    	if (!str.endsWith("\n")) {
+    		str = str + '\n';
+    	}
+    	
+    	try {
+			_process.getOutputStream().write(str.getBytes());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
     }
 }
