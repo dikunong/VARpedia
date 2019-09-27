@@ -10,8 +10,11 @@ Execute the following command:
 This will produce a runnable JAR file in /build/libs.
 
 Note that there's a weird issue where Gradle can't find your JDK install - if this happens, you need to
-manually set it by changing the java.home line in the gradle.properties file so that it points to your
-JDK install directory.
+manually set it by creating a `gradle.properties` file, with this line in it:
+
+`org.gradle.java.home=C:\\Program Files\\Java\\jdk1.8.0_202`
+
+Substitute your JDK install directory in for the last part.
 
 ## Running the JAR file
 
