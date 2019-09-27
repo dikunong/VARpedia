@@ -13,6 +13,8 @@ import varpedia.tasks.ListPopulateTask;
 import java.io.File;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class MainController extends Controller {
 
@@ -27,6 +29,8 @@ public class MainController extends Controller {
     private ObservableList<String> creationList;
     @FXML
     private ListView<String> creationListView;
+
+    private ExecutorService pool = Executors.newCachedThreadPool();
 
     @FXML
     private void initialize() {
@@ -96,11 +100,6 @@ public class MainController extends Controller {
         }
 
         Task<List<String>> task = new ListPopulateTask(creationsDir);
-        // VARpediaApp.submit(task);
-        // ^ that doesn't work at the moment, but hopefully in the next few hours it will
-        Thread thread = new Thread(task);
-        thread.start();
-
         task.setOnSucceeded(event -> {
             try {
                 List<String> newCreations = task.get();
@@ -112,8 +111,7 @@ public class MainController extends Controller {
                 e.printStackTrace();
             }
         });
-
-
+        pool.submit(task);
     }
 
 }
