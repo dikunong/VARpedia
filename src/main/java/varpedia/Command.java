@@ -30,9 +30,24 @@ public class Command {
     }
     
     public String getOutput() {
-        String output = null;
+        String output = "";
         try {
             InputStream out = _process.getInputStream();
+            BufferedReader stdout = new BufferedReader(new InputStreamReader(out));
+            String line = null;
+            while ((line = stdout.readLine()) != null ) {
+                output += line + "\n";
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return output;
+    }
+    
+    public String getError() {
+        String output = null;
+        try {
+            InputStream out = _process.getErrorStream();
             BufferedReader stdout = new BufferedReader(new InputStreamReader(out));
             String line = null;
             while ((line = stdout.readLine()) != null ) {

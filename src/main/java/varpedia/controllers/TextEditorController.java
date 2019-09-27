@@ -1,11 +1,14 @@
 package varpedia.controllers;
 
+import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import varpedia.tasks.PlayChunkTask;
+import varpedia.tasks.VoiceListTask;
 
 public class TextEditorController extends Controller {
 
@@ -33,10 +36,13 @@ public class TextEditorController extends Controller {
         // play back selected text in Festival using selected Voice
     	
     	//TODO: Do this properly
+    	new PlayChunkTask(wikiTextArea.getSelectedText(), null, null).run();
+    	Task<String[]> dat = new VoiceListTask();
+    	dat.run();
+    	
     	try {
-			new PlayChunkTask(wikiTextArea.getSelectedText(), null, null).get();
-		} catch (InterruptedException e) {
-		} catch (ExecutionException e) {
+			System.out.println(Arrays.toString(dat.get()));
+		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
 		}
     }
