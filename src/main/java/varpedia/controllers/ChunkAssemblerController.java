@@ -39,7 +39,7 @@ public class ChunkAssemblerController extends Controller {
         // assemble audio + video using ffmpeg
         // does this stuff happen here or in CreationProgressScreen?
     	//TODO: Better method
-		new FFMPEGVideoTask("cat", "puskin", 5, new String[] {"Alarm01", "Alarm02", "Alarm03"}).run();
+		new FFMPEGVideoTask("cat", "puskin", 0, new String[] {"Alarm01", "Alarm02", "Alarm03"}).run();
     }
 
     @FXML

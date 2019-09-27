@@ -25,6 +25,10 @@ import varpedia.Command;
 public class FFMPEGVideoTask extends Task<Void> {
 
 	private static List<String> search(String term, int count) throws FlickrException {
+		if (count == 0) {
+			return new ArrayList<String>();
+		}
+		
 		List<String> list = new ArrayList<String>();
 		Flickr f = new Flickr("9babcbe979fd6fadead2c06ad346bbc2", "b690a901bd52d58d", new REST());
 		PhotosInterface photos = f.getPhotosInterface();
@@ -93,7 +97,14 @@ public class FFMPEGVideoTask extends Task<Void> {
 		AudioFileFormat file = AudioSystem.getAudioFileFormat(new File("appfiles/audio.wav"));
 		float length = file.getFrameLength() / file.getFormat().getFrameRate();
 		
-		Command video = new Command("ffmpeg", "-y", "-f", "concat", "-protocol_whitelist", "file,pipe", "-i", "-", "-i", "appfiles/audio.wav", "-vf", "scale=w=min(iw*540/ih\\,960):h=min(540\\,ih*960/iw),pad=w=960:h=540:x=(960-iw)/2:y=(540-ih)/2,drawtext=text='" + _term + "':x=(w-text_w)/2:y=(h-text_h)/2:fontsize=72:borderw=2:bordercolor=white:expansion=none", "creations/" + _creation + ".mp4");
+		Command video;
+		
+		if (id > 0) {
+			video = new Command("ffmpeg", "-y", "-f", "concat", "-protocol_whitelist", "file,pipe", "-i", "-", "-i", "appfiles/audio.wav", "-vf", "scale=w=min(iw*540/ih\\,960):h=min(540\\,ih*960/iw),pad=w=960:h=540:x=(960-iw)/2:y=(540-ih)/2,drawtext=text='" + _term + "':x=(w-text_w)/2:y=(h-text_h)/2:fontsize=72:borderw=2:bordercolor=white:expansion=none", "creations/" + _creation + ".mp4");
+		} else {
+			video = new Command("ffmpeg", "-y", "-f", "lavfi", "-t", Float.toString(length), "-i", "color=color=white:size=960x540", "-i", "appfiles/audio.wav", "-vf", "drawtext=text='" + _term + "':x=(w-text_w)/2:y=(h-text_h)/2:fontsize=72:expansion=none", "creations/" + _creation + ".mp4");
+		}
+		
 		video.run();
 		
 		for (int i = 0; i < id; i++) {
