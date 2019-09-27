@@ -78,7 +78,7 @@ public class PlaybackController extends Controller {
 		
 		// it seems it's not possible to chuck parameters into initialize()
         // see VARpediaApp for an early idea on how to pass the video filename from MainController to PlaybackController
-		playMedia(new File(VARpediaApp.getMainController().getCreationFileName()));
+		playMedia(new File(getDataFromFile()));
     }
 
     @FXML
