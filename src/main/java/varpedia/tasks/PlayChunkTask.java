@@ -57,15 +57,20 @@ public class PlayChunkTask extends Task<Void> {
 		cmd.getProcess().getOutputStream().write(_inputText.getBytes());
 		cmd.getProcess().getOutputStream().close();
 		
-		if (cmd.getProcess().waitFor() != 0) {
-			throw new Exception("Failed to create audio");
-		}
+		try {
+			if (cmd.getProcess().waitFor() != 0) {
+				throw new Exception("Failed to create audio " + cmd.getProcess().exitValue());
+			}
+			
+			String err = cmd.getError();
+			
+			if (err.contains("ERROR")) {
+				throw new Exception("Failed to create audio because " + err);
+			}
+		} catch (InterruptedException e) {
+			cmd.end();
+		}		
 		
-		return null;		
-		
-		//Play audio: input text | festival '(voice_<voice>)' '(tts_file "-")' '(exit)'
-		//Save audio: input text | text2wave --eval '(voice_<voice>)' -o <output>
-		//Play audio: input text | festival '(tts_file "-")' '(exit)'
-		//Save audio: input text | text2wave -o <output>
+		return null;
 	}
 }

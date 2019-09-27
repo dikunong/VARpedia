@@ -1,6 +1,5 @@
 package varpedia.controllers;
 
-import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 
 import javafx.concurrent.Task;
@@ -25,9 +24,20 @@ public class TextEditorController extends Controller {
     @FXML
     private ChoiceBox<String> voiceChoiceBox;
 
+    private Task<Void> _playTask;
+    
     @FXML
     private void initialize() {
         // stuff
+    	//TODO: Do this properly
+    	Task<String[]> dat = new VoiceListTask();
+    	dat.run();
+    	
+    	try {
+			voiceChoiceBox.getItems().addAll(dat.get());
+		} catch (InterruptedException | ExecutionException e) {
+			e.printStackTrace();
+		}
     }
 
     @FXML
@@ -36,15 +46,29 @@ public class TextEditorController extends Controller {
         // play back selected text in Festival using selected Voice
     	
     	//TODO: Do this properly
-    	new PlayChunkTask(wikiTextArea.getSelectedText(), null, null).run();
-    	Task<String[]> dat = new VoiceListTask();
-    	dat.run();
-    	
-    	try {
-			System.out.println(Arrays.toString(dat.get()));
-		} catch (InterruptedException | ExecutionException e) {
-			e.printStackTrace();
-		}
+    	if (_playTask == null) {
+    		_playTask = new PlayChunkTask(wikiTextArea.getSelectedText(), null, voiceChoiceBox.getSelectionModel().getSelectedItem());
+        	Thread thread = new Thread(_playTask);
+            thread.start();
+
+            _playTask.setOnSucceeded(ev -> {
+                System.out.println("Done");
+                _playTask = null;
+            });
+            
+            _playTask.setOnCancelled(ev -> {
+                System.out.println("Cancel");
+                _playTask = null;
+            });
+            
+            _playTask.setOnFailed(ev -> {
+                System.out.println("Fail");
+                _playTask.getException().printStackTrace();
+                _playTask = null;
+            });	
+    	} else {
+    		_playTask.cancel(true);
+    	}
     }
 
     @FXML

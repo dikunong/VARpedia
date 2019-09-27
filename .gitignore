@@ -127,3 +127,4 @@ gradle-app.setting
 **/build/
 
 # End of https://www.gitignore.io/api/java,gradle,intellij
+src/main/resources/varpedia/key.txt
