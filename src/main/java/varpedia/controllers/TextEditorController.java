@@ -1,8 +1,11 @@
 package varpedia.controllers;
 
+import java.util.concurrent.ExecutionException;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import varpedia.tasks.PlayChunkTask;
 
 public class TextEditorController extends Controller {
 
@@ -28,6 +31,14 @@ public class TextEditorController extends Controller {
     private void pressPreviewButton(ActionEvent event) {
         // get selected text from wikiTextArea
         // play back selected text in Festival using selected Voice
+    	
+    	//TODO: Do this properly
+    	try {
+			new PlayChunkTask(wikiTextArea.getSelectedText(), null, null).get();
+		} catch (InterruptedException e) {
+		} catch (ExecutionException e) {
+			e.printStackTrace();
+		}
     }
 
     @FXML
