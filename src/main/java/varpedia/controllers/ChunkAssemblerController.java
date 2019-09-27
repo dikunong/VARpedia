@@ -1,5 +1,8 @@
 package varpedia.controllers;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -28,7 +31,9 @@ public class ChunkAssemblerController extends Controller {
     private Button backBtn;
 
     private Task<Void> _createTask;
-    
+
+    private ExecutorService pool = Executors.newCachedThreadPool();
+
     @FXML
     private void initialize() {
         // stuff
@@ -43,28 +48,24 @@ public class ChunkAssemblerController extends Controller {
         // does this stuff happen here or in CreationProgressScreen?
     	//TODO: Better method
     	if (_createTask == null) {
-        	_createTask = new FFMPEGVideoTask("cat", "puskin", 10, new String[] {"Alarm01", "Alarm02", "Alarm03"});
-        	Thread thread = new Thread(_createTask);
-            thread.start();
-
+        	_createTask = new FFMPEGVideoTask("cat", creationNameTextField.getText(), 10, new String[] {"Alarm01", "Alarm02", "Alarm03"});
             _createTask.setOnSucceeded(ev -> {
                 System.out.println("Done");
                 _createTask = null;
             });
-            
             _createTask.setOnCancelled(ev -> {
                 System.out.println("Cancel");
                 _createTask = null;
             });
-            
             _createTask.setOnFailed(ev -> {
                 System.out.println("Fail");
                 _createTask.getException().printStackTrace();
                 _createTask = null;
             });	
+        	pool.submit(_createTask);
     	} else {
     		_createTask.cancel(true);
-    	}
+    	}    	
     }
 
     @FXML
