@@ -58,7 +58,19 @@ public class Command {
         }
         return output;
     }
-
+    
+    public void writeString(String str) {
+    	if (!str.endsWith("\n")) {
+    		str = str + '\n';
+    	}
+    	
+    	try {
+			_process.getOutputStream().write(str.getBytes());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+    }
+    
 	public void end() {
 		_process.destroy();
 		
