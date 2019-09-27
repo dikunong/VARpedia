@@ -52,8 +52,17 @@ public class MainController extends Controller {
                     "selected creation?", ButtonType.YES, ButtonType.CANCEL); // add selected creation name here later
             alert.showAndWait();
             if (alert.getResult() == ButtonType.YES) {
-                //setSelectedCreation();
+                String filename = creationListView.getSelectionModel().getSelectedItem();
                 // delete creation file
+                File file = new File("creations/" + filename);
+                if (file.delete()) {
+                    // update listview
+                    creationList.remove(filename);
+                    return;
+                } else {
+                    alert = new Alert(Alert.AlertType.ERROR, "Could not delete file.");
+                    alert.showAndWait();
+                }
             }
         }
     }
@@ -74,10 +83,6 @@ public class MainController extends Controller {
             return true;
         }
     }
-
-    /*public void setSelectedCreation() {
-        _selectedFile = "creations/" + creationListView.getSelectionModel().getSelectedItem();
-    }*/
 
     private void populateList() {
         File creationsDir = new File("creations");
