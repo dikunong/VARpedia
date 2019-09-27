@@ -3,6 +3,7 @@ package varpedia.controllers;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import varpedia.tasks.FFMPEGVideoTask;
 
 public class ChunkAssemblerController extends Controller {
 
@@ -37,6 +38,8 @@ public class ChunkAssemblerController extends Controller {
         // get Flickr images
         // assemble audio + video using ffmpeg
         // does this stuff happen here or in CreationProgressScreen?
+    	//TODO: Better method
+		new FFMPEGVideoTask("cat", "puskin", 5, new String[] {"Alarm01", "Alarm02", "Alarm03"}).run();
     }
 
     @FXML
