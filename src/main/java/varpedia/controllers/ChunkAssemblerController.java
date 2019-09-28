@@ -92,7 +92,7 @@ public class ChunkAssemblerController extends Controller {
                 			_createTask = new FFMPEGVideoTask(term, name, images, Arrays.asList("Alarm01", "Alarm02", "Alarm03"));
     	                	_createTask.setOnSucceeded(ev2 -> {
     		                    _createTask = null;
-    		                    Alert alert = new Alert(Alert.AlertType.ERROR, "Created creation.");
+    		                    Alert alert = new Alert(Alert.AlertType.INFORMATION, "Created creation.");
     	                        alert.showAndWait();
     	                        changeScene(event, "/varpedia/MainScreen.fxml"); //TODO: Maybe go straight to player
     		                });

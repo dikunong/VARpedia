@@ -134,20 +134,20 @@ public class TextEditorController extends Controller {
 		    		_saveTask = new PlayChunkTask(text, filename, voiceChoiceBox.getSelectionModel().getSelectedItem());
 		    		_saveTask.setOnSucceeded(ev -> {
 		                _saveTask = null;
-		            	previewBtn.setText("Save Chunk");
+		                saveBtn.setText("Save Chunk");
 				    });
 		    		_saveTask.setOnCancelled(ev -> {
 		                _saveTask = null;
-		            	previewBtn.setText("Save Chunk");
+		                saveBtn.setText("Save Chunk");
 					});
 		            _saveTask.setOnFailed(ev -> {
 		    			Alert alert = new Alert(Alert.AlertType.ERROR, "Error saving audio chunk. Try selecting other text or using a different voice.");
 		                alert.showAndWait();
 		                _saveTask = null;
-		            	previewBtn.setText("Save Chunk");
+		                saveBtn.setText("Save Chunk");
 					});
 		            pool.submit(_saveTask);
-		        	previewBtn.setText("Cancel Saving");
+		            saveBtn.setText("Cancel Saving");
 		        }
     		}
     	} else {
