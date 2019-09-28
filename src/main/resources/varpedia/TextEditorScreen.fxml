@@ -15,7 +15,7 @@
             <Insets bottom="8.0" />
          </VBox.margin>
       </Label>
-      <TextArea fx:id="wikiTextArea" VBox.vgrow="SOMETIMES" />
+      <TextArea fx:id="wikiTextArea" wrapText="true" VBox.vgrow="SOMETIMES" />
       <HBox alignment="TOP_RIGHT">
          <children>
             <HBox HBox.hgrow="ALWAYS">
