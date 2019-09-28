@@ -8,6 +8,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import varpedia.tasks.WikitSearchTask;
 
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -22,6 +23,8 @@ public class WikitSearchController extends Controller {
 
     private ExecutorService pool = Executors.newCachedThreadPool();
 
+    private Task<Boolean> _wikitTask;
+
     @FXML
     private void initialize() {
         // stuff
@@ -29,35 +32,48 @@ public class WikitSearchController extends Controller {
 
     @FXML
     private void pressSearchButton(ActionEvent event) {
-        // check if there is VALID text in the text field
+        // check if there is text in the text field
+        // in the future, could apply regex to prevent searching of characters Wikipedia has blocked from
+        // being in titles, which are: # < > [ ] | { }
+        // but that's a nice-to-have as the search will still fail gracefully without it
         String searchTerm = searchTextField.getText();
-        if (searchTerm.equals("") /* || matches regex for incorrect terms */) {
+        if (searchTerm.equals("")) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Please type in a valid search term.");
             alert.showAndWait();
             return;
         }
-        // perform Wikit search
-        Task<Void> task = new WikitSearchTask(searchTerm);
 
-        // apparently this is naughty
-        // correct way to do it is to have Task return Boolean true or false?
-        /*task.setOnFailed(event2 -> {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "No valid Wikipedia articles found.");
-            alert.showAndWait();
-            return;
-        });*/
-        task.setOnSucceeded(event3 -> {
-            // open TextEditorScreen
-            changeScene(event, "/varpedia/TextEditorScreen.fxml");
+        // perform Wikit search
+        _wikitTask = new WikitSearchTask(searchTerm);
+
+        _wikitTask.setOnSucceeded(event2 -> {
+            try {
+                boolean success = _wikitTask.get();
+                if (success) {
+                    // open TextEditorScreen
+                    changeScene(event, "/varpedia/TextEditorScreen.fxml");
+                } else {
+                    searchBtn.setDisable(false);
+                    Alert alert = new Alert(Alert.AlertType.ERROR, "No valid Wikipedia articles found.");
+                    alert.showAndWait();
+                    return;
+                }
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
         });
 
-        pool.submit(task);
+        pool.submit(_wikitTask);
+        searchBtn.setDisable(true);
         // display loading icon during search?
     }
 
     @FXML
     private void pressCancelButton(ActionEvent event) {
-        // discard all existing temp files etc
+        // if the WikitSearchTask exists and is running, cancel it
+        if (_wikitTask != null && _wikitTask.isRunning()) {
+            _wikitTask.cancel();
+        }
         // open MainScreen
         changeScene(event, "/varpedia/MainScreen.fxml");
     }

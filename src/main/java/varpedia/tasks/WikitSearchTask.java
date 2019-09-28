@@ -8,7 +8,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class WikitSearchTask extends Task<Void> {
+public class WikitSearchTask extends Task<Boolean> {
 
     private String _searchTerm;
 
@@ -17,15 +17,16 @@ public class WikitSearchTask extends Task<Void> {
     }
 
     @Override
-    protected Void call() throws Exception {
+    protected Boolean call() throws Exception {
         // lookup search term on Wikipedia
         Command wikit = new Command("wikit", _searchTerm);
         wikit.run();
         String searchOutput = wikit.getOutput();
 
-        // TODO: error checking
-        // if (string contains _searchTerm + " not found :^(" ) { complain(); }
-        // how to handle disambiguation results???
+        // do we need to handle disambiguation results???
+        if (searchOutput.contains(_searchTerm + " not found :^(") || searchOutput.equals("")) {
+            return Boolean.FALSE;
+        }
 
         // janky method of removing those two spaces Wikit loves to dump at the start of its output
         if (searchOutput.startsWith("  ")) {
@@ -41,7 +42,8 @@ public class WikitSearchTask extends Task<Void> {
             writer.close();
         } catch (IOException e) {
             e.printStackTrace();
+            return Boolean.FALSE;
         }
-        return null;
+        return Boolean.TRUE;
     }
 }
