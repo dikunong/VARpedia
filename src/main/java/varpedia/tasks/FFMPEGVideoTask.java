@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 import javax.sound.sampled.AudioFileFormat;
 import javax.sound.sampled.AudioSystem;
@@ -14,12 +15,12 @@ import varpedia.Command;
 
 public class FFMPEGVideoTask extends Task<Void> {
 	
-	private String[] _chunks;
+	private List<String> _chunks;
 	private String _term;
 	private String _creation;
 	private int _images;
 	
-	public FFMPEGVideoTask(String term, String creation, int images, String[] chunks) {
+	public FFMPEGVideoTask(String term, String creation, int images, List<String> chunks) {
 		_chunks = chunks;
 		_term = term;
 		_creation = creation;
