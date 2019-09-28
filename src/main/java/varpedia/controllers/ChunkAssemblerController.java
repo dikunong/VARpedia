@@ -38,10 +38,11 @@ public class ChunkAssemblerController extends Controller {
     private Task<? extends Object> _createTask;
 
     private ExecutorService pool = Executors.newCachedThreadPool();
+    private String term;
 
     @FXML
     private void initialize() {
-        // stuff
+    	term = getDataFromFile("search-term.txt");
     }
 
     @FXML
@@ -56,8 +57,14 @@ public class ChunkAssemblerController extends Controller {
     		int imageCount = 10; //numOfImagesSpinner.getValue(); This doesn't seem to work properly
     		String name = creationNameTextField.getText();
     		
-    		if (imageCount > 0 && imageCount <= 10) {
-    			FlickrTask flickr = new FlickrTask("cat", imageCount);
+    		if (name == null || name.isEmpty()) {
+    			Alert alert = new Alert(Alert.AlertType.ERROR, "Please enter a creation name.");
+                alert.showAndWait();
+    		} else if (imageCount <= 0 || imageCount > 10) {
+    			Alert alert = new Alert(Alert.AlertType.ERROR, "You must select between 1 and 10 images (inclusive).");
+                alert.showAndWait();
+    		} else {
+    			FlickrTask flickr = new FlickrTask(term, imageCount);
     			_createTask = flickr;
     			_createTask.setOnSucceeded(ev -> {
                 	try {
@@ -82,40 +89,36 @@ public class ChunkAssemblerController extends Controller {
                 				images.add(i);
                 			}
                 			
-                			_createTask = new FFMPEGVideoTask("cat", name, images, Arrays.asList("Alarm01", "Alarm02", "Alarm03"));
+                			_createTask = new FFMPEGVideoTask(term, name, images, Arrays.asList("Alarm01", "Alarm02", "Alarm03"));
     	                	_createTask.setOnSucceeded(ev2 -> {
-    		                	System.out.println("Done");
     		                    _createTask = null;
-    	                	});
+    		                    Alert alert = new Alert(Alert.AlertType.ERROR, "Created creation.");
+    	                        alert.showAndWait();
+    	                        changeScene(event, "/varpedia/MainScreen.fxml"); //TODO: Maybe go straight to player
+    		                });
     	                	_createTask.setOnCancelled(ev2 -> {
-    	                        System.out.println("Cancel");
     	                        _createTask = null;
     	                    });
     	                    _createTask.setOnFailed(ev2 -> {
-    	                        System.out.println("Fail");
-    	                        _createTask.getException().printStackTrace();
+    	                    	Alert alert = new Alert(Alert.AlertType.ERROR, "Failed to create creation.");
+    	                        alert.showAndWait();
     	                        _createTask = null;
     	                    });
     	                    pool.submit(_createTask);	
                 		}
                 	} catch (InterruptedException | ExecutionException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
                 });
                 _createTask.setOnCancelled(ev -> {
-                    System.out.println("Cancel");
                     _createTask = null;
                 });
                 _createTask.setOnFailed(ev -> {
-                    System.out.println("Fail");
-                    _createTask.getException().printStackTrace();
+                	Alert alert = new Alert(Alert.AlertType.ERROR, "Failed to download images.");
+                    alert.showAndWait();
                     _createTask = null;
                 });	
             	pool.submit(_createTask);
-        	} else {
-        		//TODO: Error
-        		System.out.println("No");
         	}
     	} else {
     		_createTask.cancel(true);
