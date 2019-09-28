@@ -26,7 +26,13 @@ public class ListPopulateTask extends Task<List<String>> {
                 return null;
             }
 
-            ret.add(p.getFileName().toString());
+            // remove file extension for clean display to the user
+            String filename = p.getFileName().toString();
+            if (filename.contains(".")) {
+                filename = filename.substring(0, filename.lastIndexOf('.'));
+            }
+
+            ret.add(filename);
         }
 
         str.close();
