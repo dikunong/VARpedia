@@ -1,7 +1,6 @@
 package varpedia.controllers;
 
 import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -14,14 +13,7 @@ public abstract class Controller {
 
     public void changeScene(ActionEvent event, String fxml) {
         try {
-        	if (fxml.startsWith("..")) {
-        		//TODO: Delete this
-        		//So these calls might have been auto-generated, which is weird, since they don't seem to work in jar.
-        		//Fix them up to do The Right Thing
-        		fxml = "/varpedia" + fxml.substring(2);
-        	}
-        	
-            Parent pane = FXMLLoader.load(getClass().getResource(fxml));
+        	Parent pane = FXMLLoader.load(getClass().getResource(fxml));
             Stage stage = (Stage)((Node) event.getSource()).getScene().getWindow();
 
             Scene scene = new Scene(pane);

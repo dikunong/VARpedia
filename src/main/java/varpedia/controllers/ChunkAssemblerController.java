@@ -1,13 +1,16 @@
 package varpedia.controllers;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import varpedia.VARpediaApp;
 import varpedia.tasks.FFMPEGVideoTask;
 import varpedia.tasks.FlickrTask;
 
@@ -38,13 +41,15 @@ public class ChunkAssemblerController extends Controller {
 
     private Task<? extends Object> _createTask;
 
-    private ExecutorService pool = Executors.newCachedThreadPool();
+    private ExecutorService pool = VARpediaApp.newTimedCachedThreadPool();
+    private String term;
 
     @FXML
     private void initialize() {
         setLoadingInactive();
         numOfImagesSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10));
         numOfImagesSpinner.getValueFactory().setValue(10);
+    	term = getDataFromFile("search-term.txt");
     }
 
     @FXML
@@ -57,56 +62,75 @@ public class ChunkAssemblerController extends Controller {
     		int imageCount = numOfImagesSpinner.getValueFactory().getValue();
     		String name = creationNameTextField.getText();
     		
-    		if (imageCount > 0 && imageCount <= 10) {
-    			FlickrTask flickr = new FlickrTask("cat", imageCount);
+    		if (name == null || name.isEmpty()) {
+    			Alert alert = new Alert(Alert.AlertType.ERROR, "Please enter a creation name.");
+                alert.showAndWait();
+    		} else if (imageCount <= 0 || imageCount > 10) {
+    			Alert alert = new Alert(Alert.AlertType.ERROR, "You must select between 1 and 10 images (inclusive).");
+                alert.showAndWait();
+    		} else {
+    			FlickrTask flickr = new FlickrTask(term, imageCount);
     			_createTask = flickr;
     			_createTask.setOnSucceeded(ev -> {
                 	try {
-						_createTask = new FFMPEGVideoTask("cat", name, flickr.get(), new String[] {"Alarm01", "Alarm02", "Alarm03"});
-	                	_createTask.setOnSucceeded(ev2 -> {
-		                	System.out.println("Done");
-		                    _createTask = null;
-                            setLoadingInactive();
-	                	});
-	                	_createTask.setOnCancelled(ev2 -> {
-	                        System.out.println("Cancel");
-	                        _createTask = null;
-                            setLoadingInactive();
-	                    });
-	                    _createTask.setOnFailed(ev2 -> {
-	                        System.out.println("Fail");
-	                        _createTask.getException().printStackTrace();
-	                        _createTask = null;
-                            setLoadingInactive();
-	                    });
-	                    pool.submit(_createTask);
-                        setLoadingActive();
+                		int actualImages = flickr.get();
+                		boolean actual = false;
+
+                		if (actualImages < imageCount) {
+                			Alert alert = new Alert(Alert.AlertType.WARNING, "Fewer images were retrieved than requested (" + actualImages + "). Continue anyway?", ButtonType.YES, ButtonType.CANCEL);
+            	            alert.showAndWait();
+
+            	            if (alert.getResult() == ButtonType.YES) {
+            	            	actual = true;
+            	            }
+                		} else {
+                			actual = true;
+                		}
+
+                		if (actual) {
+                			List<Integer> images = new ArrayList<Integer>();
+
+                			for (int i = 0; i < actualImages; i++) {
+                				images.add(i);
+                			}
+
+                			_createTask = new FFMPEGVideoTask(term, name, images, Arrays.asList("Alarm01", "Alarm02", "Alarm03"));
+    	                	_createTask.setOnSucceeded(ev2 -> {
+    		                    _createTask = null;
+    		                    Alert alert = new Alert(Alert.AlertType.INFORMATION, "Created creation.");
+    	                        alert.showAndWait();
+    	                        changeScene(event, "/varpedia/MainScreen.fxml"); //TODO: Maybe go straight to player
+    		                });
+    	                	_createTask.setOnCancelled(ev2 -> {
+    	                        _createTask = null;
+    	                    });
+    	                    _createTask.setOnFailed(ev2 -> {
+    	                    	Alert alert = new Alert(Alert.AlertType.ERROR, "Failed to create creation.");
+    	                        alert.showAndWait();
+    	                        _createTask = null;
+    	                    });
+    	                    pool.submit(_createTask);
+                		}
                 	} catch (InterruptedException | ExecutionException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
                 });
                 _createTask.setOnCancelled(ev -> {
-                    System.out.println("Cancel");
                     _createTask = null;
                     setLoadingInactive();
                 });
                 _createTask.setOnFailed(ev -> {
-                    System.out.println("Fail");
-                    _createTask.getException().printStackTrace();
+                	Alert alert = new Alert(Alert.AlertType.ERROR, "Failed to download images.");
+                    alert.showAndWait();
                     _createTask = null;
                     setLoadingInactive();
-                });	
+                });
             	pool.submit(_createTask);
-            	setLoadingActive();
-        	} else {
-        		//TODO: Error
-        		System.out.println("No");
         	}
     	} else {
     		_createTask.cancel(true);
     		setLoadingInactive();
-    	}    	
+    	}
     }
 
     @FXML

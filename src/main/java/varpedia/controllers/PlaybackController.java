@@ -16,7 +16,6 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.scene.media.MediaPlayer.Status;
 import javafx.util.Duration;
-import varpedia.VARpediaApp;
 
 import java.io.File;
 
@@ -106,7 +105,8 @@ public class PlaybackController extends Controller {
 
     public void playMedia(File file) {
 		Media media = new Media(file.toURI().toString());
-		_player = new MediaPlayer(media);
+		MediaPlayer player = new MediaPlayer(media);
+		_player = player;
 		_player.setAutoPlay(true);
 		
 		_player.setOnReady(() -> {
@@ -120,10 +120,10 @@ public class PlaybackController extends Controller {
 		_player.currentTimeProperty().addListener((ObservableValue<? extends Duration> observable, Duration oldValue, Duration newValue) -> {
 			if (_duration != null) {
 				timeSlider.valueProperty().removeListener(_timeListener);
-				timeSlider.setValue((_player.getCurrentTime().toMillis() / _duration.toMillis()) * 100);
+				timeSlider.setValue((player.getCurrentTime().toMillis() / _duration.toMillis()) * 100);
 				timeSlider.valueProperty().addListener(_timeListener);
 
-				int count = (int)_player.getCurrentTime().toSeconds();
+				int count = (int)player.getCurrentTime().toSeconds();
 				int sec = count % 60;
 				count /= 60;
 				int min = count % 60;
@@ -145,7 +145,7 @@ public class PlaybackController extends Controller {
 		});
 
 		_player.volumeProperty().addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
-			volLabel.setText("Vol: " + Math.round(_player.getVolume() * 100) + "%");
+			volLabel.setText("Vol: " + Math.round(player.getVolume() * 100) + "%");
 		});
 		
 		mediaView.setMediaPlayer(_player);

@@ -8,13 +8,13 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ListView;
+import varpedia.VARpediaApp;
 import varpedia.tasks.ListPopulateTask;
 
 import java.io.File;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class MainController extends Controller {
 
@@ -30,7 +30,7 @@ public class MainController extends Controller {
     @FXML
     private ListView<String> creationListView;
 
-    private ExecutorService pool = Executors.newCachedThreadPool();
+    private ExecutorService pool = VARpediaApp.newTimedCachedThreadPool();
 
     @FXML
     private void initialize() {

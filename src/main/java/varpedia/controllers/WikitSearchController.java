@@ -4,11 +4,11 @@ import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import varpedia.VARpediaApp;
 import varpedia.tasks.WikitSearchTask;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class WikitSearchController extends Controller {
 
@@ -23,7 +23,7 @@ public class WikitSearchController extends Controller {
     @FXML
     private Label loadingLabel;
 
-    private ExecutorService pool = Executors.newCachedThreadPool();
+    private ExecutorService pool = VARpediaApp.newTimedCachedThreadPool();
 
     private Task<Boolean> _wikitTask;
 
