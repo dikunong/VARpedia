@@ -53,7 +53,9 @@ public abstract class Controller {
             while (line != null) {
                 sb.append(line);
                 // if the message is a filename, don't add a line break or loop at all
-                if (filename.equals("playback-name.txt")) {
+                // this is obviously not the prettiest solution
+                // TODO: improve this design
+                if (filename.equals("playback-name.txt") || filename.equals("search-term.txt")) {
                     break;
                 }
                 sb.append(System.lineSeparator());

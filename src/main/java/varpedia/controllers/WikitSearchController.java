@@ -43,6 +43,9 @@ public class WikitSearchController extends Controller {
             return;
         }
 
+        // save search term into txt file for use later
+        sendDataToFile(searchTerm, "search-term.txt");
+
         // perform Wikit search
         _wikitTask = new WikitSearchTask(searchTerm);
 
