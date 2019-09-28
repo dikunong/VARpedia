@@ -30,7 +30,7 @@ public class Command {
     }
     
     public String getOutput() {
-        String output = null;
+        String output = "";
         try {
             InputStream out = _process.getInputStream();
             BufferedReader stdout = new BufferedReader(new InputStreamReader(out));
@@ -45,7 +45,7 @@ public class Command {
     }
     
     public String getError() {
-        String output = null;
+        String output = "";
         try {
             InputStream out = _process.getErrorStream();
             BufferedReader stdout = new BufferedReader(new InputStreamReader(out));
@@ -70,4 +70,17 @@ public class Command {
 			e.printStackTrace();
 		}
     }
+
+	public void end() {
+		_process.destroy();
+		
+		while (true) {
+			try {
+				_process.waitFor();
+				break;
+			} catch (InterruptedException e) {
+				;
+			}
+		}
+	}
 }
