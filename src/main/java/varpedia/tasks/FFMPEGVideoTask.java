@@ -18,9 +18,9 @@ public class FFMPEGVideoTask extends Task<Void> {
 	private List<String> _chunks;
 	private String _term;
 	private String _creation;
-	private int _images;
+	private List<Integer> _images;
 	
-	public FFMPEGVideoTask(String term, String creation, int images, List<String> chunks) {
+	public FFMPEGVideoTask(String term, String creation, List<Integer> images, List<String> chunks) {
 		_chunks = chunks;
 		_term = term;
 		_creation = creation;
@@ -62,7 +62,7 @@ public class FFMPEGVideoTask extends Task<Void> {
 		wr.write(_term);
 		wr.close();
 		
-		if (_images > 0) {
+		if (_images.size() > 0) {
 			video = new Command("ffmpeg", "-y", "-f", "concat", "-protocol_whitelist", "file,pipe", "-i", "-", "-i", "appfiles/audio.wav", "-vf", "scale=w=min(iw*540/ih\\,960):h=min(540\\,ih*960/iw),pad=w=960:h=540:x=(960-iw)/2:y=(540-ih)/2,drawtext=textfile=appfiles/term.txt:x=(w-text_w)/2:y=(h-text_h)/2:fontsize=72:borderw=2:bordercolor=white:expansion=none", "creations/" + _creation + ".mp4");
 		} else {
 			video = new Command("ffmpeg", "-y", "-f", "lavfi", "-t", Float.toString(length), "-i", "color=color=white:size=960x540", "-i", "appfiles/audio.wav", "-vf", "drawtext=textfile=appfiles/term.txt:x=(w-text_w)/2:y=(h-text_h)/2:fontsize=72:expansion=none", "creations/" + _creation + ".mp4");
@@ -70,14 +70,14 @@ public class FFMPEGVideoTask extends Task<Void> {
 		
 		video.run();
 		
-		for (int i = 0; i < _images; i++) {
+		for (int i : _images) {
 			if (isCancelled()) {
 				video.end();
 				return null;
 			}
 			
 			video.writeString("file '" + "appfiles/image" + Integer.toString(i) + ".jpg" + "'");
-			video.writeString("duration " + (length / _images));
+			video.writeString("duration " + (length / _images.size()));
 		}
 		
 		video.getProcess().getOutputStream().close();

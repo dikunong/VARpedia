@@ -1,6 +1,8 @@
 package varpedia.controllers;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -59,21 +61,43 @@ public class ChunkAssemblerController extends Controller {
     			_createTask = flickr;
     			_createTask.setOnSucceeded(ev -> {
                 	try {
-						_createTask = new FFMPEGVideoTask("cat", name, flickr.get(), Arrays.asList("Alarm01", "Alarm02", "Alarm03"));
-	                	_createTask.setOnSucceeded(ev2 -> {
-		                	System.out.println("Done");
-		                    _createTask = null;
-	                	});
-	                	_createTask.setOnCancelled(ev2 -> {
-	                        System.out.println("Cancel");
-	                        _createTask = null;
-	                    });
-	                    _createTask.setOnFailed(ev2 -> {
-	                        System.out.println("Fail");
-	                        _createTask.getException().printStackTrace();
-	                        _createTask = null;
-	                    });
-	                    pool.submit(_createTask);
+                		int actualImages = flickr.get();
+                		boolean actual = false;
+                		
+                		if (actualImages < imageCount) {
+                			Alert alert = new Alert(Alert.AlertType.WARNING, "Fewer images were retrieved than requested (" + actualImages + "). Continue anyway?", ButtonType.YES, ButtonType.CANCEL);
+            	            alert.showAndWait();
+            	            
+            	            if (alert.getResult() == ButtonType.YES) {
+            	            	actual = true;
+            	            }
+                		} else {
+                			actual = true;
+                		}
+                		
+                		if (actual) {
+                			List<Integer> images = new ArrayList<Integer>();
+                			
+                			for (int i = 0; i < actualImages; i++) {
+                				images.add(i);
+                			}
+                			
+                			_createTask = new FFMPEGVideoTask("cat", name, images, Arrays.asList("Alarm01", "Alarm02", "Alarm03"));
+    	                	_createTask.setOnSucceeded(ev2 -> {
+    		                	System.out.println("Done");
+    		                    _createTask = null;
+    	                	});
+    	                	_createTask.setOnCancelled(ev2 -> {
+    	                        System.out.println("Cancel");
+    	                        _createTask = null;
+    	                    });
+    	                    _createTask.setOnFailed(ev2 -> {
+    	                        System.out.println("Fail");
+    	                        _createTask.getException().printStackTrace();
+    	                        _createTask = null;
+    	                    });
+    	                    pool.submit(_createTask);	
+                		}
                 	} catch (InterruptedException | ExecutionException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
