@@ -32,9 +32,9 @@ public abstract class Controller {
         }
     }
 
-    public void sendDataToFile(String msg) {
+    public void sendDataToFile(String msg, String filename) {
         try {
-            File file = new File("appfiles/message.txt");
+            File file = new File("appfiles/" + filename);
             BufferedWriter writer = new BufferedWriter(new FileWriter(file));
             writer.write(msg);
             writer.close();
@@ -43,18 +43,20 @@ public abstract class Controller {
         }
     }
 
-    public String getDataFromFile() {
+    public String getDataFromFile(String filename) {
         String output = null;
         try {
-            BufferedReader reader = new BufferedReader(new FileReader("appfiles/message.txt"));
+            BufferedReader reader = new BufferedReader(new FileReader("appfiles/" + filename));
             StringBuilder sb = new StringBuilder();
             String line = reader.readLine();
 
             while (line != null) {
                 sb.append(line);
-                // this breaks single-line files from being read correctly. need a solution
-                // potentially if(filename) { read one line } else { read line-by-line }
-                // sb.append(System.lineSeparator());
+                // if the message is a filename, don't add a line break or loop at all
+                if (filename.equals("playback-name.txt")) {
+                    break;
+                }
+                sb.append(System.lineSeparator());
                 line = reader.readLine();
             }
             output = sb.toString();

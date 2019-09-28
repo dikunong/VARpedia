@@ -41,7 +41,7 @@ public class MainController extends Controller {
     private void pressPlayButton(ActionEvent event) {
         // check if an item is actually selected first
         if (checkCreationSelected()) {
-            sendDataToFile("creations/" + creationListView.getSelectionModel().getSelectedItem());
+            sendDataToFile("creations/" + creationListView.getSelectionModel().getSelectedItem(), "playback-name.txt");
             // open PlaybackScreen
             changeScene(event, "/varpedia/PlaybackScreen.fxml");
         }
@@ -89,17 +89,7 @@ public class MainController extends Controller {
     }
 
     private void populateList() {
-        File creationsDir = new File("creations");
-
-        // ensure the creations directory is actually a directory AND exists
-        if (creationsDir.isFile()) {
-            creationsDir.delete();
-        }
-        if (!creationsDir.exists()) {
-            creationsDir.mkdir();
-        }
-
-        Task<List<String>> task = new ListPopulateTask(creationsDir);
+        Task<List<String>> task = new ListPopulateTask(new File("creations"));
         task.setOnSucceeded(event -> {
             try {
                 List<String> newCreations = task.get();
