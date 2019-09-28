@@ -5,12 +5,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import varpedia.VARpediaApp;
 import varpedia.tasks.FFMPEGVideoTask;
 import varpedia.tasks.FlickrTask;
 
@@ -37,7 +37,7 @@ public class ChunkAssemblerController extends Controller {
 
     private Task<? extends Object> _createTask;
 
-    private ExecutorService pool = Executors.newCachedThreadPool();
+    private ExecutorService pool = VARpediaApp.newTimedCachedThreadPool();
     private String term;
 
     @FXML

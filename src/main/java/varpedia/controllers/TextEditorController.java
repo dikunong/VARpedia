@@ -2,12 +2,12 @@ package varpedia.controllers;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import varpedia.VARpediaApp;
 import varpedia.tasks.PlayChunkTask;
 import varpedia.tasks.VoiceListTask;
 
@@ -29,7 +29,7 @@ public class TextEditorController extends Controller {
     private Task<Void> _playTask;
     private Task<Void> _saveTask;
 
-    private ExecutorService pool = Executors.newCachedThreadPool();
+    private ExecutorService pool = VARpediaApp.newTimedCachedThreadPool();
 
     @FXML
     private void initialize() {

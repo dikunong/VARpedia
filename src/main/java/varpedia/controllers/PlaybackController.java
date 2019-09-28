@@ -16,7 +16,6 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.scene.media.MediaPlayer.Status;
 import javafx.util.Duration;
-import varpedia.VARpediaApp;
 
 import java.io.File;
 

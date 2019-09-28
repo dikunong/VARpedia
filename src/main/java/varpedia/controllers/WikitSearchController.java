@@ -6,11 +6,11 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import varpedia.VARpediaApp;
 import varpedia.tasks.WikitSearchTask;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class WikitSearchController extends Controller {
 
@@ -21,7 +21,7 @@ public class WikitSearchController extends Controller {
     @FXML
     private Button cancelBtn;
 
-    private ExecutorService pool = Executors.newCachedThreadPool();
+    private ExecutorService pool = VARpediaApp.newTimedCachedThreadPool();
 
     private Task<Boolean> _wikitTask;
 
