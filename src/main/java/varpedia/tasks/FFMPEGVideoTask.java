@@ -63,9 +63,9 @@ public class FFMPEGVideoTask extends Task<Void> {
 		wr.close();
 		
 		if (_images.size() > 0) {
-			video = new Command("ffmpeg", "-y", "-f", "concat", "-protocol_whitelist", "file,pipe", "-i", "-", "-i", "appfiles/audio.wav", "-vf", "scale=w=min(iw*540/ih\\,960):h=min(540\\,ih*960/iw),pad=w=960:h=540:x=(960-iw)/2:y=(540-ih)/2,drawtext=textfile=appfiles/term.txt:x=(w-text_w)/2:y=(h-text_h)/2:fontsize=72:borderw=2:bordercolor=white:expansion=none", "creations/" + _creation + ".mp4");
+			video = new Command("ffmpeg", "-y", "-f", "concat", "-protocol_whitelist", "file,pipe", "-i", "-", "-i", "appfiles/audio.wav", "-vf", "scale=w=min(iw*540/ih\\,960):h=min(540\\,ih*960/iw),pad=w=960:h=540:x=(960-iw)/2:y=(540-ih)/2,drawtext=textfile=appfiles/term.txt:x=(w-text_w)/2:y=(h-text_h)/2:fontsize=72:borderw=2:bordercolor=white:expansion=none", "-pix_fmt", "yuv420p", "-r", "25", "creations/" + _creation + ".mp4");
 		} else {
-			video = new Command("ffmpeg", "-y", "-f", "lavfi", "-t", Float.toString(length), "-i", "color=color=white:size=960x540", "-i", "appfiles/audio.wav", "-vf", "drawtext=textfile=appfiles/term.txt:x=(w-text_w)/2:y=(h-text_h)/2:fontsize=72:expansion=none", "creations/" + _creation + ".mp4");
+			video = new Command("ffmpeg", "-y", "-f", "lavfi", "-t", Float.toString(length), "-i", "color=color=white:size=960x540", "-i", "appfiles/audio.wav", "-vf", "drawtext=textfile=appfiles/term.txt:x=(w-text_w)/2:y=(h-text_h)/2:fontsize=72:expansion=none", "-pix_fmt", "yuv420p", "-r", "25", "creations/" + _creation + ".mp4");
 		}
 		
 		video.run();
