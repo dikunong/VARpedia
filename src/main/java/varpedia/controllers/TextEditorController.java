@@ -85,7 +85,7 @@ public class TextEditorController extends Controller {
 		            	previewBtn.setText("Preview");
 			        });
 		            _playTask.setOnFailed(ev -> {
-		            	Alert alert = new Alert(Alert.AlertType.ERROR, "Error saving audio chunk.");
+		            	Alert alert = new Alert(Alert.AlertType.ERROR, "Error playing audio chunk. Try selecting other text or using a different voice.");
 		                alert.showAndWait();
 		                _playTask = null;
 		            	previewBtn.setText("Preview");
@@ -141,7 +141,7 @@ public class TextEditorController extends Controller {
 		            	previewBtn.setText("Save Chunk");
 					});
 		            _saveTask.setOnFailed(ev -> {
-		    			Alert alert = new Alert(Alert.AlertType.ERROR, "Error saving audio chunk.");
+		    			Alert alert = new Alert(Alert.AlertType.ERROR, "Error saving audio chunk. Try selecting other text or using a different voice.");
 		                alert.showAndWait();
 		                _saveTask = null;
 		            	previewBtn.setText("Save Chunk");
