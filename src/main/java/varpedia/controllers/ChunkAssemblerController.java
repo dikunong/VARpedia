@@ -1,5 +1,6 @@
 package varpedia.controllers;
 
+import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -58,7 +59,7 @@ public class ChunkAssemblerController extends Controller {
     			_createTask = flickr;
     			_createTask.setOnSucceeded(ev -> {
                 	try {
-						_createTask = new FFMPEGVideoTask("cat", name, flickr.get(), new String[] {"Alarm01", "Alarm02", "Alarm03"});
+						_createTask = new FFMPEGVideoTask("cat", name, flickr.get(), Arrays.asList("Alarm01", "Alarm02", "Alarm03"));
 	                	_createTask.setOnSucceeded(ev2 -> {
 		                	System.out.println("Done");
 		                    _createTask = null;
