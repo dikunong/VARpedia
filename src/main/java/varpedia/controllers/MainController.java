@@ -41,7 +41,7 @@ public class MainController extends Controller {
     private void pressPlayButton(ActionEvent event) {
         // check if an item is actually selected first
         if (checkCreationSelected()) {
-            sendDataToFile("creations/" + creationListView.getSelectionModel().getSelectedItem());
+            sendDataToFile("creations/" + creationListView.getSelectionModel().getSelectedItem(), "playback-name.txt");
             // open PlaybackScreen
             changeScene(event, "/varpedia/PlaybackScreen.fxml");
         }
