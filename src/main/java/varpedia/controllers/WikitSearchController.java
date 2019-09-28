@@ -3,9 +3,7 @@ package varpedia.controllers;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import varpedia.VARpediaApp;
 import varpedia.tasks.WikitSearchTask;
 
@@ -20,6 +18,10 @@ public class WikitSearchController extends Controller {
     private Button searchBtn;
     @FXML
     private Button cancelBtn;
+    @FXML
+    private ProgressIndicator loadingWheel;
+    @FXML
+    private Label loadingLabel;
 
     private ExecutorService pool = VARpediaApp.newTimedCachedThreadPool();
 
@@ -27,7 +29,7 @@ public class WikitSearchController extends Controller {
 
     @FXML
     private void initialize() {
-        // stuff
+        setLoadingInactive();
     }
 
     @FXML
@@ -56,7 +58,7 @@ public class WikitSearchController extends Controller {
                     // open TextEditorScreen
                     changeScene(event, "/varpedia/TextEditorScreen.fxml");
                 } else {
-                    searchBtn.setDisable(false);
+                    setLoadingInactive();
                     Alert alert = new Alert(Alert.AlertType.ERROR, "No valid Wikipedia articles found.");
                     alert.showAndWait();
                     return;
@@ -67,8 +69,9 @@ public class WikitSearchController extends Controller {
         });
 
         pool.submit(_wikitTask);
-        searchBtn.setDisable(true);
-        // display loading icon during search?
+
+        // display loading indicator during search
+        setLoadingActive();
     }
 
     @FXML
@@ -79,5 +82,17 @@ public class WikitSearchController extends Controller {
         }
         // open MainScreen
         changeScene(event, "/varpedia/MainScreen.fxml");
+    }
+
+    private void setLoadingActive() {
+        searchBtn.setDisable(true);
+        loadingLabel.setVisible(true);
+        loadingWheel.setVisible(true);
+    }
+
+    private void setLoadingInactive() {
+        searchBtn.setDisable(false);
+        loadingLabel.setVisible(false);
+        loadingWheel.setVisible(false);
     }
 }

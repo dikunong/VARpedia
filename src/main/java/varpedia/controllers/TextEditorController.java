@@ -26,6 +26,10 @@ public class TextEditorController extends Controller {
     private Button cancelBtn;
     @FXML
     private ChoiceBox<String> voiceChoiceBox;
+    @FXML
+    private ProgressIndicator loadingWheel;
+    @FXML
+    private Label loadingLabel;
 
     private Task<Void> _playTask;
     private Task<Void> _saveTask;
@@ -34,13 +38,15 @@ public class TextEditorController extends Controller {
 
     @FXML
     private void initialize() {
-        // stuff
+        setLoadingInactive();
+
     	//TODO: Do this properly
     	Task<String[]> dat = new VoiceListTask();
     	dat.run();
     	
     	try {
 			voiceChoiceBox.getItems().addAll(dat.get());
+			voiceChoiceBox.getSelectionModel().selectFirst();
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
 		}
@@ -60,13 +66,13 @@ public class TextEditorController extends Controller {
     	//TODO: Do this properly
     	if (_playTask == null) {
     		String text = wikiTextArea.getSelectedText();
-    		
+
     		if (text == null || text.isEmpty()) {
     			Alert alert = new Alert(Alert.AlertType.ERROR, "Please select some text first.");
                 alert.showAndWait();
     		} else {
     			boolean playText;
-    			
+
     			if (text.split(" ").length > 30) {
     				Alert alert = new Alert(Alert.AlertType.WARNING, "Selected text is very long (>30 words). Do you wish to continue anyway?", ButtonType.YES, ButtonType.CANCEL);
     	            alert.showAndWait();
@@ -74,29 +80,34 @@ public class TextEditorController extends Controller {
     			} else {
     				playText = true;
     			}
-    			
+
     			if (playText) {
 		    		_playTask = new PlayChunkTask(text, null, voiceChoiceBox.getSelectionModel().getSelectedItem());
 		            _playTask.setOnSucceeded(ev -> {
 		            	_playTask = null;
 		            	previewBtn.setText("Preview");
+		            	setLoadingInactive();
 		            });
 		            _playTask.setOnCancelled(ev -> {
 		                _playTask = null;
 		            	previewBtn.setText("Preview");
+		            	setLoadingInactive();
 			        });
 		            _playTask.setOnFailed(ev -> {
 		            	Alert alert = new Alert(Alert.AlertType.ERROR, "Error playing audio chunk. Try selecting other text or using a different voice.");
 		                alert.showAndWait();
 		                _playTask = null;
 		            	previewBtn.setText("Preview");
+		            	setLoadingInactive();
 			        });
 		            pool.submit(_playTask);
+		            setLoadingActive();
 		            previewBtn.setText("Stop Preview");
     			}
     		}
     	} else {
     		_playTask.cancel(true);
+    		setLoadingInactive();
     	}
     }
 
@@ -104,35 +115,35 @@ public class TextEditorController extends Controller {
     	String clean = text.replaceAll("[^A-Za-z0-9\\-_ ]", "").replace(' ', '_');
     	String name = "appfiles/audio/" + clean.substring(0, Math.min(clean.length(), 32));
     	String str = name + ".wav";
-    	
+
     	if (new File(str).exists()) {
     		int id = 2;
-    		
+
     		do {
     			str = name + "_" + id + ".wav";
     			id++;
     	    } while (new File(str).exists());
     	}
-    	
+
     	return str;
     }
-    
+
     @FXML
     private void pressSaveButton(ActionEvent event) {
         // get selected text from wikiTextArea
         // save selected text audio into .wav "chunk"
         // what should these files be named?
-    	
+
     	//TODO: Do this properly
     	if (_saveTask == null) {
     		String text = wikiTextArea.getSelectedText();
-    		
+
     		if (text == null || text.isEmpty()) {
     			Alert alert = new Alert(Alert.AlertType.ERROR, "Please select some text first.");
                 alert.showAndWait();
     		} else {
     			boolean playText;
-    			
+
     			if (text.split(" ").length > 30) {
     				Alert alert = new Alert(Alert.AlertType.WARNING, "Selected text is very long (>30 words). Do you wish to continue anyway?", ButtonType.YES, ButtonType.CANCEL);
     	            alert.showAndWait();
@@ -140,31 +151,36 @@ public class TextEditorController extends Controller {
     			} else {
     				playText = true;
     			}
-    			
+
     			if (playText) {
     				String filename = getFileName(text);
-    				
+
 		    		_saveTask = new PlayChunkTask(text, filename, voiceChoiceBox.getSelectionModel().getSelectedItem());
 		    		_saveTask.setOnSucceeded(ev -> {
 		                _saveTask = null;
 		                saveBtn.setText("Save Chunk");
+		                setLoadingInactive();
 				    });
 		    		_saveTask.setOnCancelled(ev -> {
 		                _saveTask = null;
 		                saveBtn.setText("Save Chunk");
+		                setLoadingInactive();
 					});
 		            _saveTask.setOnFailed(ev -> {
 		    			Alert alert = new Alert(Alert.AlertType.ERROR, "Error saving audio chunk. Try selecting other text or using a different voice.");
 		                alert.showAndWait();
 		                _saveTask = null;
 		                saveBtn.setText("Save Chunk");
+		                setLoadingInactive();
 					});
 		            pool.submit(_saveTask);
 		            saveBtn.setText("Cancel Saving");
+		            setLoadingActive();
 		        }
     		}
     	} else {
     		_saveTask.cancel(true);
+    		setLoadingInactive();
     	}
     }
 
@@ -184,6 +200,22 @@ public class TextEditorController extends Controller {
             // discard all existing temp files etc
             changeScene(event, "/varpedia/MainScreen.fxml");
         }
+    }
+
+    private void setLoadingActive() {
+        assembleBtn.setDisable(true);
+        previewBtn.setDisable(true);
+        voiceChoiceBox.setDisable(true);
+        loadingLabel.setVisible(true);
+        loadingWheel.setVisible(true);
+    }
+
+    private void setLoadingInactive() {
+        assembleBtn.setDisable(false);
+        previewBtn.setDisable(false);
+        voiceChoiceBox.setDisable(false);
+        loadingLabel.setVisible(false);
+        loadingWheel.setVisible(false);
     }
 
 }

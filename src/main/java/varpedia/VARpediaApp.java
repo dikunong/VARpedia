@@ -35,8 +35,10 @@ public class VARpediaApp extends Application {
             e.printStackTrace();
         }
 
+        // TODO: fix this horrendous code repetition
         File creationsDir = new File("creations");
         File appfilesDir = new File("appfiles");
+        File audioDir = new File("appfiles/audio");
 
         // ensure the creations directory is actually a directory AND exists
         if (creationsDir.isFile()) {
@@ -51,6 +53,13 @@ public class VARpediaApp extends Application {
         }
         if (!appfilesDir.exists()) {
             appfilesDir.mkdir();
+        }
+        // ensure the audio directory is actually a directory AND exists
+        if (audioDir.isFile()) {
+            audioDir.delete();
+        }
+        if (!audioDir.exists()) {
+            audioDir.mkdir();
         }
 
     }

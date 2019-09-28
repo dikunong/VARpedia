@@ -41,7 +41,7 @@ public class MainController extends Controller {
     private void pressPlayButton(ActionEvent event) {
         // check if an item is actually selected first
         if (checkCreationSelected()) {
-            sendDataToFile("creations/" + creationListView.getSelectionModel().getSelectedItem(), "playback-name.txt");
+            sendDataToFile("creations/" + getSelectedFilename(), "playback-name.txt");
             // open PlaybackScreen
             changeScene(event, "/varpedia/PlaybackScreen.fxml");
         }
@@ -56,7 +56,7 @@ public class MainController extends Controller {
                     "selected creation?", ButtonType.YES, ButtonType.CANCEL); // add selected creation name here later
             alert.showAndWait();
             if (alert.getResult() == ButtonType.YES) {
-                String filename = creationListView.getSelectionModel().getSelectedItem();
+                String filename = getSelectedFilename();
                 // delete creation file
                 File file = new File("creations/" + filename);
                 if (file.delete()) {
@@ -77,6 +77,10 @@ public class MainController extends Controller {
         changeScene(event, "/varpedia/WikitSearchScreen.fxml");
     }
 
+    private String getSelectedFilename() {
+        return creationListView.getSelectionModel().getSelectedItem() + ".mp4";
+    }
+
     private boolean checkCreationSelected() {
         // check if an item is actually selected first
         if (creationListView.getSelectionModel().getSelectedItem() == null) {
@@ -94,7 +98,6 @@ public class MainController extends Controller {
             try {
                 List<String> newCreations = task.get();
                 if (newCreations != null) {
-                    //creationList.clear(); - use this later if not adding/removing creations individually
                     creationList.addAll(newCreations);
                 }
             } catch (InterruptedException | ExecutionException e) {

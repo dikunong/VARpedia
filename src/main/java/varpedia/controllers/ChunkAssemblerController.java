@@ -1,11 +1,14 @@
 package varpedia.controllers;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 
+import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -13,6 +16,7 @@ import javafx.scene.control.*;
 import varpedia.VARpediaApp;
 import varpedia.tasks.FFMPEGVideoTask;
 import varpedia.tasks.FlickrTask;
+import varpedia.tasks.ListPopulateTask;
 
 public class ChunkAssemblerController extends Controller {
 
@@ -34,6 +38,19 @@ public class ChunkAssemblerController extends Controller {
     private Button cancelBtn;
     @FXML
     private Button backBtn;
+    @FXML
+    private ProgressBar loadingBar;
+    @FXML
+    private Label loadingLabel;
+
+    @FXML
+    private ObservableList<String> leftChunkList;
+    @FXML
+    private ListView<String> leftChunkListView;
+    @FXML
+    private ObservableList<String> rightChunkList;
+    @FXML
+    private ListView<String> rightChunkListView;
 
     private Task<? extends Object> _createTask;
 
@@ -42,20 +59,29 @@ public class ChunkAssemblerController extends Controller {
 
     @FXML
     private void initialize() {
+        setLoadingInactive();
+        numOfImagesSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10));
+        numOfImagesSpinner.getValueFactory().setValue(10);
     	term = getDataFromFile("search-term.txt");
+
+    	// populate list view with saved chunks
+        populateList();
     }
 
     @FXML
     private void pressCreateBtn(ActionEvent event) {
-    	// open CreationProgressScreen - or should this be a dialog window?
         // assemble audio chunks
         // get Flickr images
         // assemble audio + video using ffmpeg
-        // does this stuff happen here or in CreationProgressScreen?
     	//TODO: Far better method
     	if (_createTask == null) {
-    		int imageCount = 10; //numOfImagesSpinner.getValue(); This doesn't seem to work properly
+    		int imageCount = numOfImagesSpinner.getValueFactory().getValue();
     		String name = creationNameTextField.getText();
+
+            System.out.println("Debug please");
+            for (String s : rightChunkList) {
+                System.out.println(s);
+            }
     		
     		if (name == null || name.isEmpty()) {
     			Alert alert = new Alert(Alert.AlertType.ERROR, "Please enter a creation name.");
@@ -70,41 +96,44 @@ public class ChunkAssemblerController extends Controller {
                 	try {
                 		int actualImages = flickr.get();
                 		boolean actual = false;
-                		
+
                 		if (actualImages < imageCount) {
                 			Alert alert = new Alert(Alert.AlertType.WARNING, "Fewer images were retrieved than requested (" + actualImages + "). Continue anyway?", ButtonType.YES, ButtonType.CANCEL);
             	            alert.showAndWait();
-            	            
+
             	            if (alert.getResult() == ButtonType.YES) {
             	            	actual = true;
             	            }
                 		} else {
                 			actual = true;
                 		}
-                		
+
                 		if (actual) {
                 			List<Integer> images = new ArrayList<Integer>();
-                			
+
                 			for (int i = 0; i < actualImages; i++) {
                 				images.add(i);
                 			}
-                			
-                			_createTask = new FFMPEGVideoTask(term, name, images, Arrays.asList("Alarm01", "Alarm02", "Alarm03"));
+
+                			_createTask = new FFMPEGVideoTask(term, name, images, rightChunkList);
     	                	_createTask.setOnSucceeded(ev2 -> {
     		                    _createTask = null;
     		                    Alert alert = new Alert(Alert.AlertType.INFORMATION, "Created creation.");
     	                        alert.showAndWait();
+    	                        setLoadingInactive();
     	                        changeScene(event, "/varpedia/MainScreen.fxml"); //TODO: Maybe go straight to player
     		                });
     	                	_createTask.setOnCancelled(ev2 -> {
     	                        _createTask = null;
+    	                        setLoadingInactive();
     	                    });
     	                    _createTask.setOnFailed(ev2 -> {
     	                    	Alert alert = new Alert(Alert.AlertType.ERROR, "Failed to create creation.");
     	                        alert.showAndWait();
     	                        _createTask = null;
+    	                        setLoadingInactive();
     	                    });
-    	                    pool.submit(_createTask);	
+    	                    pool.submit(_createTask);
                 		}
                 	} catch (InterruptedException | ExecutionException e) {
 						e.printStackTrace();
@@ -112,17 +141,21 @@ public class ChunkAssemblerController extends Controller {
                 });
                 _createTask.setOnCancelled(ev -> {
                     _createTask = null;
+                    setLoadingInactive();
                 });
                 _createTask.setOnFailed(ev -> {
                 	Alert alert = new Alert(Alert.AlertType.ERROR, "Failed to download images.");
                     alert.showAndWait();
                     _createTask = null;
-                });	
+                    setLoadingInactive();
+                });
             	pool.submit(_createTask);
+            	setLoadingActive();
         	}
     	} else {
     		_createTask.cancel(true);
-    	}    	
+    		setLoadingInactive();
+    	}
     }
 
     @FXML
@@ -133,6 +166,10 @@ public class ChunkAssemblerController extends Controller {
         alert.showAndWait();
         if (alert.getResult() == ButtonType.YES) {
             // discard all existing temp files etc
+            if (_createTask != null && _createTask.isRunning()) {
+                _createTask.cancel();
+            }
+            // open MainScreen
             changeScene(event, "/varpedia/MainScreen.fxml");
         }
     }
@@ -140,5 +177,96 @@ public class ChunkAssemblerController extends Controller {
     @FXML
     private void pressBackButton(ActionEvent event) {
         changeScene(event, "/varpedia/TextEditorScreen.fxml");
+    }
+
+    @FXML
+    private void pressAddToButton(ActionEvent event) {
+        String selectedChunk = leftChunkListView.getSelectionModel().getSelectedItem();
+        // check something is selected in leftChunkList
+        if (selectedChunk != null) {
+            // add it to rightChunkList
+            rightChunkList.add(selectedChunk);
+            // remove it from leftChunkList
+            leftChunkList.remove(selectedChunk);
+        }
+    }
+
+    @FXML
+    private void pressRemoveFromButton(ActionEvent event) {
+        String selectedChunk = rightChunkListView.getSelectionModel().getSelectedItem();
+        // check something is selected in rightChunkList
+        if (selectedChunk != null) {
+            // add it to leftChunkList
+            leftChunkList.add(selectedChunk);
+            // remove it from rightChunkList
+            rightChunkList.remove(selectedChunk);
+        }
+    }
+
+    @FXML
+    private void pressMoveUpButton(ActionEvent event) {
+        String selectedChunk = rightChunkListView.getSelectionModel().getSelectedItem();
+        int selectedIndex = rightChunkListView.getSelectionModel().getSelectedIndex();
+        // check something is selected in rightChunkList and it's not already first
+        if (selectedChunk != null && selectedIndex > 0) {
+            // change its index if it's not already first
+            rightChunkList.remove(selectedIndex);
+            rightChunkList.add(selectedIndex - 1, selectedChunk);
+            rightChunkListView.getSelectionModel().select(selectedIndex - 1);
+        }
+    }
+
+    @FXML
+    private void pressMoveDownButton(ActionEvent event) {
+        String selectedChunk = rightChunkListView.getSelectionModel().getSelectedItem();
+        int selectedIndex = rightChunkListView.getSelectionModel().getSelectedIndex();
+        int maxIndex = rightChunkListView.getItems().size() - 1;
+        // check something is selected in rightChunkList and it's not already last
+        if (selectedChunk != null && selectedIndex < maxIndex) {
+            rightChunkList.remove(selectedIndex);
+            rightChunkList.add(selectedIndex + 1, selectedChunk);
+            rightChunkListView.getSelectionModel().select(selectedIndex + 1);
+        }
+    }
+
+    private void populateList() {
+        Task<List<String>> task = new ListPopulateTask(new File("appfiles/audio"));
+        task.setOnSucceeded(event -> {
+            try {
+                List<String> newCreations = task.get();
+                if (newCreations != null) {
+                    leftChunkList.addAll(newCreations);
+                }
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+        });
+        pool.submit(task);
+    }
+
+    private void setLoadingActive() {
+        addToBtn.setDisable(true);
+        removeFromBtn.setDisable(true);
+        moveUpBtn.setDisable(true);
+        moveDownBtn.setDisable(true);
+        creationNameTextField.setDisable(true);
+        numOfImagesSpinner.setDisable(true);
+        //createBtn.setDisable(true);
+        backBtn.setDisable(true);
+        loadingBar.setVisible(true);
+        loadingLabel.setVisible(true);
+    }
+
+    private void setLoadingInactive() {
+        addToBtn.setDisable(false);
+        removeFromBtn.setDisable(false);
+        moveUpBtn.setDisable(false);
+        moveDownBtn.setDisable(false);
+        creationNameTextField.setDisable(false);
+        numOfImagesSpinner.setDisable(false);
+        //createBtn.setDisable(false);
+        backBtn.setDisable(false);
+        loadingBar.setVisible(false);
+        loadingLabel.setVisible(false);
     }
 }
