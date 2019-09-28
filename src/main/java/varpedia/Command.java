@@ -70,7 +70,7 @@ public class Command {
 			e.printStackTrace();
 		}
     }
-    
+
 	public void end() {
 		_process.destroy();
 		

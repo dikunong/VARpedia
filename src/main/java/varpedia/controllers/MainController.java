@@ -43,7 +43,7 @@ public class MainController extends Controller {
         if (checkCreationSelected()) {
             sendDataToFile("creations/" + creationListView.getSelectionModel().getSelectedItem());
             // open PlaybackScreen
-            changeScene(event, "../PlaybackScreen.fxml");
+            changeScene(event, "/varpedia/PlaybackScreen.fxml");
         }
 }
 
@@ -74,7 +74,7 @@ public class MainController extends Controller {
     @FXML
     private void pressCreateButton(ActionEvent event) {
         // open WikitSearchScreen
-        changeScene(event, "../WikitSearchScreen.fxml");
+        changeScene(event, "/varpedia/WikitSearchScreen.fxml");
     }
 
     private boolean checkCreationSelected() {
