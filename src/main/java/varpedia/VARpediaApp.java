@@ -6,6 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.io.IOException;
 
 public class VARpediaApp extends Application {
@@ -25,6 +26,25 @@ public class VARpediaApp extends Application {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        File creationsDir = new File("creations");
+        File appfilesDir = new File("appfiles");
+
+        // ensure the creations directory is actually a directory AND exists
+        if (creationsDir.isFile()) {
+            creationsDir.delete();
+        }
+        if (!creationsDir.exists()) {
+            creationsDir.mkdir();
+        }
+        // ensure the appfiles directory is actually a directory AND exists
+        if (appfilesDir.isFile()) {
+            appfilesDir.delete();
+        }
+        if (!appfilesDir.exists()) {
+            appfilesDir.mkdir();
+        }
+
     }
 
     public static void main(String[] args) {

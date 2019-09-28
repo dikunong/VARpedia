@@ -89,17 +89,7 @@ public class MainController extends Controller {
     }
 
     private void populateList() {
-        File creationsDir = new File("creations");
-
-        // ensure the creations directory is actually a directory AND exists
-        if (creationsDir.isFile()) {
-            creationsDir.delete();
-        }
-        if (!creationsDir.exists()) {
-            creationsDir.mkdir();
-        }
-
-        Task<List<String>> task = new ListPopulateTask(creationsDir);
+        Task<List<String>> task = new ListPopulateTask(new File("creations"));
         task.setOnSucceeded(event -> {
             try {
                 List<String> newCreations = task.get();
