@@ -77,6 +77,11 @@ public class ChunkAssemblerController extends Controller {
     	if (_createTask == null) {
     		int imageCount = numOfImagesSpinner.getValueFactory().getValue();
     		String name = creationNameTextField.getText();
+
+            System.out.println("Debug please");
+            for (String s : rightChunkList) {
+                System.out.println(s);
+            }
     		
     		if (name == null || name.isEmpty()) {
     			Alert alert = new Alert(Alert.AlertType.ERROR, "Please enter a creation name.");
@@ -110,7 +115,7 @@ public class ChunkAssemblerController extends Controller {
                 				images.add(i);
                 			}
 
-                			_createTask = new FFMPEGVideoTask(term, name, images, Arrays.asList("Alarm01", "Alarm02", "Alarm03"));
+                			_createTask = new FFMPEGVideoTask(term, name, images, rightChunkList);
     	                	_createTask.setOnSucceeded(ev2 -> {
     		                    _createTask = null;
     		                    Alert alert = new Alert(Alert.AlertType.INFORMATION, "Created creation.");
