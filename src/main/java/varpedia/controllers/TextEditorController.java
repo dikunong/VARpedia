@@ -1,6 +1,5 @@
 package varpedia.controllers;
 
-import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -28,6 +27,7 @@ public class TextEditorController extends Controller {
     private ChoiceBox<String> voiceChoiceBox;
 
     private Task<Void> _playTask;
+    private Task<Void> _saveTask;
 
     private ExecutorService pool = Executors.newCachedThreadPool();
 
@@ -58,31 +58,101 @@ public class TextEditorController extends Controller {
     	
     	//TODO: Do this properly
     	if (_playTask == null) {
-    		_playTask = new PlayChunkTask(wikiTextArea.getSelectedText(), null, voiceChoiceBox.getSelectionModel().getSelectedItem());
-            _playTask.setOnSucceeded(ev -> {
-                System.out.println("Done");
-                _playTask = null;
-            });
-            _playTask.setOnCancelled(ev -> {
-                System.out.println("Cancel");
-                _playTask = null;
-            });
-            _playTask.setOnFailed(ev -> {
-                System.out.println("Fail");
-                _playTask.getException().printStackTrace();
-                _playTask = null;
-            });
-            pool.submit(_playTask);
+    		String text = wikiTextArea.getSelectedText();
+    		
+    		if (text == null || text.isEmpty()) {
+    			Alert alert = new Alert(Alert.AlertType.ERROR, "Please select some text first.");
+                alert.showAndWait();
+    		} else {
+    			boolean playText;
+    			
+    			if (text.split(" ").length > 30) {
+    				Alert alert = new Alert(Alert.AlertType.WARNING, "Selected text is very long (>30 words). Do you wish to continue anyway?", ButtonType.YES, ButtonType.CANCEL);
+    	            alert.showAndWait();
+    	            playText = alert.getResult() == ButtonType.YES;
+    			} else {
+    				playText = true;
+    			}
+    			
+    			if (playText) {
+		    		_playTask = new PlayChunkTask(text, null, voiceChoiceBox.getSelectionModel().getSelectedItem());
+		            _playTask.setOnSucceeded(ev -> {
+		            	_playTask = null;
+		            	previewBtn.setText("Preview");
+		            });
+		            _playTask.setOnCancelled(ev -> {
+		                _playTask = null;
+		            	previewBtn.setText("Preview");
+			        });
+		            _playTask.setOnFailed(ev -> {
+		            	Alert alert = new Alert(Alert.AlertType.ERROR, "Error saving audio chunk.");
+		                alert.showAndWait();
+		                _playTask = null;
+		            	previewBtn.setText("Preview");
+			        });
+		            pool.submit(_playTask);
+		            previewBtn.setText("Stop Preview");
+    			}
+    		}
     	} else {
     		_playTask.cancel(true);
     	}
     }
 
+    private String getFileName(String text) {
+    	String clean = text.replaceAll("[^A-Za-z0-9\\-_ ]", "").replace(' ', '_');
+    	return "appfiles/audio/" + clean.substring(0, Math.min(clean.length(), 32)) + ".wav";
+    }
+    
     @FXML
     private void pressSaveButton(ActionEvent event) {
         // get selected text from wikiTextArea
         // save selected text audio into .wav "chunk"
         // what should these files be named?
+    	
+    	//TODO: Do this properly
+    	if (_saveTask == null) {
+    		String text = wikiTextArea.getSelectedText();
+    		
+    		if (text == null || text.isEmpty()) {
+    			Alert alert = new Alert(Alert.AlertType.ERROR, "Please select some text first.");
+                alert.showAndWait();
+    		} else {
+    			boolean playText;
+    			
+    			if (text.split(" ").length > 30) {
+    				Alert alert = new Alert(Alert.AlertType.WARNING, "Selected text is very long (>30 words). Do you wish to continue anyway?", ButtonType.YES, ButtonType.CANCEL);
+    	            alert.showAndWait();
+    	            playText = alert.getResult() == ButtonType.YES;
+    			} else {
+    				playText = true;
+    			}
+    			
+    			if (playText) {
+    				String filename = getFileName(text);
+    				
+		    		_saveTask = new PlayChunkTask(text, filename, voiceChoiceBox.getSelectionModel().getSelectedItem());
+		    		_saveTask.setOnSucceeded(ev -> {
+		                _saveTask = null;
+		            	previewBtn.setText("Save Chunk");
+				    });
+		    		_saveTask.setOnCancelled(ev -> {
+		                _saveTask = null;
+		            	previewBtn.setText("Save Chunk");
+					});
+		            _saveTask.setOnFailed(ev -> {
+		    			Alert alert = new Alert(Alert.AlertType.ERROR, "Error saving audio chunk.");
+		                alert.showAndWait();
+		                _saveTask = null;
+		            	previewBtn.setText("Save Chunk");
+					});
+		            pool.submit(_saveTask);
+		        	previewBtn.setText("Cancel Saving");
+		        }
+    		}
+    	} else {
+    		_saveTask.cancel(true);
+    	}
     }
 
     @FXML
