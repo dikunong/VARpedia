@@ -4,6 +4,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.Spinner?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -111,12 +112,37 @@
             </HBox>
             <HBox alignment="BOTTOM_RIGHT" HBox.hgrow="ALWAYS">
                <children>
-                  <Button fx:id="createBtn" mnemonicParsing="false" onAction="#pressCreateBtn" prefWidth="100.0" text="Create!">
-                     <HBox.margin>
-                        <Insets right="8.0" />
-                     </HBox.margin>
-                  </Button>
-                  <Button fx:id="cancelBtn" mnemonicParsing="false" onAction="#pressCancelBtn" prefWidth="100.0" text="Cancel" />
+                  <VBox alignment="BOTTOM_RIGHT" HBox.hgrow="SOMETIMES">
+                     <children>
+                        <HBox alignment="CENTER_RIGHT">
+                           <children>
+                              <Label fx:id="loadingLabel" text="Creating...">
+                                 <HBox.margin>
+                                    <Insets bottom="4.0" right="4.0" />
+                                 </HBox.margin>
+                              </Label>
+                              <ProgressBar fx:id="loadingBar" prefWidth="200.0">
+                                 <HBox.margin>
+                                    <Insets bottom="3.0" />
+                                 </HBox.margin>
+                              </ProgressBar>
+                           </children>
+                           <VBox.margin>
+                              <Insets bottom="8.0" />
+                           </VBox.margin>
+                        </HBox>
+                        <HBox alignment="BOTTOM_RIGHT">
+                           <children>
+                              <Button fx:id="createBtn" mnemonicParsing="false" onAction="#pressCreateBtn" prefWidth="100.0" text="Create!">
+                                 <HBox.margin>
+                                    <Insets right="8.0" />
+                                 </HBox.margin>
+                              </Button>
+                              <Button fx:id="cancelBtn" mnemonicParsing="false" onAction="#pressCancelBtn" prefWidth="100.0" text="Cancel" />
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
                </children>
             </HBox>
          </children>

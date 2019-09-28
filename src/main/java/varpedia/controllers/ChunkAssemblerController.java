@@ -31,6 +31,10 @@ public class ChunkAssemblerController extends Controller {
     private Button cancelBtn;
     @FXML
     private Button backBtn;
+    @FXML
+    private ProgressBar loadingBar;
+    @FXML
+    private Label loadingLabel;
 
     private Task<? extends Object> _createTask;
 
@@ -38,7 +42,7 @@ public class ChunkAssemblerController extends Controller {
 
     @FXML
     private void initialize() {
-        // stuff
+        setLoadingInactive();
     }
 
     @FXML
@@ -62,17 +66,21 @@ public class ChunkAssemblerController extends Controller {
 	                	_createTask.setOnSucceeded(ev2 -> {
 		                	System.out.println("Done");
 		                    _createTask = null;
+                            setLoadingInactive();
 	                	});
 	                	_createTask.setOnCancelled(ev2 -> {
 	                        System.out.println("Cancel");
 	                        _createTask = null;
+                            setLoadingInactive();
 	                    });
 	                    _createTask.setOnFailed(ev2 -> {
 	                        System.out.println("Fail");
 	                        _createTask.getException().printStackTrace();
 	                        _createTask = null;
+                            setLoadingInactive();
 	                    });
 	                    pool.submit(_createTask);
+                        setLoadingActive();
                 	} catch (InterruptedException | ExecutionException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -81,19 +89,23 @@ public class ChunkAssemblerController extends Controller {
                 _createTask.setOnCancelled(ev -> {
                     System.out.println("Cancel");
                     _createTask = null;
+                    setLoadingInactive();
                 });
                 _createTask.setOnFailed(ev -> {
                     System.out.println("Fail");
                     _createTask.getException().printStackTrace();
                     _createTask = null;
+                    setLoadingInactive();
                 });	
             	pool.submit(_createTask);
+            	setLoadingActive();
         	} else {
         		//TODO: Error
         		System.out.println("No");
         	}
     	} else {
     		_createTask.cancel(true);
+    		setLoadingInactive();
     	}    	
     }
 
@@ -112,5 +124,31 @@ public class ChunkAssemblerController extends Controller {
     @FXML
     private void pressBackButton(ActionEvent event) {
         changeScene(event, "/varpedia/TextEditorScreen.fxml");
+    }
+
+    private void setLoadingActive() {
+        addToBtn.setDisable(true);
+        removeFromBtn.setDisable(true);
+        moveUpBtn.setDisable(true);
+        moveDownBtn.setDisable(true);
+        creationNameTextField.setDisable(true);
+        numOfImagesSpinner.setDisable(true);
+        createBtn.setDisable(true);
+        backBtn.setDisable(true);
+        loadingBar.setVisible(true);
+        loadingLabel.setVisible(true);
+    }
+
+    private void setLoadingInactive() {
+        addToBtn.setDisable(false);
+        removeFromBtn.setDisable(false);
+        moveUpBtn.setDisable(false);
+        moveDownBtn.setDisable(false);
+        creationNameTextField.setDisable(false);
+        numOfImagesSpinner.setDisable(false);
+        createBtn.setDisable(false);
+        backBtn.setDisable(false);
+        loadingBar.setVisible(false);
+        loadingLabel.setVisible(false);
     }
 }
