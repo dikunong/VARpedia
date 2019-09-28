@@ -3,6 +3,7 @@ package varpedia.controllers;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -173,32 +174,54 @@ public class ChunkAssemblerController extends Controller {
         changeScene(event, "/varpedia/TextEditorScreen.fxml");
     }
 
-    // TODO: actually implement these
-
     @FXML
     private void pressAddToButton(ActionEvent event) {
+        String selectedChunk = leftChunkListView.getSelectionModel().getSelectedItem();
         // check something is selected in leftChunkList
-        // add it to rightChunkList
-        // remove it from leftChunkList
+        if (selectedChunk != null) {
+            // add it to rightChunkList
+            rightChunkList.add(selectedChunk);
+            // remove it from leftChunkList
+            leftChunkList.remove(selectedChunk);
+        }
     }
 
     @FXML
     private void pressRemoveFromButton(ActionEvent event) {
+        String selectedChunk = rightChunkListView.getSelectionModel().getSelectedItem();
         // check something is selected in rightChunkList
-        // add it to leftChunkList
-        // remove it from rightChunkList
+        if (selectedChunk != null) {
+            // add it to leftChunkList
+            leftChunkList.add(selectedChunk);
+            // remove it from rightChunkList
+            rightChunkList.remove(selectedChunk);
+        }
     }
 
     @FXML
     private void pressMoveUpButton(ActionEvent event) {
-        // check something is selected in rightChunkList
-        // change its index if it's not already (first)
+        String selectedChunk = rightChunkListView.getSelectionModel().getSelectedItem();
+        int selectedIndex = rightChunkListView.getSelectionModel().getSelectedIndex();
+        // check something is selected in rightChunkList and it's not already first
+        if (selectedChunk != null && selectedIndex > 0) {
+            // change its index if it's not already first
+            rightChunkList.remove(selectedIndex);
+            rightChunkList.add(selectedIndex - 1, selectedChunk);
+            rightChunkListView.getSelectionModel().select(selectedIndex - 1);
+        }
     }
 
     @FXML
     private void pressMoveDownButton(ActionEvent event) {
-        // check something is selected in rightChunkList
-        // change its index if it's not already (last)
+        String selectedChunk = rightChunkListView.getSelectionModel().getSelectedItem();
+        int selectedIndex = rightChunkListView.getSelectionModel().getSelectedIndex();
+        int maxIndex = rightChunkListView.getItems().size() - 1;
+        // check something is selected in rightChunkList and it's not already last
+        if (selectedChunk != null && selectedIndex < maxIndex) {
+            rightChunkList.remove(selectedIndex);
+            rightChunkList.add(selectedIndex + 1, selectedChunk);
+            rightChunkListView.getSelectionModel().select(selectedIndex + 1);
+        }
     }
 
     private void populateList() {
