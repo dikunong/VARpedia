@@ -44,6 +44,7 @@ public class TextEditorController extends Controller {
     	
     	try {
 			voiceChoiceBox.getItems().addAll(dat.get());
+			voiceChoiceBox.getSelectionModel().selectFirst();
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
 		}
