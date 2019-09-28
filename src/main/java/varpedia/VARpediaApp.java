@@ -8,9 +8,17 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 public class VARpediaApp extends Application {
 
+	public static ExecutorService newTimedCachedThreadPool() {
+		return new ThreadPoolExecutor(0, Integer.MAX_VALUE, 5L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>());
+	}
+	
     @Override
     public void start(Stage primaryStage) {
         try {
