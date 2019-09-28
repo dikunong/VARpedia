@@ -99,15 +99,18 @@ public class ChunkAssemblerController extends Controller {
     		                    _createTask = null;
     		                    Alert alert = new Alert(Alert.AlertType.INFORMATION, "Created creation.");
     	                        alert.showAndWait();
+    	                        setLoadingInactive();
     	                        changeScene(event, "/varpedia/MainScreen.fxml"); //TODO: Maybe go straight to player
     		                });
     	                	_createTask.setOnCancelled(ev2 -> {
     	                        _createTask = null;
+    	                        setLoadingInactive();
     	                    });
     	                    _createTask.setOnFailed(ev2 -> {
     	                    	Alert alert = new Alert(Alert.AlertType.ERROR, "Failed to create creation.");
     	                        alert.showAndWait();
     	                        _createTask = null;
+    	                        setLoadingInactive();
     	                    });
     	                    pool.submit(_createTask);
                 		}
@@ -126,6 +129,7 @@ public class ChunkAssemblerController extends Controller {
                     setLoadingInactive();
                 });
             	pool.submit(_createTask);
+            	setLoadingActive();
         	}
     	} else {
     		_createTask.cancel(true);
@@ -141,6 +145,10 @@ public class ChunkAssemblerController extends Controller {
         alert.showAndWait();
         if (alert.getResult() == ButtonType.YES) {
             // discard all existing temp files etc
+            if (_createTask != null && _createTask.isRunning()) {
+                _createTask.cancel();
+            }
+            // open MainScreen
             changeScene(event, "/varpedia/MainScreen.fxml");
         }
     }
@@ -157,7 +165,7 @@ public class ChunkAssemblerController extends Controller {
         moveDownBtn.setDisable(true);
         creationNameTextField.setDisable(true);
         numOfImagesSpinner.setDisable(true);
-        createBtn.setDisable(true);
+        //createBtn.setDisable(true);
         backBtn.setDisable(true);
         loadingBar.setVisible(true);
         loadingLabel.setVisible(true);
@@ -170,7 +178,7 @@ public class ChunkAssemblerController extends Controller {
         moveDownBtn.setDisable(false);
         creationNameTextField.setDisable(false);
         numOfImagesSpinner.setDisable(false);
-        createBtn.setDisable(false);
+        //createBtn.setDisable(false);
         backBtn.setDisable(false);
         loadingBar.setVisible(false);
         loadingLabel.setVisible(false);

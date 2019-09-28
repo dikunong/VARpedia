@@ -86,18 +86,22 @@ public class TextEditorController extends Controller {
 		            _playTask.setOnSucceeded(ev -> {
 		            	_playTask = null;
 		            	previewBtn.setText("Preview");
+		            	setLoadingInactive();
 		            });
 		            _playTask.setOnCancelled(ev -> {
 		                _playTask = null;
 		            	previewBtn.setText("Preview");
+		            	setLoadingInactive();
 			        });
 		            _playTask.setOnFailed(ev -> {
 		            	Alert alert = new Alert(Alert.AlertType.ERROR, "Error playing audio chunk. Try selecting other text or using a different voice.");
 		                alert.showAndWait();
 		                _playTask = null;
 		            	previewBtn.setText("Preview");
+		            	setLoadingInactive();
 			        });
 		            pool.submit(_playTask);
+		            setLoadingActive();
 		            previewBtn.setText("Stop Preview");
     			}
     		}
@@ -155,23 +159,28 @@ public class TextEditorController extends Controller {
 		    		_saveTask.setOnSucceeded(ev -> {
 		                _saveTask = null;
 		                saveBtn.setText("Save Chunk");
+		                setLoadingInactive();
 				    });
 		    		_saveTask.setOnCancelled(ev -> {
 		                _saveTask = null;
 		                saveBtn.setText("Save Chunk");
+		                setLoadingInactive();
 					});
 		            _saveTask.setOnFailed(ev -> {
 		    			Alert alert = new Alert(Alert.AlertType.ERROR, "Error saving audio chunk. Try selecting other text or using a different voice.");
 		                alert.showAndWait();
 		                _saveTask = null;
 		                saveBtn.setText("Save Chunk");
+		                setLoadingInactive();
 					});
 		            pool.submit(_saveTask);
 		            saveBtn.setText("Cancel Saving");
+		            setLoadingActive();
 		        }
     		}
     	} else {
     		_saveTask.cancel(true);
+    		setLoadingInactive();
     	}
     }
 
@@ -196,7 +205,7 @@ public class TextEditorController extends Controller {
     private void setLoadingActive() {
         assembleBtn.setDisable(true);
         previewBtn.setDisable(true);
-        saveBtn.setDisable(true);
+        voiceChoiceBox.setDisable(true);
         loadingLabel.setVisible(true);
         loadingWheel.setVisible(true);
     }
@@ -204,7 +213,7 @@ public class TextEditorController extends Controller {
     private void setLoadingInactive() {
         assembleBtn.setDisable(false);
         previewBtn.setDisable(false);
-        saveBtn.setDisable(false);
+        voiceChoiceBox.setDisable(false);
         loadingLabel.setVisible(false);
         loadingWheel.setVisible(false);
     }
