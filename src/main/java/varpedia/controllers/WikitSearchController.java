@@ -29,8 +29,7 @@ public class WikitSearchController extends Controller {
 
     @FXML
     private void initialize() {
-        loadingWheel.setVisible(false);
-        loadingLabel.setVisible(false);
+        setLoadingInactive();
     }
 
     @FXML
@@ -59,9 +58,7 @@ public class WikitSearchController extends Controller {
                     // open TextEditorScreen
                     changeScene(event, "/varpedia/TextEditorScreen.fxml");
                 } else {
-                    searchBtn.setDisable(false);
-                    loadingLabel.setVisible(false);
-                    loadingWheel.setVisible(false);
+                    setLoadingInactive();
                     Alert alert = new Alert(Alert.AlertType.ERROR, "No valid Wikipedia articles found.");
                     alert.showAndWait();
                     return;
@@ -72,10 +69,9 @@ public class WikitSearchController extends Controller {
         });
 
         pool.submit(_wikitTask);
-        searchBtn.setDisable(true);
+
         // display loading indicator during search
-        loadingLabel.setVisible(true);
-        loadingWheel.setVisible(true);
+        setLoadingActive();
     }
 
     @FXML
@@ -86,5 +82,17 @@ public class WikitSearchController extends Controller {
         }
         // open MainScreen
         changeScene(event, "/varpedia/MainScreen.fxml");
+    }
+
+    private void setLoadingActive() {
+        searchBtn.setDisable(true);
+        loadingLabel.setVisible(true);
+        loadingWheel.setVisible(true);
+    }
+
+    private void setLoadingInactive() {
+        searchBtn.setDisable(false);
+        loadingLabel.setVisible(false);
+        loadingWheel.setVisible(false);
     }
 }

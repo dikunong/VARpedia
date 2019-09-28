@@ -1,6 +1,5 @@
 package varpedia.controllers;
 
-import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -26,6 +25,10 @@ public class TextEditorController extends Controller {
     private Button cancelBtn;
     @FXML
     private ChoiceBox<String> voiceChoiceBox;
+    @FXML
+    private ProgressIndicator loadingWheel;
+    @FXML
+    private Label loadingLabel;
 
     private Task<Void> _playTask;
 
@@ -33,7 +36,8 @@ public class TextEditorController extends Controller {
 
     @FXML
     private void initialize() {
-        // stuff
+        setLoadingInactive();
+
     	//TODO: Do this properly
     	Task<String[]> dat = new VoiceListTask();
     	dat.run();
@@ -62,19 +66,24 @@ public class TextEditorController extends Controller {
             _playTask.setOnSucceeded(ev -> {
                 System.out.println("Done");
                 _playTask = null;
+                setLoadingInactive();
             });
             _playTask.setOnCancelled(ev -> {
                 System.out.println("Cancel");
                 _playTask = null;
+                setLoadingInactive();
             });
             _playTask.setOnFailed(ev -> {
                 System.out.println("Fail");
                 _playTask.getException().printStackTrace();
                 _playTask = null;
+                setLoadingInactive();
             });
             pool.submit(_playTask);
+            setLoadingActive();
     	} else {
     		_playTask.cancel(true);
+    		setLoadingInactive();
     	}
     }
 
@@ -101,6 +110,22 @@ public class TextEditorController extends Controller {
             // discard all existing temp files etc
             changeScene(event, "/varpedia/MainScreen.fxml");
         }
+    }
+
+    private void setLoadingActive() {
+        assembleBtn.setDisable(true);
+        previewBtn.setDisable(true);
+        saveBtn.setDisable(true);
+        loadingLabel.setVisible(true);
+        loadingWheel.setVisible(true);
+    }
+
+    private void setLoadingInactive() {
+        assembleBtn.setDisable(false);
+        previewBtn.setDisable(false);
+        saveBtn.setDisable(false);
+        loadingLabel.setVisible(false);
+        loadingWheel.setVisible(false);
     }
 
 }
