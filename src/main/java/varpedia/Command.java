@@ -70,4 +70,17 @@ public class Command {
 			e.printStackTrace();
 		}
     }
+
+	public void end() {
+		_process.destroy();
+		
+		while (true) {
+			try {
+				_process.waitFor();
+				break;
+			} catch (InterruptedException e) {
+				;
+			}
+		}
+	}
 }
