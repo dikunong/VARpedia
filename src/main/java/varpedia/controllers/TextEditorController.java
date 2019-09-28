@@ -1,5 +1,6 @@
 package varpedia.controllers;
 
+import java.io.File;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 
@@ -101,7 +102,19 @@ public class TextEditorController extends Controller {
 
     private String getFileName(String text) {
     	String clean = text.replaceAll("[^A-Za-z0-9\\-_ ]", "").replace(' ', '_');
-    	return "appfiles/audio/" + clean.substring(0, Math.min(clean.length(), 32)) + ".wav";
+    	String name = "appfiles/audio/" + clean.substring(0, Math.min(clean.length(), 32));
+    	String str = name + ".wav";
+    	
+    	if (new File(str).exists()) {
+    		int id = 2;
+    		
+    		do {
+    			str = name + "_" + id + ".wav";
+    			id++;
+    	    } while (new File(str).exists());
+    	}
+    	
+    	return str;
     }
     
     @FXML
