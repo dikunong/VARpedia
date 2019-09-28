@@ -43,18 +43,18 @@ public class ChunkAssemblerController extends Controller {
     @FXML
     private void initialize() {
         setLoadingInactive();
+        numOfImagesSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10));
+        numOfImagesSpinner.getValueFactory().setValue(10);
     }
 
     @FXML
     private void pressCreateBtn(ActionEvent event) {
-    	// open CreationProgressScreen - or should this be a dialog window?
         // assemble audio chunks
         // get Flickr images
         // assemble audio + video using ffmpeg
-        // does this stuff happen here or in CreationProgressScreen?
     	//TODO: Far better method
     	if (_createTask == null) {
-    		int imageCount = 10; //numOfImagesSpinner.getValue(); This doesn't seem to work properly
+    		int imageCount = numOfImagesSpinner.getValueFactory().getValue();
     		String name = creationNameTextField.getText();
     		
     		if (imageCount > 0 && imageCount <= 10) {
