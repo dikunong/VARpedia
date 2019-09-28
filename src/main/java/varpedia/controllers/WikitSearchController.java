@@ -3,9 +3,7 @@ package varpedia.controllers;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import varpedia.tasks.WikitSearchTask;
 
 import java.util.concurrent.ExecutionException;
@@ -20,6 +18,10 @@ public class WikitSearchController extends Controller {
     private Button searchBtn;
     @FXML
     private Button cancelBtn;
+    @FXML
+    private ProgressIndicator loadingWheel;
+    @FXML
+    private Label loadingLabel;
 
     private ExecutorService pool = Executors.newCachedThreadPool();
 
@@ -27,7 +29,8 @@ public class WikitSearchController extends Controller {
 
     @FXML
     private void initialize() {
-        // stuff
+        loadingWheel.setVisible(false);
+        loadingLabel.setVisible(false);
     }
 
     @FXML
@@ -57,6 +60,8 @@ public class WikitSearchController extends Controller {
                     changeScene(event, "/varpedia/TextEditorScreen.fxml");
                 } else {
                     searchBtn.setDisable(false);
+                    loadingLabel.setVisible(false);
+                    loadingWheel.setVisible(false);
                     Alert alert = new Alert(Alert.AlertType.ERROR, "No valid Wikipedia articles found.");
                     alert.showAndWait();
                     return;
@@ -68,7 +73,9 @@ public class WikitSearchController extends Controller {
 
         pool.submit(_wikitTask);
         searchBtn.setDisable(true);
-        // display loading icon during search?
+        // display loading indicator during search
+        loadingLabel.setVisible(true);
+        loadingWheel.setVisible(true);
     }
 
     @FXML
