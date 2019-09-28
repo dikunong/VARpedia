@@ -1,11 +1,13 @@
 package varpedia.controllers;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 
+import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -13,6 +15,7 @@ import javafx.scene.control.*;
 import varpedia.VARpediaApp;
 import varpedia.tasks.FFMPEGVideoTask;
 import varpedia.tasks.FlickrTask;
+import varpedia.tasks.ListPopulateTask;
 
 public class ChunkAssemblerController extends Controller {
 
@@ -39,6 +42,15 @@ public class ChunkAssemblerController extends Controller {
     @FXML
     private Label loadingLabel;
 
+    @FXML
+    private ObservableList<String> leftChunkList;
+    @FXML
+    private ListView<String> leftChunkListView;
+    @FXML
+    private ObservableList<String> rightChunkList;
+    @FXML
+    private ListView<String> rightChunkListView;
+
     private Task<? extends Object> _createTask;
 
     private ExecutorService pool = VARpediaApp.newTimedCachedThreadPool();
@@ -50,6 +62,9 @@ public class ChunkAssemblerController extends Controller {
         numOfImagesSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10));
         numOfImagesSpinner.getValueFactory().setValue(10);
     	term = getDataFromFile("search-term.txt");
+
+    	// populate list view with saved chunks
+        populateList();
     }
 
     @FXML
@@ -156,6 +171,49 @@ public class ChunkAssemblerController extends Controller {
     @FXML
     private void pressBackButton(ActionEvent event) {
         changeScene(event, "/varpedia/TextEditorScreen.fxml");
+    }
+
+    // TODO: actually implement these
+
+    @FXML
+    private void pressAddToButton(ActionEvent event) {
+        // check something is selected in leftChunkList
+        // add it to rightChunkList
+        // remove it from leftChunkList
+    }
+
+    @FXML
+    private void pressRemoveFromButton(ActionEvent event) {
+        // check something is selected in rightChunkList
+        // add it to leftChunkList
+        // remove it from rightChunkList
+    }
+
+    @FXML
+    private void pressMoveUpButton(ActionEvent event) {
+        // check something is selected in rightChunkList
+        // change its index if it's not already (first)
+    }
+
+    @FXML
+    private void pressMoveDownButton(ActionEvent event) {
+        // check something is selected in rightChunkList
+        // change its index if it's not already (last)
+    }
+
+    private void populateList() {
+        Task<List<String>> task = new ListPopulateTask(new File("appfiles/audio"));
+        task.setOnSucceeded(event -> {
+            try {
+                List<String> newCreations = task.get();
+                if (newCreations != null) {
+                    leftChunkList.addAll(newCreations);
+                }
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+        });
+        pool.submit(task);
     }
 
     private void setLoadingActive() {
