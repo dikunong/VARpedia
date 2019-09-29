@@ -5,7 +5,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.stage.Stage;
+import javafx.scene.control.Alert;
+import javafx.scene.layout.Region;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -29,6 +30,18 @@ public abstract class Controller {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Displays a notifying alert to the user that does not represent a split in application logic.
+     * Typically an error message or information dialog.
+     * @param type AlertType to be displayed
+     * @param msg Message to be displayed
+     */
+    protected void showNotifyingAlert(Alert.AlertType type, String msg) {
+        Alert alert = new Alert(type, msg);
+        alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+        alert.showAndWait();
     }
 
     /**

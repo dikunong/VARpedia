@@ -67,9 +67,7 @@ public class TextEditorController extends Controller {
             String text = wikiTextArea.getSelectedText();
 
     		if (text == null || text.isEmpty()) {
-    			Alert alert = new Alert(Alert.AlertType.ERROR, "Please select some text first.");
-				alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
-    			alert.showAndWait();
+    			showNotifyingAlert(Alert.AlertType.ERROR, "Please select some text first.");
     		} else {
     			boolean playText;
 
@@ -98,9 +96,7 @@ public class TextEditorController extends Controller {
 		            	setLoadingInactive();
 			        });
 		            _playTask.setOnFailed(ev -> {
-		            	Alert alert = new Alert(Alert.AlertType.ERROR, "Error playing audio chunk. Try selecting other text or using a different voice.");
-						alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
-		            	alert.showAndWait();
+		            	showNotifyingAlert(Alert.AlertType.ERROR, "Error playing audio chunk. Try selecting other text or using a different voice.");
 		                _playTask = null;
 		            	previewBtn.setText("Preview");
 						saveBtn.setDisable(false);
@@ -142,9 +138,7 @@ public class TextEditorController extends Controller {
             String text = wikiTextArea.getSelectedText();
 
     		if (text == null || text.isEmpty()) {
-    			Alert alert = new Alert(Alert.AlertType.ERROR, "Please select some text first.");
-				alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
-    			alert.showAndWait();
+				showNotifyingAlert(Alert.AlertType.ERROR, "Please select some text first.");
     		} else {
     			boolean playText;
 
@@ -175,9 +169,7 @@ public class TextEditorController extends Controller {
 		                setLoadingInactive();
 					});
 		            _saveTask.setOnFailed(ev -> {
-		    			Alert alert = new Alert(Alert.AlertType.ERROR, "Error saving audio chunk. Try selecting other text or using a different voice.");
-						alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
-		    			alert.showAndWait();
+						showNotifyingAlert(Alert.AlertType.ERROR, "Error saving audio chunk. Try selecting other text or using a different voice.");
 		                _saveTask = null;
 		                saveBtn.setText("Save Chunk");
 						previewBtn.setDisable(false);

@@ -93,21 +93,13 @@ public class ChunkAssemblerController extends Controller {
     		String name = creationNameTextField.getText();
     		
     		if (name == null || name.isEmpty()) {
-    			Alert alert = new Alert(Alert.AlertType.ERROR, "Please enter a creation name.");
-                alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
-                alert.showAndWait();
+    		    showNotifyingAlert(Alert.AlertType.ERROR, "Please enter a creation name.");
     		} else if (!name.matches("[-_. A-Za-z0-9]+")) {
-                Alert alert = new Alert(Alert.AlertType.ERROR, "Please enter a valid creation name (only letters, numbers, spaces, -, _).");
-                alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
-                alert.showAndWait();
-            } else if (imageCount <= 0 || imageCount > 10) {
-    			Alert alert = new Alert(Alert.AlertType.ERROR, "You must select between 1 and 10 images (inclusive).");
-                alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
-    			alert.showAndWait();
+                showNotifyingAlert(Alert.AlertType.ERROR, "Please enter a valid creation name (only letters, numbers, spaces, -, _).");
+            } else if (imageCount < 0 || imageCount > 10) {
+                showNotifyingAlert(Alert.AlertType.ERROR, "You must select between 0 and 10 images (inclusive).");
     		} else if (rightChunkListView.getItems().isEmpty()) {
-                Alert alert = new Alert(Alert.AlertType.ERROR, "Please select chunks to assemble.");
-                alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
-                alert.showAndWait();
+                showNotifyingAlert(Alert.AlertType.ERROR, "Please add chunks to assemble.");
     		} else {
 
     		    // check if creation already exists and offer option to overwrite
@@ -153,9 +145,7 @@ public class ChunkAssemblerController extends Controller {
                 	    	_createTask = new FFMPEGVideoTask(name, images, rightChunkList);
     	                	_createTask.setOnSucceeded(ev2 -> {
     		                    _createTask = null;
-    		                    Alert alert = new Alert(Alert.AlertType.INFORMATION, "Created creation.");
-                                alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
-    		                    alert.showAndWait();
+                                showNotifyingAlert(Alert.AlertType.INFORMATION, "Created creation.");
     	                        setLoadingInactive();
     	                        changeScene(event, "/varpedia/MainScreen.fxml"); //TODO: Maybe go straight to player
     		                });
@@ -164,9 +154,7 @@ public class ChunkAssemblerController extends Controller {
     	                        setLoadingInactive();
     	                    });
     	                    _createTask.setOnFailed(ev2 -> {
-    	                    	Alert alert = new Alert(Alert.AlertType.ERROR, "Failed to create creation.");
-                                alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
-    	                    	alert.showAndWait();
+                                showNotifyingAlert(Alert.AlertType.ERROR, "Failed to create creation.");
     	                        _createTask = null;
     	                        setLoadingInactive();
     	                    });
@@ -181,9 +169,7 @@ public class ChunkAssemblerController extends Controller {
                     setLoadingInactive();
                 });
                 _createTask.setOnFailed(ev -> {
-                	Alert alert = new Alert(Alert.AlertType.ERROR, "Failed to download images.");
-                    alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
-                	alert.showAndWait();
+                    showNotifyingAlert(Alert.AlertType.ERROR, "Failed to download images.");
                     _createTask = null;
                     setLoadingInactive();
                 });

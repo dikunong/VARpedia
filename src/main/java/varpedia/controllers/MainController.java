@@ -67,9 +67,7 @@ public class MainController extends Controller {
                     // update list view
                     creationList.remove(filename.substring(0, filename.lastIndexOf('.')));
                 } else {
-                    alert = new Alert(Alert.AlertType.ERROR, "Could not delete file.");
-                    alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
-                    alert.showAndWait();
+                    showNotifyingAlert(Alert.AlertType.ERROR, "Could not delete file.");
                 }
             }
         }
@@ -96,9 +94,7 @@ public class MainController extends Controller {
     private boolean checkCreationSelected() {
         // check if an item is actually selected first
         if (creationListView.getSelectionModel().getSelectedItem() == null) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Please select a creation first.");
-            alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
-            alert.showAndWait();
+            showNotifyingAlert(Alert.AlertType.ERROR, "Please select a creation first.");
             return false;
         } else {
             return true;
