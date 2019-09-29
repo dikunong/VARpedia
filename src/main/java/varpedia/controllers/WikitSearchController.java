@@ -61,11 +61,16 @@ public class WikitSearchController extends Controller {
                     setLoadingInactive();
                     Alert alert = new Alert(Alert.AlertType.ERROR, "No valid Wikipedia articles found.");
                     alert.showAndWait();
-                    return;
                 }
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }
+        });
+        
+        _wikitTask.setOnFailed(event2 -> {
+        	setLoadingInactive();
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Spent too long searching. Probably a disambiguation article.");
+            alert.showAndWait();
         });
 
         pool.submit(_wikitTask);

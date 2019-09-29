@@ -2,11 +2,13 @@ package varpedia.tasks;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,10 +25,12 @@ import javafx.concurrent.Task;
 public class FlickrTask extends Task<Integer> {
 
 	private static List<String> search(String term, int count) throws FlickrException {
+		//Well, they wanted nothing
 		if (count == 0) {
 			return new ArrayList<String>();
 		}
 		
+		//Read the api key in
 		String key = null;
 		String secret = null;
 		
@@ -40,6 +44,7 @@ public class FlickrTask extends Task<Integer> {
 			e.printStackTrace();
 		}
 		
+		//Perform the actual search
 		List<String> list = new ArrayList<String>();
 		Flickr f = new Flickr(key, secret, new REST());
 		PhotosInterface photos = f.getPhotosInterface();
@@ -48,7 +53,8 @@ public class FlickrTask extends Task<Integer> {
 		params.setSort(SearchParameters.RELEVANCE);
 		params.setMedia("photos");
 		PhotoList<Photo> photoList = photos.search(params, count, 0);
-			
+		
+		//The official sanctioned by flickr method for turning photos into URLs
 		for (Photo p : photoList) {
 			list.add("https://farm" + p.getFarm() + ".staticflickr.com/" + p.getServer() + "/" + p.getId() + "_" + p.getSecret() + ".jpg");
 		}
@@ -56,24 +62,40 @@ public class FlickrTask extends Task<Integer> {
 		return list;
 	}
 	
-	private String _term;
 	private int _images;
 	
-	public FlickrTask(String term, int images) {
-		_term = term;
+	/**
+	 * @param images The number of images
+	 */
+	public FlickrTask(int images) {
 		_images = images;
 	}
 	
 	@Override
 	protected Integer call() throws Exception {
-
-		List<String> list = search(_term, _images);
+		//Read the search term in
+        String term = null;
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream("appfiles/search-term.txt"), StandardCharsets.UTF_8));
+            term = reader.readLine();
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+        if (term == null) {
+        	throw new IllegalStateException("No search term");
+        }
+        
+        //Run the search
+        List<String> list = search(term, _images);
 		int id = 0;
 		
 		for (String url : list) {
 			URL source = new URL(url);
 			File dest = new File("appfiles/image" + Integer.toString(id) + ".jpg");
 
+			//Download the image, saving as appfiles/image<id>.jpg
 			try (InputStream input = source.openStream(); FileOutputStream output = new FileOutputStream(dest)) {
 				byte[] transfer = new byte[4096];
 				int count;
