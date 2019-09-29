@@ -17,18 +17,15 @@ import java.nio.charset.StandardCharsets;
 public abstract class Controller {
 
     /**
-     * Switches FXML scenes to the given window.
+     * Switches the FXML root to the given window.
      * @param event The event causing the change (used to retrieve the JavaFX stage)
      * @param fxml The FXML window to switch to
      */
     public void changeScene(ActionEvent event, String fxml) {
         try {
         	Parent pane = FXMLLoader.load(getClass().getResource(fxml));
-            Stage stage = (Stage)((Node) event.getSource()).getScene().getWindow();
-
-            Scene scene = new Scene(pane);
-            stage.setScene(scene);
-            stage.sizeToScene();
+        	Scene currentScene = ((Node) event.getSource()).getScene();
+        	currentScene.setRoot(pane);
         } catch (IOException e) {
             e.printStackTrace();
         }
