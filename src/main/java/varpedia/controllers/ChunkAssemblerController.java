@@ -196,7 +196,7 @@ public class ChunkAssemblerController extends Controller {
         alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
         alert.showAndWait();
         if (alert.getResult() == ButtonType.YES) {
-            // discard all existing temp files etc
+            // if a creation is currently in progress, cancel it
             if (_createTask != null && _createTask.isRunning()) {
                 _createTask.cancel();
             }
@@ -207,17 +207,16 @@ public class ChunkAssemblerController extends Controller {
 
     @FXML
     private void pressBackButton(ActionEvent event) {
+        // open TextEditorScreen - do not lose any progress
         changeScene(event, "/varpedia/TextEditorScreen.fxml");
     }
 
     @FXML
     private void pressAddToButton(ActionEvent event) {
         String selectedChunk = leftChunkListView.getSelectionModel().getSelectedItem();
-        // check something is selected in leftChunkList
+        // if something is selected in leftChunkList, shift it to rightChunkList
         if (selectedChunk != null) {
-            // add it to rightChunkList
             rightChunkList.add(selectedChunk);
-            // remove it from leftChunkList
             leftChunkList.remove(selectedChunk);
         }
     }
@@ -225,11 +224,9 @@ public class ChunkAssemblerController extends Controller {
     @FXML
     private void pressRemoveFromButton(ActionEvent event) {
         String selectedChunk = rightChunkListView.getSelectionModel().getSelectedItem();
-        // check something is selected in rightChunkList
+        // if something is selected in rightChunkList, shift it to leftChunkList
         if (selectedChunk != null) {
-            // add it to leftChunkList
             leftChunkList.add(selectedChunk);
-            // remove it from rightChunkList
             rightChunkList.remove(selectedChunk);
         }
     }
@@ -238,9 +235,8 @@ public class ChunkAssemblerController extends Controller {
     private void pressMoveUpButton(ActionEvent event) {
         String selectedChunk = rightChunkListView.getSelectionModel().getSelectedItem();
         int selectedIndex = rightChunkListView.getSelectionModel().getSelectedIndex();
-        // check something is selected in rightChunkList and it's not already first
+        // if something is selected in rightChunkList and it's not already first, shift its index by -1
         if (selectedChunk != null && selectedIndex > 0) {
-            // change its index if it's not already first
             rightChunkList.remove(selectedIndex);
             rightChunkList.add(selectedIndex - 1, selectedChunk);
             rightChunkListView.getSelectionModel().select(selectedIndex - 1);
@@ -252,7 +248,7 @@ public class ChunkAssemblerController extends Controller {
         String selectedChunk = rightChunkListView.getSelectionModel().getSelectedItem();
         int selectedIndex = rightChunkListView.getSelectionModel().getSelectedIndex();
         int maxIndex = rightChunkListView.getItems().size() - 1;
-        // check something is selected in rightChunkList and it's not already last
+        // if something is selected in rightChunkList and it's not already last, shift its index by +1
         if (selectedChunk != null && selectedIndex < maxIndex) {
             rightChunkList.remove(selectedIndex);
             rightChunkList.add(selectedIndex + 1, selectedChunk);
@@ -260,6 +256,9 @@ public class ChunkAssemblerController extends Controller {
         }
     }
 
+    /**
+     * Helper method that runs a task to populate the leftChunkList with chunks in the appfiles/audio directory.
+     */
     private void populateList() {
         Task<List<String>> task = new ListPopulateTask(new File("appfiles/audio"));
         task.setOnSucceeded(event -> {
@@ -275,6 +274,9 @@ public class ChunkAssemblerController extends Controller {
         pool.submit(task);
     }
 
+    /**
+     * Helper method to disable most UI elements and show loading indicators while a creation task is in progress.
+     */
     private void setLoadingActive() {
         addToBtn.setDisable(true);
         removeFromBtn.setDisable(true);
@@ -288,6 +290,9 @@ public class ChunkAssemblerController extends Controller {
         loadingLabel.setVisible(true);
     }
 
+    /**
+     * Helper method to enable most UI elements and hide loading indicators when a creation task ends.
+     */
     private void setLoadingInactive() {
         addToBtn.setDisable(false);
         removeFromBtn.setDisable(false);

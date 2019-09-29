@@ -35,15 +35,15 @@ public class MainController extends Controller {
 
     @FXML
     private void initialize() {
+        // populate list view with saved creations
         populateList();
     }
 
     @FXML
     private void pressPlayButton(ActionEvent event) {
-        // check if an item is actually selected first
+        // if a creation is actually selected, store its filename and open PlaybackScreen
         if (checkCreationSelected()) {
             sendDataToFile("creations/" + getSelectedFilename(), "playback-name.txt");
-            // open PlaybackScreen
             changeScene(event, "/varpedia/PlaybackScreen.fxml");
         }
 }
@@ -62,9 +62,8 @@ public class MainController extends Controller {
                 // delete creation file
                 File file = new File("creations/" + filename);
                 if (file.delete()) {
-                    // update listview
+                    // update list view
                     creationList.remove(filename.substring(0, filename.lastIndexOf('.')));
-                    return;
                 } else {
                     alert = new Alert(Alert.AlertType.ERROR, "Could not delete file.");
                     alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
@@ -80,10 +79,18 @@ public class MainController extends Controller {
         changeScene(event, "/varpedia/WikitSearchScreen.fxml");
     }
 
+    /**
+     * Helper method that retrieves a filename of a selected creation.
+     * @return Creation filename
+     */
     private String getSelectedFilename() {
         return creationListView.getSelectionModel().getSelectedItem() + ".mp4";
     }
 
+    /**
+     * Helper method that checks if a creation is currently selected in the ListView
+     * @return true if creation is selected
+     */
     private boolean checkCreationSelected() {
         // check if an item is actually selected first
         if (creationListView.getSelectionModel().getSelectedItem() == null) {
@@ -96,6 +103,9 @@ public class MainController extends Controller {
         }
     }
 
+    /**
+     * Helper method that runs a task to populate the creationList with chunks in the creations directory.
+     */
     private void populateList() {
         Task<List<String>> task = new ListPopulateTask(new File("creations"));
         task.setOnSucceeded(event -> {

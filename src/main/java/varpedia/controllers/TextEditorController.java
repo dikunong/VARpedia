@@ -210,6 +210,9 @@ public class TextEditorController extends Controller {
         }
     }
 
+	/**
+	 * Helper method to disable most UI elements and show loading indicators while an audio chunk task is in progress.
+	 */
     private void setLoadingActive() {
         assembleBtn.setDisable(true);
         previewBtn.setDisable(true);
@@ -218,6 +221,9 @@ public class TextEditorController extends Controller {
         loadingWheel.setVisible(true);
     }
 
+	/**
+	 * Helper method to enable most UI elements and hide loading indicators when an audio chunk task ends.
+	 */
     private void setLoadingInactive() {
         assembleBtn.setDisable(false);
         previewBtn.setDisable(false);

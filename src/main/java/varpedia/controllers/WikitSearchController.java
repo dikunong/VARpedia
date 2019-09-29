@@ -36,9 +36,6 @@ public class WikitSearchController extends Controller {
     @FXML
     private void pressSearchButton(ActionEvent event) {
         // check if there is text in the text field
-        // in the future, could apply regex to prevent searching of characters Wikipedia has blocked from
-        // being in titles, which are: # < > [ ] | { }
-        // but that's a nice-to-have as the search will still fail gracefully without it
         String searchTerm = searchTextField.getText();
         if (searchTerm.equals("")) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Please type in a valid search term.");
@@ -87,12 +84,18 @@ public class WikitSearchController extends Controller {
         changeScene(event, "/varpedia/MainScreen.fxml");
     }
 
+    /**
+     * Helper method to disable most UI elements and show loading indicators while a Wikit task is in progress.
+     */
     private void setLoadingActive() {
         searchBtn.setDisable(true);
         loadingLabel.setVisible(true);
         loadingWheel.setVisible(true);
     }
 
+    /**
+     * Helper method to enable most UI elements and hide loading indicators when a Wikit task ends.
+     */
     private void setLoadingInactive() {
         searchBtn.setDisable(false);
         loadingLabel.setVisible(false);
