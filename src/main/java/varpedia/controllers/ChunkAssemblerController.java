@@ -101,7 +101,10 @@ public class ChunkAssemblerController extends Controller {
     		if (name == null || name.isEmpty()) {
     			Alert alert = new Alert(Alert.AlertType.ERROR, "Please enter a creation name.");
                 alert.showAndWait();
-    		} else if (imageCount <= 0 || imageCount > 10) {
+    		} else if (!name.matches("[-_. A-Za-z0-9]+")) {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Please enter a valid creation name (only letters, numbers, spaces, -, _).");
+                alert.showAndWait();
+            } else if (imageCount <= 0 || imageCount > 10) {
     			Alert alert = new Alert(Alert.AlertType.ERROR, "You must select between 1 and 10 images (inclusive).");
                 alert.showAndWait();
     		} else if (rightChunkListView.getItems().isEmpty()) {
