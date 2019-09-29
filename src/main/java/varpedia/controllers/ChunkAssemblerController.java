@@ -2,11 +2,10 @@ package varpedia.controllers;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
+import java.util.function.UnaryOperator;
 
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -63,6 +62,18 @@ public class ChunkAssemblerController extends Controller {
 
         // give the numOfImagesSpinner a range of 0-10, and make it listen for typed input
         numOfImagesSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10));
+
+        // set numOfImagesSpinner TextFormatter to only accept integers
+        UnaryOperator<TextFormatter.Change> filter = change -> {
+            String text = change.getText();
+            if (text.matches("[0-9]*")) {
+                return change;
+            }
+            return null;
+        };
+        TextFormatter<String> intFormatter = new TextFormatter<>(filter);
+        numOfImagesSpinner.getEditor().setTextFormatter(intFormatter);
+
         numOfImagesSpinner.getValueFactory().setValue(10);
         numOfImagesSpinner.focusedProperty().addListener(((observable, oldValue, newValue) -> {
             if (!newValue) {
@@ -85,11 +96,6 @@ public class ChunkAssemblerController extends Controller {
     	if (_createTask == null) {
     		int imageCount = numOfImagesSpinner.getValueFactory().getValue();
     		String name = creationNameTextField.getText();
-
-            System.out.println("Debug please");
-            for (String s : rightChunkList) {
-                System.out.println(s);
-            }
     		
     		if (name == null || name.isEmpty()) {
     			Alert alert = new Alert(Alert.AlertType.ERROR, "Please enter a creation name.");
