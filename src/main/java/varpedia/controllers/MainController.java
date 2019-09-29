@@ -61,7 +61,7 @@ public class MainController extends Controller {
                 File file = new File("creations/" + filename);
                 if (file.delete()) {
                     // update listview
-                    creationList.remove(filename);
+                    creationList.remove(filename.substring(0, filename.lastIndexOf('.')));
                     return;
                 } else {
                     alert = new Alert(Alert.AlertType.ERROR, "Could not delete file.");
