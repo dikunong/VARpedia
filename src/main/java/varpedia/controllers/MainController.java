@@ -9,6 +9,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ListView;
 import varpedia.VARpediaApp;
+import varpedia.tasks.ClearTask;
 import varpedia.tasks.ListPopulateTask;
 
 import java.io.File;
@@ -35,6 +36,7 @@ public class MainController extends Controller {
     @FXML
     private void initialize() {
         populateList();
+        deleteAppfiles();
     }
 
     @FXML
@@ -107,4 +109,9 @@ public class MainController extends Controller {
         pool.submit(task);
     }
 
+    //TODO: This is running in the GUI thread to avoid race conditions. Could move it out.
+    private void deleteAppfiles() {
+    	Task<Void> task = new ClearTask(new File("appfiles"));
+    	task.run();
+    }
 }
