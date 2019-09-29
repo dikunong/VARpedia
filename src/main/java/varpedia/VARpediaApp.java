@@ -15,6 +15,10 @@ import java.util.concurrent.TimeUnit;
 
 public class VARpediaApp extends Application {
 
+	/**
+	 * Make a Threadpool that will terminate after 5 seconds so that the actual executable times out 5 seconds after the window is closed (at most).
+	 * @return The new Threadpool
+	 */
 	public static ExecutorService newTimedCachedThreadPool() {
 		return new ThreadPoolExecutor(0, Integer.MAX_VALUE, 5L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>());
 	}

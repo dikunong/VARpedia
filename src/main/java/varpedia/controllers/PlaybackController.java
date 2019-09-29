@@ -48,6 +48,7 @@ public class PlaybackController extends Controller {
     
     @FXML
     private void initialize() {
+    	//Ensure media player fits in scene.
         mediaPane.layoutBoundsProperty().addListener((Observable arg0) -> {
 			Bounds newBounds = mediaPane.getLayoutBounds();
 			mediaView.setFitWidth(newBounds.getWidth());
@@ -57,9 +58,11 @@ public class PlaybackController extends Controller {
 			mediaView.setLayoutY((newBounds.getHeight() - bounds.getHeight()) / 2);
 		});
     	
+        //Make the slider work properly
 		timeSlider.valueProperty().addListener(_timeListener);
 		timeSlider.addEventFilter(MouseEvent.MOUSE_PRESSED, (MouseEvent e) -> {timeSlider.setValueChanging(true);});
 		timeSlider.addEventFilter(MouseEvent.MOUSE_RELEASED, (MouseEvent e) -> {timeSlider.setValueChanging(false);});
+		
 		timeSlider.setDisable(true);
 		volSlider.setValue(100);
     	
@@ -75,8 +78,7 @@ public class PlaybackController extends Controller {
 			_player.setVolume(newValue.doubleValue() / 100);
 		});
 		
-		// it seems it's not possible to chuck parameters into initialize()
-        // see VARpediaApp for an early idea on how to pass the video filename from MainController to PlaybackController
+		//Play the selected media
 		playMedia(new File(getDataFromFile("playback-name.txt")));
     }
 
@@ -110,8 +112,11 @@ public class PlaybackController extends Controller {
 		_player.setAutoPlay(true);
 		
 		_player.setOnReady(() -> {
+			//Enable the media player
 			_duration = media.getDuration();
 			timeSlider.setDisable(false);
+			
+			//Do some jiggling to get the media player at the right size.
 			double oldHeight = mediaPane.getHeight();
 			mediaPane.resize(mediaPane.getWidth(), 0);
 			mediaPane.resize(mediaPane.getWidth(), oldHeight);
@@ -119,6 +124,7 @@ public class PlaybackController extends Controller {
 		
 		_player.currentTimeProperty().addListener((ObservableValue<? extends Duration> observable, Duration oldValue, Duration newValue) -> {
 			if (_duration != null) {
+				//Update the duration text
 				timeSlider.valueProperty().removeListener(_timeListener);
 				timeSlider.setValue((player.getCurrentTime().toMillis() / _duration.toMillis()) * 100);
 				timeSlider.valueProperty().addListener(_timeListener);

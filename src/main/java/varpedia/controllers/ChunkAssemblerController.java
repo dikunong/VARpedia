@@ -55,7 +55,6 @@ public class ChunkAssemblerController extends Controller {
     private Task<? extends Object> _createTask;
 
     private ExecutorService pool = VARpediaApp.newTimedCachedThreadPool();
-    private String term;
 
     @FXML
     private void initialize() {
@@ -83,19 +82,13 @@ public class ChunkAssemblerController extends Controller {
             }
         }));
 
-    	term = getDataFromFile("search-term.txt");
-
     	// populate list view with saved chunks
         populateList();
     }
 
     @FXML
     private void pressCreateBtn(ActionEvent event) {
-        // assemble audio chunks
-        // get Flickr images
-        // assemble audio + video using ffmpeg
-    	//TODO: Far better method
-    	if (_createTask == null) {
+        if (_createTask == null) {
     		int imageCount = numOfImagesSpinner.getValueFactory().getValue();
     		String name = creationNameTextField.getText();
     		
@@ -115,8 +108,9 @@ public class ChunkAssemblerController extends Controller {
                 Alert alert = new Alert(Alert.AlertType.ERROR, "Please select chunks to assemble.");
                 alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
                 alert.showAndWait();
-            } else {
-    			FlickrTask flickr = new FlickrTask(term, imageCount);
+    		} else {
+    			// get Flickr images
+    	        FlickrTask flickr = new FlickrTask(imageCount);
     			_createTask = flickr;
     			_createTask.setOnSucceeded(ev -> {
                 	try {
@@ -136,13 +130,15 @@ public class ChunkAssemblerController extends Controller {
                 		}
 
                 		if (actual) {
+                			//assemble images
                 			List<Integer> images = new ArrayList<Integer>();
 
                 			for (int i = 0; i < actualImages; i++) {
                 				images.add(i);
                 			}
 
-                			_createTask = new FFMPEGVideoTask(term, name, images, rightChunkList);
+                			// assemble audio + video using ffmpeg
+                	    	_createTask = new FFMPEGVideoTask(name, images, rightChunkList);
     	                	_createTask.setOnSucceeded(ev2 -> {
     		                    _createTask = null;
     		                    Alert alert = new Alert(Alert.AlertType.INFORMATION, "Created creation.");

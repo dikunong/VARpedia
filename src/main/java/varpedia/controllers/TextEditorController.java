@@ -59,14 +59,12 @@ public class TextEditorController extends Controller {
         wikiTextArea.setText(searchOutput);
     }
 
+    //TODO: Repetition between this and save
     @FXML
     private void pressPreviewButton(ActionEvent event) {
-        // get selected text from wikiTextArea
-        // play back selected text in Festival using selected Voice
-    	
-    	//TODO: Do this properly
-    	if (_playTask == null) {
-    		String text = wikiTextArea.getSelectedText();
+        if (_playTask == null) {
+    		// get selected text from wikiTextArea
+            String text = wikiTextArea.getSelectedText();
 
     		if (text == null || text.isEmpty()) {
     			Alert alert = new Alert(Alert.AlertType.ERROR, "Please select some text first.");
@@ -85,7 +83,8 @@ public class TextEditorController extends Controller {
     			}
 
     			if (playText) {
-		    		_playTask = new PlayChunkTask(text, null, voiceChoiceBox.getSelectionModel().getSelectedItem());
+    				// play back selected text in Festival using selected Voice
+    		    	_playTask = new PlayChunkTask(text, null, voiceChoiceBox.getSelectionModel().getSelectedItem());
 		            _playTask.setOnSucceeded(ev -> {
 		            	_playTask = null;
 		            	previewBtn.setText("Preview");
@@ -134,13 +133,9 @@ public class TextEditorController extends Controller {
 
     @FXML
     private void pressSaveButton(ActionEvent event) {
-        // get selected text from wikiTextArea
-        // save selected text audio into .wav "chunk"
-        // what should these files be named?
-
-    	//TODO: Do this properly
-    	if (_saveTask == null) {
-    		String text = wikiTextArea.getSelectedText();
+        if (_saveTask == null) {
+        	// get selected text from wikiTextArea
+            String text = wikiTextArea.getSelectedText();
 
     		if (text == null || text.isEmpty()) {
     			Alert alert = new Alert(Alert.AlertType.ERROR, "Please select some text first.");
@@ -161,7 +156,8 @@ public class TextEditorController extends Controller {
     			if (playText) {
     				String filename = getFileName(text);
 
-		    		_saveTask = new PlayChunkTask(text, filename, voiceChoiceBox.getSelectionModel().getSelectedItem());
+    				// save selected text audio into .wav "chunk"
+    		        _saveTask = new PlayChunkTask(text, filename, voiceChoiceBox.getSelectionModel().getSelectedItem());
 		    		_saveTask.setOnSucceeded(ev -> {
 		                _saveTask = null;
 		                saveBtn.setText("Save Chunk");
@@ -205,7 +201,6 @@ public class TextEditorController extends Controller {
 		alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
         alert.showAndWait();
         if (alert.getResult() == ButtonType.YES) {
-            // discard all existing temp files etc
             changeScene(event, "/varpedia/MainScreen.fxml");
         }
     }
