@@ -60,8 +60,16 @@ public class ChunkAssemblerController extends Controller {
     @FXML
     private void initialize() {
         setLoadingInactive();
+
+        // give the numOfImagesSpinner a range of 0-10, and make it listen for typed input
         numOfImagesSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10));
         numOfImagesSpinner.getValueFactory().setValue(10);
+        numOfImagesSpinner.focusedProperty().addListener(((observable, oldValue, newValue) -> {
+            if (!newValue) {
+                numOfImagesSpinner.increment(0);
+            }
+        }));
+
     	term = getDataFromFile("search-term.txt");
 
     	// populate list view with saved chunks
