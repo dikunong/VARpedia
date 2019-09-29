@@ -55,14 +55,12 @@ public class ChunkAssemblerController extends Controller {
     private Task<? extends Object> _createTask;
 
     private ExecutorService pool = VARpediaApp.newTimedCachedThreadPool();
-    private String term;
 
     @FXML
     private void initialize() {
         setLoadingInactive();
         numOfImagesSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10));
         numOfImagesSpinner.getValueFactory().setValue(10);
-    	term = getDataFromFile("search-term.txt");
 
     	// populate list view with saved chunks
         populateList();
@@ -90,7 +88,7 @@ public class ChunkAssemblerController extends Controller {
     			Alert alert = new Alert(Alert.AlertType.ERROR, "You must select between 1 and 10 images (inclusive).");
                 alert.showAndWait();
     		} else {
-    			FlickrTask flickr = new FlickrTask(term, imageCount);
+    			FlickrTask flickr = new FlickrTask(imageCount);
     			_createTask = flickr;
     			_createTask.setOnSucceeded(ev -> {
                 	try {
@@ -115,7 +113,7 @@ public class ChunkAssemblerController extends Controller {
                 				images.add(i);
                 			}
 
-                			_createTask = new FFMPEGVideoTask(term, name, images, rightChunkList);
+                			_createTask = new FFMPEGVideoTask(name, images, rightChunkList);
     	                	_createTask.setOnSucceeded(ev2 -> {
     		                    _createTask = null;
     		                    Alert alert = new Alert(Alert.AlertType.INFORMATION, "Created creation.");
