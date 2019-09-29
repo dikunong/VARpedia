@@ -29,8 +29,8 @@ public class VARpediaApp extends Application {
             primaryStage.setScene(new Scene(layout));
             primaryStage.show();
 
-            primaryStage.setMinHeight(200);
-            primaryStage.setMinWidth(520);
+            primaryStage.setMinHeight(280);
+            primaryStage.setMinWidth(560);
         } catch (IOException e) {
             e.printStackTrace();
         }

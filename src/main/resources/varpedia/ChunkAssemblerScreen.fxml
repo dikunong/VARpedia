@@ -47,12 +47,12 @@
             </ListView>
             <VBox alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="2">
                <children>
-                  <Button fx:id="addToBtn" minWidth="80.0" mnemonicParsing="false" onAction="#pressAddToButton" text="Add --&gt;">
+                  <Button fx:id="addToBtn" minWidth="80.0" mnemonicParsing="false" onAction="#pressAddToButton" prefWidth="96.0" text="Add --&gt;">
                      <VBox.margin>
                         <Insets bottom="4.0" />
                      </VBox.margin>
                   </Button>
-                  <Button fx:id="removeFromBtn" minWidth="80.0" mnemonicParsing="false" onAction="#pressRemoveFromButton" text="&lt;-- Remove" />
+                  <Button fx:id="removeFromBtn" minWidth="80.0" mnemonicParsing="false" onAction="#pressRemoveFromButton" prefWidth="96.0" text="&lt;-- Remove" />
                </children>
                <GridPane.margin>
                   <Insets left="8.0" right="8.0" />
@@ -60,12 +60,12 @@
             </VBox>
             <VBox alignment="CENTER" GridPane.columnIndex="3" GridPane.rowIndex="2">
                <children>
-                  <Button fx:id="moveUpBtn" minWidth="98.0" mnemonicParsing="false" onAction="#pressMoveUpButton" text="↑ Move Up ↑">
+                  <Button fx:id="moveUpBtn" mnemonicParsing="false" onAction="#pressMoveUpButton" prefWidth="124.0" text="↑ Move Up ↑">
                      <VBox.margin>
                         <Insets bottom="4.0" />
                      </VBox.margin>
                   </Button>
-                  <Button fx:id="moveDownBtn" mnemonicParsing="false" onAction="#pressMoveDownButton" text="↓ Move Down ↓" />
+                  <Button fx:id="moveDownBtn" mnemonicParsing="false" onAction="#pressMoveDownButton" prefWidth="124.0" text="↓ Move Down ↓" />
                </children>
                <GridPane.margin>
                   <Insets left="8.0" />

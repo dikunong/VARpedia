@@ -12,6 +12,7 @@ import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.layout.Region;
 import varpedia.VARpediaApp;
 import varpedia.tasks.FFMPEGVideoTask;
 import varpedia.tasks.FlickrTask;
@@ -100,15 +101,19 @@ public class ChunkAssemblerController extends Controller {
     		
     		if (name == null || name.isEmpty()) {
     			Alert alert = new Alert(Alert.AlertType.ERROR, "Please enter a creation name.");
+                alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
                 alert.showAndWait();
     		} else if (!name.matches("[-_. A-Za-z0-9]+")) {
                 Alert alert = new Alert(Alert.AlertType.ERROR, "Please enter a valid creation name (only letters, numbers, spaces, -, _).");
+                alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
                 alert.showAndWait();
             } else if (imageCount <= 0 || imageCount > 10) {
     			Alert alert = new Alert(Alert.AlertType.ERROR, "You must select between 1 and 10 images (inclusive).");
-                alert.showAndWait();
+                alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+    			alert.showAndWait();
     		} else if (rightChunkListView.getItems().isEmpty()) {
                 Alert alert = new Alert(Alert.AlertType.ERROR, "Please select chunks to assemble.");
+                alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
                 alert.showAndWait();
             } else {
     			FlickrTask flickr = new FlickrTask(term, imageCount);
@@ -120,7 +125,8 @@ public class ChunkAssemblerController extends Controller {
 
                 		if (actualImages < imageCount) {
                 			Alert alert = new Alert(Alert.AlertType.WARNING, "Fewer images were retrieved than requested (" + actualImages + "). Continue anyway?", ButtonType.YES, ButtonType.CANCEL);
-            	            alert.showAndWait();
+                            alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+                			alert.showAndWait();
 
             	            if (alert.getResult() == ButtonType.YES) {
             	            	actual = true;
@@ -140,7 +146,8 @@ public class ChunkAssemblerController extends Controller {
     	                	_createTask.setOnSucceeded(ev2 -> {
     		                    _createTask = null;
     		                    Alert alert = new Alert(Alert.AlertType.INFORMATION, "Created creation.");
-    	                        alert.showAndWait();
+                                alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+    		                    alert.showAndWait();
     	                        setLoadingInactive();
     	                        changeScene(event, "/varpedia/MainScreen.fxml"); //TODO: Maybe go straight to player
     		                });
@@ -150,7 +157,8 @@ public class ChunkAssemblerController extends Controller {
     	                    });
     	                    _createTask.setOnFailed(ev2 -> {
     	                    	Alert alert = new Alert(Alert.AlertType.ERROR, "Failed to create creation.");
-    	                        alert.showAndWait();
+                                alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+    	                    	alert.showAndWait();
     	                        _createTask = null;
     	                        setLoadingInactive();
     	                    });
@@ -166,7 +174,8 @@ public class ChunkAssemblerController extends Controller {
                 });
                 _createTask.setOnFailed(ev -> {
                 	Alert alert = new Alert(Alert.AlertType.ERROR, "Failed to download images.");
-                    alert.showAndWait();
+                    alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+                	alert.showAndWait();
                     _createTask = null;
                     setLoadingInactive();
                 });
@@ -184,6 +193,7 @@ public class ChunkAssemblerController extends Controller {
         // ask for confirmation first!
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to cancel making " +
                 "the current creation?", ButtonType.YES, ButtonType.CANCEL);
+        alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
         alert.showAndWait();
         if (alert.getResult() == ButtonType.YES) {
             // discard all existing temp files etc

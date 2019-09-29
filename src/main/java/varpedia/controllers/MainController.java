@@ -8,6 +8,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ListView;
+import javafx.scene.layout.Region;
 import varpedia.VARpediaApp;
 import varpedia.tasks.ListPopulateTask;
 
@@ -54,6 +55,7 @@ public class MainController extends Controller {
             // ask for confirmation
             Alert alert = new Alert(Alert.AlertType.WARNING, "Are you sure you want to delete the " +
                     "selected creation?", ButtonType.YES, ButtonType.CANCEL); // add selected creation name here later
+            alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
             alert.showAndWait();
             if (alert.getResult() == ButtonType.YES) {
                 String filename = getSelectedFilename();
@@ -65,6 +67,7 @@ public class MainController extends Controller {
                     return;
                 } else {
                     alert = new Alert(Alert.AlertType.ERROR, "Could not delete file.");
+                    alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
                     alert.showAndWait();
                 }
             }
@@ -85,6 +88,7 @@ public class MainController extends Controller {
         // check if an item is actually selected first
         if (creationListView.getSelectionModel().getSelectedItem() == null) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Please select a creation first.");
+            alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
             alert.showAndWait();
             return false;
         } else {

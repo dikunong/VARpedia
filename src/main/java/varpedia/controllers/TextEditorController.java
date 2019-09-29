@@ -8,6 +8,7 @@ import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.layout.Region;
 import varpedia.VARpediaApp;
 import varpedia.tasks.PlayChunkTask;
 import varpedia.tasks.VoiceListTask;
@@ -69,13 +70,15 @@ public class TextEditorController extends Controller {
 
     		if (text == null || text.isEmpty()) {
     			Alert alert = new Alert(Alert.AlertType.ERROR, "Please select some text first.");
-                alert.showAndWait();
+				alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+    			alert.showAndWait();
     		} else {
     			boolean playText;
 
     			if (text.split(" ").length > 30) {
     				Alert alert = new Alert(Alert.AlertType.WARNING, "Selected text is very long (>30 words). Do you wish to continue anyway?", ButtonType.YES, ButtonType.CANCEL);
-    	            alert.showAndWait();
+					alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+    				alert.showAndWait();
     	            playText = alert.getResult() == ButtonType.YES;
     			} else {
     				playText = true;
@@ -95,7 +98,8 @@ public class TextEditorController extends Controller {
 			        });
 		            _playTask.setOnFailed(ev -> {
 		            	Alert alert = new Alert(Alert.AlertType.ERROR, "Error playing audio chunk. Try selecting other text or using a different voice.");
-		                alert.showAndWait();
+						alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+		            	alert.showAndWait();
 		                _playTask = null;
 		            	previewBtn.setText("Preview");
 		            	setLoadingInactive();
@@ -140,13 +144,15 @@ public class TextEditorController extends Controller {
 
     		if (text == null || text.isEmpty()) {
     			Alert alert = new Alert(Alert.AlertType.ERROR, "Please select some text first.");
-                alert.showAndWait();
+				alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+    			alert.showAndWait();
     		} else {
     			boolean playText;
 
     			if (text.split(" ").length > 30) {
     				Alert alert = new Alert(Alert.AlertType.WARNING, "Selected text is very long (>30 words). Do you wish to continue anyway?", ButtonType.YES, ButtonType.CANCEL);
-    	            alert.showAndWait();
+					alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+    				alert.showAndWait();
     	            playText = alert.getResult() == ButtonType.YES;
     			} else {
     				playText = true;
@@ -168,7 +174,8 @@ public class TextEditorController extends Controller {
 					});
 		            _saveTask.setOnFailed(ev -> {
 		    			Alert alert = new Alert(Alert.AlertType.ERROR, "Error saving audio chunk. Try selecting other text or using a different voice.");
-		                alert.showAndWait();
+						alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+		    			alert.showAndWait();
 		                _saveTask = null;
 		                saveBtn.setText("Save Chunk");
 		                setLoadingInactive();
@@ -195,6 +202,7 @@ public class TextEditorController extends Controller {
         // ask for confirmation first!
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to cancel making " +
                 "the current creation?", ButtonType.YES, ButtonType.CANCEL);
+		alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
         alert.showAndWait();
         if (alert.getResult() == ButtonType.YES) {
             // discard all existing temp files etc

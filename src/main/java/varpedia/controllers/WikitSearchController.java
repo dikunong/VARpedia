@@ -4,6 +4,7 @@ import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.layout.Region;
 import varpedia.VARpediaApp;
 import varpedia.tasks.WikitSearchTask;
 
@@ -41,6 +42,7 @@ public class WikitSearchController extends Controller {
         String searchTerm = searchTextField.getText();
         if (searchTerm.equals("")) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Please type in a valid search term.");
+            alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
             alert.showAndWait();
             return;
         }
@@ -60,6 +62,7 @@ public class WikitSearchController extends Controller {
                 } else {
                     setLoadingInactive();
                     Alert alert = new Alert(Alert.AlertType.ERROR, "No valid Wikipedia articles found.");
+                    alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
                     alert.showAndWait();
                     return;
                 }
