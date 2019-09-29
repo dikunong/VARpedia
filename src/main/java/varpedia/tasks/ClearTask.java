@@ -10,6 +10,11 @@ import java.nio.file.attribute.BasicFileAttributes;
 
 import javafx.concurrent.Task;
 
+/**
+ * Background task that handles deletion of temporary app files.
+ *
+ * Author: Tudor Zagreanu
+ */
 public class ClearTask extends Task<Void> {
 	public static void deleteTree(File root) throws IOException {
 		//Delete the files (basically everything, including the stuff in audio, but not the audio directory itself)

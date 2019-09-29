@@ -18,6 +18,12 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 
+/**
+ * Controller for the MainScreen, which displays current creations that can be played and deleted, as well as acting as
+ * the gateway to making new creations.
+ *
+ * Authors: Di Kun Ong and Tudor Zagreanu
+ */
 public class MainController extends Controller {
 
     @FXML

@@ -19,6 +19,11 @@ import javafx.util.Duration;
 
 import java.io.File;
 
+/**
+ * Controller for the PlaybackScreen, which plays creations.
+ *
+ * Authors: Di Kun Ong and Tudor Zagreanu
+ */
 public class PlaybackController extends Controller {
 
     @FXML

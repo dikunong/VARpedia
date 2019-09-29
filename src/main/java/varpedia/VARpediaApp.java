@@ -19,6 +19,11 @@ import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Main class of VARpedia.
+ *
+ * Authors: Di Kun Ong and Tudor Zagreanu
+ */
 public class VARpediaApp extends Application {
 
 	/**

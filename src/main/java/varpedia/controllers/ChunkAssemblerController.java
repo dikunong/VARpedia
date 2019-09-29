@@ -18,6 +18,12 @@ import varpedia.tasks.FFMPEGVideoTask;
 import varpedia.tasks.FlickrTask;
 import varpedia.tasks.ListPopulateTask;
 
+/**
+ * Controller for the ChunkAssemblerScreen, which handles assembly of audio chunks, input of creation name and number
+ * of images, and the actual creation of the creation itself via Flickr and FFMPEG.
+ *
+ * Authors: Di Kun Ong and Tudor Zagreanu
+ */
 public class ChunkAssemblerController extends Controller {
 
     @FXML

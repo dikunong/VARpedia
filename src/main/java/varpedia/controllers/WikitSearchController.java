@@ -10,6 +10,11 @@ import varpedia.tasks.WikitSearchTask;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 
+/**
+ * Controller for the WikitSearchScreen, which handles the searching of Wikipedia for a given search term (via wikit).
+ *
+ * Authors: Di Kun Ong and Tudor Zagreanu
+ */
 public class WikitSearchController extends Controller {
 
     @FXML
@@ -61,7 +66,9 @@ public class WikitSearchController extends Controller {
                 e.printStackTrace();
             }
         });
-        
+
+        // handle wikit returning a disambiguation result, which doesn't output to stdout or stderr
+        // and so can't be handled with regular logic
         _wikitTask.setOnFailed(event2 -> {
         	setLoadingInactive();
             showNotifyingAlert(Alert.AlertType.ERROR, "Search timed out - search term may be too ambiguous.");
