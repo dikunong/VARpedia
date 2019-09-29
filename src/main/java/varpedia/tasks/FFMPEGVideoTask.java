@@ -1,10 +1,6 @@
 package varpedia.tasks;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import javax.sound.sampled.AudioFileFormat;

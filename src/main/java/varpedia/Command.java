@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 
 public class Command {
 
@@ -33,7 +34,7 @@ public class Command {
         String output = "";
         try {
             InputStream out = _process.getInputStream();
-            BufferedReader stdout = new BufferedReader(new InputStreamReader(out));
+            BufferedReader stdout = new BufferedReader(new InputStreamReader(out, StandardCharsets.UTF_8));
             String line = null;
             while ((line = stdout.readLine()) != null ) {
                 output += line + "\n";
@@ -48,7 +49,7 @@ public class Command {
         String output = "";
         try {
             InputStream out = _process.getErrorStream();
-            BufferedReader stdout = new BufferedReader(new InputStreamReader(out));
+            BufferedReader stdout = new BufferedReader(new InputStreamReader(out, StandardCharsets.UTF_8));
             String line = null;
             while ((line = stdout.readLine()) != null ) {
                 output += line + "\n";
@@ -65,7 +66,7 @@ public class Command {
     	}
     	
     	try {
-			_process.getOutputStream().write(str.getBytes());
+			_process.getOutputStream().write(str.getBytes(StandardCharsets.UTF_8));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

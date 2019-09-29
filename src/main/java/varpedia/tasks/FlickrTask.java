@@ -2,12 +2,13 @@ package varpedia.tasks;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,7 +68,7 @@ public class FlickrTask extends Task<Integer> {
 	protected Integer call() throws Exception {
         String term = null;
         try {
-            BufferedReader reader = new BufferedReader(new FileReader("appfiles/search-term.txt"));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream("appfiles/search-term.txt"), StandardCharsets.UTF_8));
             term = reader.readLine();
             reader.close();
         } catch (IOException e) {

@@ -3,6 +3,7 @@ package varpedia.tasks;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,7 +55,7 @@ public class PlayChunkTask extends Task<Void> {
 		
 		cmd = new Command(args.toArray(new String[0]));
 		cmd.run();
-		cmd.getProcess().getOutputStream().write(_inputText.getBytes());
+		cmd.getProcess().getOutputStream().write(_inputText.getBytes(StandardCharsets.UTF_8));
 		cmd.getProcess().getOutputStream().close();
 		
 		try {

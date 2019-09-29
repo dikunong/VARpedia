@@ -8,6 +8,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 
 public abstract class Controller {
 
@@ -27,7 +28,7 @@ public abstract class Controller {
     public void sendDataToFile(String msg, String filename) {
         try {
             File file = new File("appfiles/" + filename);
-            BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8));
             writer.write(msg);
             writer.close();
         } catch (IOException e) {
@@ -38,7 +39,7 @@ public abstract class Controller {
     public String getDataFromFile(String filename) {
         String output = null;
         try {
-            BufferedReader reader = new BufferedReader(new FileReader("appfiles/" + filename));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream("appfiles/" + filename), StandardCharsets.UTF_8));
             StringBuilder sb = new StringBuilder();
             String line = reader.readLine();
 

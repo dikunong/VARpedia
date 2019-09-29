@@ -5,8 +5,10 @@ import varpedia.Command;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -50,7 +52,7 @@ public class WikitSearchTask extends Task<Boolean> {
         // TODO: make this not copy-pasted from Controller.java
         try {
             File file = new File("appfiles/search-output.txt");
-            BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8));
             writer.write(searchOutput);
             writer.close();
         } catch (IOException e) {
