@@ -35,37 +35,28 @@ public class VARpediaApp extends Application {
             e.printStackTrace();
         }
 
-        // TODO: fix this horrendous code repetition
-        File creationsDir = new File("creations");
-        File appfilesDir = new File("appfiles");
-        File audioDir = new File("appfiles/audio");
-
-        // ensure the creations directory is actually a directory AND exists
-        if (creationsDir.isFile()) {
-            creationsDir.delete();
-        }
-        if (!creationsDir.exists()) {
-            creationsDir.mkdir();
-        }
-        // ensure the appfiles directory is actually a directory AND exists
-        if (appfilesDir.isFile()) {
-            appfilesDir.delete();
-        }
-        if (!appfilesDir.exists()) {
-            appfilesDir.mkdir();
-        }
-        // ensure the audio directory is actually a directory AND exists
-        if (audioDir.isFile()) {
-            audioDir.delete();
-        }
-        if (!audioDir.exists()) {
-            audioDir.mkdir();
-        }
+        // check that various app directories exist and aren't folders
+        checkDir(new File("creations"));
+        checkDir(new File("appfiles"));
+        checkDir(new File("appfiles/audio"));
 
     }
 
     public static void main(String[] args) {
         launch(args);
+    }
+
+    /**
+     * Checks if a given directory is a file or doesn't exist, creating a new directory if needed.
+     * @param dir Directory to be checked
+     */
+    private void checkDir(File dir) {
+        if (dir.isFile()) {
+            dir.delete();
+        }
+        if (!dir.exists()) {
+            dir.mkdir();
+        }
     }
 
 }
