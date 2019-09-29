@@ -1,10 +1,16 @@
 package varpedia;
 
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.layout.Region;
 import javafx.stage.Stage;
+import varpedia.tasks.ClearTask;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,6 +41,23 @@ public class VARpediaApp extends Application {
 
             primaryStage.setMinHeight(280);
             primaryStage.setMinWidth(560);
+
+            // if the application is abruptly closed, prompt before exiting
+            // if the user chooses to exit, delete appfiles first
+            primaryStage.setOnCloseRequest(e -> {
+                Alert alert = new Alert(Alert.AlertType.WARNING, "Do you want to exit? Any unsaved creation progress will be lost.", ButtonType.YES, ButtonType.CANCEL);
+                alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+                alert.showAndWait();
+
+                if (alert.getResult() == ButtonType.YES) {
+                    Task<Void> task = new ClearTask(new File("appfiles"));
+                    task.run();
+                    Platform.exit();
+                    System.exit(0);
+                } else {
+                    e.consume();
+                }
+            });
         } catch (IOException e) {
             e.printStackTrace();
         }
