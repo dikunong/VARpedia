@@ -26,6 +26,7 @@ public class WikitSearchTask extends Task<Boolean> {
         Command wikit = new Command("wikit", _searchTerm);
         wikit.run();
         
+        //Wait for 10 seconds. If wikit doesn't return after that, it's probably stuck in a disambiguation. Not ideal but it works.
         try {
         	if (!wikit.getProcess().waitFor(10, TimeUnit.SECONDS)) {
         		wikit.endForcibly();

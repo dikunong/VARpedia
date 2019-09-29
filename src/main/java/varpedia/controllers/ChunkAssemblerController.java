@@ -2,8 +2,6 @@ package varpedia.controllers;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -68,11 +66,7 @@ public class ChunkAssemblerController extends Controller {
 
     @FXML
     private void pressCreateBtn(ActionEvent event) {
-        // assemble audio chunks
-        // get Flickr images
-        // assemble audio + video using ffmpeg
-    	//TODO: Far better method
-    	if (_createTask == null) {
+        if (_createTask == null) {
     		int imageCount = numOfImagesSpinner.getValueFactory().getValue();
     		String name = creationNameTextField.getText();
 
@@ -88,7 +82,8 @@ public class ChunkAssemblerController extends Controller {
     			Alert alert = new Alert(Alert.AlertType.ERROR, "You must select between 1 and 10 images (inclusive).");
                 alert.showAndWait();
     		} else {
-    			FlickrTask flickr = new FlickrTask(imageCount);
+    			// get Flickr images
+    	        FlickrTask flickr = new FlickrTask(imageCount);
     			_createTask = flickr;
     			_createTask.setOnSucceeded(ev -> {
                 	try {
@@ -107,13 +102,15 @@ public class ChunkAssemblerController extends Controller {
                 		}
 
                 		if (actual) {
+                			//assemble images
                 			List<Integer> images = new ArrayList<Integer>();
 
                 			for (int i = 0; i < actualImages; i++) {
                 				images.add(i);
                 			}
 
-                			_createTask = new FFMPEGVideoTask(name, images, rightChunkList);
+                			// assemble audio + video using ffmpeg
+                	    	_createTask = new FFMPEGVideoTask(name, images, rightChunkList);
     	                	_createTask.setOnSucceeded(ev2 -> {
     		                    _createTask = null;
     		                    Alert alert = new Alert(Alert.AlertType.INFORMATION, "Created creation.");

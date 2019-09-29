@@ -12,6 +12,7 @@ import javafx.concurrent.Task;
 
 public class ClearTask extends Task<Void> {
 	public static void deleteTree(File root) throws IOException {
+		//Delete the files (basically everything, including the stuff in audio, but not the audio directory itself)
 		Files.walkFileTree(root.toPath(), new FileVisitor<Path>() {
 			@Override
 			public FileVisitResult postVisitDirectory(Path arg0, IOException arg1) throws IOException {
@@ -38,6 +39,9 @@ public class ClearTask extends Task<Void> {
 	
 	private File _file;
 	
+	/**
+	 * @param file The root directory to clear
+	 */
 	public ClearTask(File file) {
 		_file = file;
 	}
