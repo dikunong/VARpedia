@@ -9,6 +9,11 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Background task that handles listing of all files in a directory.
+ *
+ * Author: Di Kun Ong
+ */
 public class ListPopulateTask extends Task<List<String>> {
     private File root;
 
@@ -18,10 +23,10 @@ public class ListPopulateTask extends Task<List<String>> {
 
     @Override
     protected List<String> call() throws Exception {
-        DirectoryStream<Path> str = Files.newDirectoryStream(root.toPath());
-        List<String> ret = new ArrayList<String>();
+        DirectoryStream<Path> directoryStream = Files.newDirectoryStream(root.toPath());
+        List<String> fileList = new ArrayList<>();
 
-        for (Path p : str) {
+        for (Path p : directoryStream) {
             if (isCancelled()) {
                 return null;
             }
@@ -32,11 +37,11 @@ public class ListPopulateTask extends Task<List<String>> {
                 filename = filename.substring(0, filename.lastIndexOf('.'));
             }
 
-            ret.add(filename);
+            fileList.add(filename);
         }
 
-        str.close();
-        ret.sort(null);
-        return ret;
+        directoryStream.close();
+        fileList.sort(null);
+        return fileList;
     }
 }

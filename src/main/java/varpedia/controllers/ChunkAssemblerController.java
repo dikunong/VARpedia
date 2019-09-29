@@ -5,17 +5,25 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
+import java.util.function.UnaryOperator;
 
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.layout.Region;
 import varpedia.VARpediaApp;
 import varpedia.tasks.FFMPEGVideoTask;
 import varpedia.tasks.FlickrTask;
 import varpedia.tasks.ListPopulateTask;
 
+/**
+ * Controller for the ChunkAssemblerScreen, which handles assembly of audio chunks, input of creation name and number
+ * of images, and the actual creation of the creation itself via Flickr and FFMPEG.
+ *
+ * Authors: Di Kun Ong and Tudor Zagreanu
+ */
 public class ChunkAssemblerController extends Controller {
 
     @FXML
@@ -57,8 +65,28 @@ public class ChunkAssemblerController extends Controller {
     @FXML
     private void initialize() {
         setLoadingInactive();
+
+        // give the numOfImagesSpinner a range of 0-10
         numOfImagesSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10));
+
+        // set numOfImagesSpinner TextFormatter to only accept integers
+        UnaryOperator<TextFormatter.Change> filter = change -> {
+            String text = change.getText();
+            if (text.matches("[0-9]*")) {
+                return change;
+            }
+            return null;
+        };
+        TextFormatter<String> intFormatter = new TextFormatter<>(filter);
+        numOfImagesSpinner.getEditor().setTextFormatter(intFormatter);
+
+        // make numOfImagesSpinner listen for typed input
         numOfImagesSpinner.getValueFactory().setValue(10);
+        numOfImagesSpinner.focusedProperty().addListener(((observable, oldValue, newValue) -> {
+            if (!newValue) {
+                numOfImagesSpinner.increment(0);
+            }
+        }));
 
     	// populate list view with saved chunks
         populateList();
@@ -69,19 +97,28 @@ public class ChunkAssemblerController extends Controller {
         if (_createTask == null) {
     		int imageCount = numOfImagesSpinner.getValueFactory().getValue();
     		String name = creationNameTextField.getText();
-
-            System.out.println("Debug please");
-            for (String s : rightChunkList) {
-                System.out.println(s);
-            }
     		
     		if (name == null || name.isEmpty()) {
-    			Alert alert = new Alert(Alert.AlertType.ERROR, "Please enter a creation name.");
-                alert.showAndWait();
-    		} else if (imageCount <= 0 || imageCount > 10) {
-    			Alert alert = new Alert(Alert.AlertType.ERROR, "You must select between 1 and 10 images (inclusive).");
-                alert.showAndWait();
+    		    showNotifyingAlert(Alert.AlertType.ERROR, "Please enter a creation name.");
+    		} else if (!name.matches("[-_. A-Za-z0-9]+")) {
+                showNotifyingAlert(Alert.AlertType.ERROR, "Please enter a valid creation name (only letters, numbers, spaces, -, _).");
+            } else if (imageCount < 0 || imageCount > 10) {
+                showNotifyingAlert(Alert.AlertType.ERROR, "You must select between 0 and 10 images (inclusive).");
+    		} else if (rightChunkListView.getItems().isEmpty()) {
+                showNotifyingAlert(Alert.AlertType.ERROR, "Please add chunks to assemble.");
     		} else {
+
+    		    // check if creation already exists and offer option to overwrite
+                // this must go here in order to allow application flow to continue if user chooses to overwrite
+    		    if (checkDuplicate(name)) {
+                    Alert alert = new Alert(Alert.AlertType.WARNING, "Creation already exists. Overwrtie?", ButtonType.YES, ButtonType.CANCEL);
+                    alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+                    alert.showAndWait();
+                    if (alert.getResult() == ButtonType.CANCEL) {
+                        return;
+                    }
+                }
+
     			// get Flickr images
     	        FlickrTask flickr = new FlickrTask(imageCount);
     			_createTask = flickr;
@@ -92,7 +129,8 @@ public class ChunkAssemblerController extends Controller {
 
                 		if (actualImages < imageCount) {
                 			Alert alert = new Alert(Alert.AlertType.WARNING, "Fewer images were retrieved than requested (" + actualImages + "). Continue anyway?", ButtonType.YES, ButtonType.CANCEL);
-            	            alert.showAndWait();
+                            alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+                			alert.showAndWait();
 
             	            if (alert.getResult() == ButtonType.YES) {
             	            	actual = true;
@@ -113,8 +151,7 @@ public class ChunkAssemblerController extends Controller {
                 	    	_createTask = new FFMPEGVideoTask(name, images, rightChunkList);
     	                	_createTask.setOnSucceeded(ev2 -> {
     		                    _createTask = null;
-    		                    Alert alert = new Alert(Alert.AlertType.INFORMATION, "Created creation.");
-    	                        alert.showAndWait();
+                                showNotifyingAlert(Alert.AlertType.INFORMATION, "Created creation.");
     	                        setLoadingInactive();
     	                        changeScene(event, "/varpedia/MainScreen.fxml"); //TODO: Maybe go straight to player
     		                });
@@ -123,8 +160,7 @@ public class ChunkAssemblerController extends Controller {
     	                        setLoadingInactive();
     	                    });
     	                    _createTask.setOnFailed(ev2 -> {
-    	                    	Alert alert = new Alert(Alert.AlertType.ERROR, "Failed to create creation.");
-    	                        alert.showAndWait();
+                                showNotifyingAlert(Alert.AlertType.ERROR, "Failed to create creation.");
     	                        _createTask = null;
     	                        setLoadingInactive();
     	                    });
@@ -139,8 +175,7 @@ public class ChunkAssemblerController extends Controller {
                     setLoadingInactive();
                 });
                 _createTask.setOnFailed(ev -> {
-                	Alert alert = new Alert(Alert.AlertType.ERROR, "Failed to download images.");
-                    alert.showAndWait();
+                    showNotifyingAlert(Alert.AlertType.ERROR, "Failed to download images.");
                     _createTask = null;
                     setLoadingInactive();
                 });
@@ -158,9 +193,10 @@ public class ChunkAssemblerController extends Controller {
         // ask for confirmation first!
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to cancel making " +
                 "the current creation?", ButtonType.YES, ButtonType.CANCEL);
+        alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
         alert.showAndWait();
         if (alert.getResult() == ButtonType.YES) {
-            // discard all existing temp files etc
+            // if a creation is currently in progress, cancel it
             if (_createTask != null && _createTask.isRunning()) {
                 _createTask.cancel();
             }
@@ -171,17 +207,16 @@ public class ChunkAssemblerController extends Controller {
 
     @FXML
     private void pressBackButton(ActionEvent event) {
+        // open TextEditorScreen - do not lose any progress
         changeScene(event, "/varpedia/TextEditorScreen.fxml");
     }
 
     @FXML
     private void pressAddToButton(ActionEvent event) {
         String selectedChunk = leftChunkListView.getSelectionModel().getSelectedItem();
-        // check something is selected in leftChunkList
+        // if something is selected in leftChunkList, shift it to rightChunkList
         if (selectedChunk != null) {
-            // add it to rightChunkList
             rightChunkList.add(selectedChunk);
-            // remove it from leftChunkList
             leftChunkList.remove(selectedChunk);
         }
     }
@@ -189,11 +224,9 @@ public class ChunkAssemblerController extends Controller {
     @FXML
     private void pressRemoveFromButton(ActionEvent event) {
         String selectedChunk = rightChunkListView.getSelectionModel().getSelectedItem();
-        // check something is selected in rightChunkList
+        // if something is selected in rightChunkList, shift it to leftChunkList
         if (selectedChunk != null) {
-            // add it to leftChunkList
             leftChunkList.add(selectedChunk);
-            // remove it from rightChunkList
             rightChunkList.remove(selectedChunk);
         }
     }
@@ -202,9 +235,8 @@ public class ChunkAssemblerController extends Controller {
     private void pressMoveUpButton(ActionEvent event) {
         String selectedChunk = rightChunkListView.getSelectionModel().getSelectedItem();
         int selectedIndex = rightChunkListView.getSelectionModel().getSelectedIndex();
-        // check something is selected in rightChunkList and it's not already first
+        // if something is selected in rightChunkList and it's not already first, shift its index by -1
         if (selectedChunk != null && selectedIndex > 0) {
-            // change its index if it's not already first
             rightChunkList.remove(selectedIndex);
             rightChunkList.add(selectedIndex - 1, selectedChunk);
             rightChunkListView.getSelectionModel().select(selectedIndex - 1);
@@ -216,7 +248,7 @@ public class ChunkAssemblerController extends Controller {
         String selectedChunk = rightChunkListView.getSelectionModel().getSelectedItem();
         int selectedIndex = rightChunkListView.getSelectionModel().getSelectedIndex();
         int maxIndex = rightChunkListView.getItems().size() - 1;
-        // check something is selected in rightChunkList and it's not already last
+        // if something is selected in rightChunkList and it's not already last, shift its index by +1
         if (selectedChunk != null && selectedIndex < maxIndex) {
             rightChunkList.remove(selectedIndex);
             rightChunkList.add(selectedIndex + 1, selectedChunk);
@@ -224,6 +256,19 @@ public class ChunkAssemblerController extends Controller {
         }
     }
 
+    /**
+     * Helper method that determines if a creation already exists.
+     * @param name Creation being checked for duplicate status
+     * @return true if creation exists
+     */
+    private boolean checkDuplicate(String name) {
+        File file = new File("creations/" + name + ".mp4");
+        return file.exists();
+    }
+
+    /**
+     * Helper method that runs a task to populate the leftChunkList with chunks in the appfiles/audio directory.
+     */
     private void populateList() {
         Task<List<String>> task = new ListPopulateTask(new File("appfiles/audio"));
         task.setOnSucceeded(event -> {
@@ -239,27 +284,33 @@ public class ChunkAssemblerController extends Controller {
         pool.submit(task);
     }
 
+    /**
+     * Helper method to disable most UI elements and show loading indicators while a creation task is in progress.
+     */
     private void setLoadingActive() {
+        createBtn.setText("Stop");
         addToBtn.setDisable(true);
         removeFromBtn.setDisable(true);
         moveUpBtn.setDisable(true);
         moveDownBtn.setDisable(true);
         creationNameTextField.setDisable(true);
         numOfImagesSpinner.setDisable(true);
-        //createBtn.setDisable(true);
         backBtn.setDisable(true);
         loadingBar.setVisible(true);
         loadingLabel.setVisible(true);
     }
 
+    /**
+     * Helper method to enable most UI elements and hide loading indicators when a creation task ends.
+     */
     private void setLoadingInactive() {
+        createBtn.setText("Create!");
         addToBtn.setDisable(false);
         removeFromBtn.setDisable(false);
         moveUpBtn.setDisable(false);
         moveDownBtn.setDisable(false);
         creationNameTextField.setDisable(false);
         numOfImagesSpinner.setDisable(false);
-        //createBtn.setDisable(false);
         backBtn.setDisable(false);
         loadingBar.setVisible(false);
         loadingLabel.setVisible(false);

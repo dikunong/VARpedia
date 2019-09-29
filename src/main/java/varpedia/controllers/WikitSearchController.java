@@ -10,6 +10,11 @@ import varpedia.tasks.WikitSearchTask;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 
+/**
+ * Controller for the WikitSearchScreen, which handles the searching of Wikipedia for a given search term (via wikit).
+ *
+ * Authors: Di Kun Ong and Tudor Zagreanu
+ */
 public class WikitSearchController extends Controller {
 
     @FXML
@@ -35,13 +40,9 @@ public class WikitSearchController extends Controller {
     @FXML
     private void pressSearchButton(ActionEvent event) {
         // check if there is text in the text field
-        // in the future, could apply regex to prevent searching of characters Wikipedia has blocked from
-        // being in titles, which are: # < > [ ] | { }
-        // but that's a nice-to-have as the search will still fail gracefully without it
         String searchTerm = searchTextField.getText();
         if (searchTerm.equals("")) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Please type in a valid search term.");
-            alert.showAndWait();
+            showNotifyingAlert(Alert.AlertType.ERROR, "Please type in a valid search term.");
             return;
         }
 
@@ -59,18 +60,18 @@ public class WikitSearchController extends Controller {
                     changeScene(event, "/varpedia/TextEditorScreen.fxml");
                 } else {
                     setLoadingInactive();
-                    Alert alert = new Alert(Alert.AlertType.ERROR, "No valid Wikipedia articles found.");
-                    alert.showAndWait();
+                    showNotifyingAlert(Alert.AlertType.ERROR, "No valid Wikipedia articles found.");
                 }
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }
         });
-        
+
+        // handle wikit returning a disambiguation result, which doesn't output to stdout or stderr
+        // and so can't be handled with regular logic
         _wikitTask.setOnFailed(event2 -> {
         	setLoadingInactive();
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Spent too long searching. Probably a disambiguation article.");
-            alert.showAndWait();
+            showNotifyingAlert(Alert.AlertType.ERROR, "Search timed out - search term may be too ambiguous.");
         });
 
         pool.submit(_wikitTask);
@@ -89,12 +90,18 @@ public class WikitSearchController extends Controller {
         changeScene(event, "/varpedia/MainScreen.fxml");
     }
 
+    /**
+     * Helper method to disable most UI elements and show loading indicators while a Wikit task is in progress.
+     */
     private void setLoadingActive() {
         searchBtn.setDisable(true);
         loadingLabel.setVisible(true);
         loadingWheel.setVisible(true);
     }
 
+    /**
+     * Helper method to enable most UI elements and hide loading indicators when a Wikit task ends.
+     */
     private void setLoadingInactive() {
         searchBtn.setDisable(false);
         loadingLabel.setVisible(false);

@@ -1,10 +1,16 @@
 package varpedia;
 
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.layout.Region;
 import javafx.stage.Stage;
+import varpedia.tasks.ClearTask;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,6 +19,11 @@ import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Main class of VARpedia.
+ *
+ * Authors: Di Kun Ong and Tudor Zagreanu
+ */
 public class VARpediaApp extends Application {
 
 	/**
@@ -33,43 +44,51 @@ public class VARpediaApp extends Application {
             primaryStage.setScene(new Scene(layout));
             primaryStage.show();
 
-            primaryStage.setMinHeight(200);
-            primaryStage.setMinWidth(520);
+            primaryStage.setMinHeight(280);
+            primaryStage.setMinWidth(560);
+
+            // if the application is abruptly closed, prompt before exiting
+            // if the user chooses to exit, delete appfiles first
+            primaryStage.setOnCloseRequest(e -> {
+                Alert alert = new Alert(Alert.AlertType.WARNING, "Do you want to exit? Any unsaved creation progress will be lost.", ButtonType.YES, ButtonType.CANCEL);
+                alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+                alert.showAndWait();
+
+                if (alert.getResult() == ButtonType.YES) {
+                    Task<Void> task = new ClearTask(new File("appfiles"));
+                    task.run();
+                    Platform.exit();
+                    System.exit(0);
+                } else {
+                    e.consume();
+                }
+            });
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        // TODO: fix this horrendous code repetition
-        File creationsDir = new File("creations");
-        File appfilesDir = new File("appfiles");
-        File audioDir = new File("appfiles/audio");
-
-        // ensure the creations directory is actually a directory AND exists
-        if (creationsDir.isFile()) {
-            creationsDir.delete();
-        }
-        if (!creationsDir.exists()) {
-            creationsDir.mkdir();
-        }
-        // ensure the appfiles directory is actually a directory AND exists
-        if (appfilesDir.isFile()) {
-            appfilesDir.delete();
-        }
-        if (!appfilesDir.exists()) {
-            appfilesDir.mkdir();
-        }
-        // ensure the audio directory is actually a directory AND exists
-        if (audioDir.isFile()) {
-            audioDir.delete();
-        }
-        if (!audioDir.exists()) {
-            audioDir.mkdir();
-        }
+        // check that various app directories exist and aren't folders
+        checkDir(new File("creations"));
+        checkDir(new File("appfiles"));
+        checkDir(new File("appfiles/audio"));
 
     }
 
     public static void main(String[] args) {
         launch(args);
+    }
+
+    /**
+     * Checks if a given directory is a file or doesn't exist, creating a new directory if needed.
+     * @param dir Directory to be checked
+     */
+    private void checkDir(File dir) {
+        if (dir.isFile()) {
+            dir.delete();
+        }
+        if (!dir.exists()) {
+            dir.mkdir();
+        }
     }
 
 }

@@ -11,6 +11,11 @@ import java.util.List;
 import javafx.concurrent.Task;
 import varpedia.Command;
 
+/**
+ * Background task that handles the playing/saving of audio chunks, using the festival voice synthesizer.
+ *
+ * Author: Tudor Zagreanu
+ */
 public class PlayChunkTask extends Task<Void> {
 	private String _inputText;
 	private String _filename;

@@ -11,6 +11,12 @@ import javax.sound.sampled.AudioSystem;
 import javafx.concurrent.Task;
 import varpedia.Command;
 
+/**
+ * Background task that handles all FFMPEG commands for creation creation - including concatenation of audio chunks,
+ * and merging of audio with Flickr images to produce the final creation video.
+ *
+ * Author: Tudor Zagreanu
+ */
 public class FFMPEGVideoTask extends Task<Void> {
 	
 	private List<String> _chunks;

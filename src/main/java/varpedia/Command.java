@@ -6,6 +6,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 
+/**
+ * Represents a Command given to the system's terminal (e.g. Bash on Linux).
+ *
+ * Authors: Di Kun Ong and Tudor Zagreanu
+ */
 public class Command {
 
     private String[] _cmd;
@@ -85,8 +90,8 @@ public class Command {
 		}
 	}
 	
-	//Used only for wikit. When opening a disambiguation page it freezes waiting for user "input", which it will never take.
-	//It will be stuck like this even when using destroyForcibly. So, instead, we just let it go.
+	// Used only for wikit. When opening a disambiguation page it freezes waiting for user "input", which it will never take.
+	// It will be stuck like this even when using destroyForcibly. So, instead, we just let it go.
 	public void endForcibly() {
 		_process.destroyForcibly();
 	}

@@ -3,6 +3,11 @@ package varpedia.tasks;
 import javafx.concurrent.Task;
 import varpedia.Command;
 
+/**
+ * Background task that handles retrieving a list of all installed festival voices available on the user's system.
+ *
+ * Author: Tudor Zagreanu
+ */
 public class VoiceListTask extends Task<String[]> {
 	@Override
 	protected String[] call() throws Exception {
