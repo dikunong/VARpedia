@@ -60,7 +60,7 @@ public class ChunkAssemblerController extends Controller {
     private void initialize() {
         setLoadingInactive();
 
-        // give the numOfImagesSpinner a range of 0-10, and make it listen for typed input
+        // give the numOfImagesSpinner a range of 0-10
         numOfImagesSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10));
 
         // set numOfImagesSpinner TextFormatter to only accept integers
@@ -74,6 +74,7 @@ public class ChunkAssemblerController extends Controller {
         TextFormatter<String> intFormatter = new TextFormatter<>(filter);
         numOfImagesSpinner.getEditor().setTextFormatter(intFormatter);
 
+        // make numOfImagesSpinner listen for typed input
         numOfImagesSpinner.getValueFactory().setValue(10);
         numOfImagesSpinner.focusedProperty().addListener(((observable, oldValue, newValue) -> {
             if (!newValue) {
@@ -103,7 +104,10 @@ public class ChunkAssemblerController extends Controller {
     		} else if (imageCount <= 0 || imageCount > 10) {
     			Alert alert = new Alert(Alert.AlertType.ERROR, "You must select between 1 and 10 images (inclusive).");
                 alert.showAndWait();
-    		} else {
+    		} else if (rightChunkListView.getItems().isEmpty()) {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Please select chunks to assemble.");
+                alert.showAndWait();
+            } else {
     			FlickrTask flickr = new FlickrTask(term, imageCount);
     			_createTask = flickr;
     			_createTask.setOnSucceeded(ev -> {
