@@ -7,6 +7,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class WikitSearchTask extends Task<Boolean> {
 
@@ -21,6 +23,17 @@ public class WikitSearchTask extends Task<Boolean> {
         // lookup search term on Wikipedia
         Command wikit = new Command("wikit", _searchTerm);
         wikit.run();
+        
+        try {
+        	if (!wikit.getProcess().waitFor(10, TimeUnit.SECONDS)) {
+        		wikit.endForcibly();
+            	throw new TimeoutException("Wikit timed out, diambiguation?");
+        	}
+        } catch (InterruptedException e) {
+        	wikit.endForcibly();
+        	return Boolean.TRUE;
+        }
+        
         String searchOutput = wikit.getOutput();
 
         // do we need to handle disambiguation results???

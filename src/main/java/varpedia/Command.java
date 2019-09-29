@@ -83,4 +83,10 @@ public class Command {
 			}
 		}
 	}
+	
+	//Used only for wikit. When opening a disambiguation page it freezes waiting for user "input", which it will never take.
+	//It will be stuck like this even when using destroyForcibly. So, instead, we just let it go.
+	public void endForcibly() {
+		_process.destroyForcibly();
+	}
 }
