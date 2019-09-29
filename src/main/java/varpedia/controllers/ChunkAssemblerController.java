@@ -296,13 +296,13 @@ public class ChunkAssemblerController extends Controller {
      * Helper method to disable most UI elements and show loading indicators while a creation task is in progress.
      */
     private void setLoadingActive() {
+        createBtn.setText("Stop");
         addToBtn.setDisable(true);
         removeFromBtn.setDisable(true);
         moveUpBtn.setDisable(true);
         moveDownBtn.setDisable(true);
         creationNameTextField.setDisable(true);
         numOfImagesSpinner.setDisable(true);
-        //createBtn.setDisable(true);
         backBtn.setDisable(true);
         loadingBar.setVisible(true);
         loadingLabel.setVisible(true);
@@ -312,13 +312,13 @@ public class ChunkAssemblerController extends Controller {
      * Helper method to enable most UI elements and hide loading indicators when a creation task ends.
      */
     private void setLoadingInactive() {
+        createBtn.setText("Create!");
         addToBtn.setDisable(false);
         removeFromBtn.setDisable(false);
         moveUpBtn.setDisable(false);
         moveDownBtn.setDisable(false);
         creationNameTextField.setDisable(false);
         numOfImagesSpinner.setDisable(false);
-        //createBtn.setDisable(false);
         backBtn.setDisable(false);
         loadingBar.setVisible(false);
         loadingLabel.setVisible(false);

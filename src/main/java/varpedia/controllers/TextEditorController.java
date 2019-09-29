@@ -88,11 +88,13 @@ public class TextEditorController extends Controller {
 		            _playTask.setOnSucceeded(ev -> {
 		            	_playTask = null;
 		            	previewBtn.setText("Preview");
+		            	saveBtn.setDisable(false);
 		            	setLoadingInactive();
 		            });
 		            _playTask.setOnCancelled(ev -> {
 		                _playTask = null;
 		            	previewBtn.setText("Preview");
+						saveBtn.setDisable(false);
 		            	setLoadingInactive();
 			        });
 		            _playTask.setOnFailed(ev -> {
@@ -101,11 +103,13 @@ public class TextEditorController extends Controller {
 		            	alert.showAndWait();
 		                _playTask = null;
 		            	previewBtn.setText("Preview");
+						saveBtn.setDisable(false);
 		            	setLoadingInactive();
 			        });
 		            pool.submit(_playTask);
 		            setLoadingActive();
-		            previewBtn.setText("Stop Preview");
+		            previewBtn.setText("Stop");
+		            saveBtn.setDisable(true);
     			}
     		}
     	} else {
@@ -161,11 +165,13 @@ public class TextEditorController extends Controller {
 		    		_saveTask.setOnSucceeded(ev -> {
 		                _saveTask = null;
 		                saveBtn.setText("Save Chunk");
+		                previewBtn.setDisable(false);
 		                setLoadingInactive();
 				    });
 		    		_saveTask.setOnCancelled(ev -> {
 		                _saveTask = null;
 		                saveBtn.setText("Save Chunk");
+						previewBtn.setDisable(false);
 		                setLoadingInactive();
 					});
 		            _saveTask.setOnFailed(ev -> {
@@ -174,10 +180,12 @@ public class TextEditorController extends Controller {
 		    			alert.showAndWait();
 		                _saveTask = null;
 		                saveBtn.setText("Save Chunk");
+						previewBtn.setDisable(false);
 		                setLoadingInactive();
 					});
 		            pool.submit(_saveTask);
-		            saveBtn.setText("Cancel Saving");
+		            saveBtn.setText("Stop");
+					previewBtn.setDisable(true);
 		            setLoadingActive();
 		        }
     		}
@@ -201,6 +209,14 @@ public class TextEditorController extends Controller {
 		alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
         alert.showAndWait();
         if (alert.getResult() == ButtonType.YES) {
+			// if a chunk is currently being played, cancel it
+			if (_playTask != null && _playTask.isRunning()) {
+				_playTask.cancel();
+			}
+			// if a chunk is currently being saved, cancel it
+			if (_saveTask != null && _saveTask.isRunning()) {
+				_saveTask.cancel();
+			}
             changeScene(event, "/varpedia/MainScreen.fxml");
         }
     }
@@ -210,7 +226,6 @@ public class TextEditorController extends Controller {
 	 */
     private void setLoadingActive() {
         assembleBtn.setDisable(true);
-        previewBtn.setDisable(true);
         voiceChoiceBox.setDisable(true);
         loadingLabel.setVisible(true);
         loadingWheel.setVisible(true);
@@ -221,7 +236,6 @@ public class TextEditorController extends Controller {
 	 */
     private void setLoadingInactive() {
         assembleBtn.setDisable(false);
-        previewBtn.setDisable(false);
         voiceChoiceBox.setDisable(false);
         loadingLabel.setVisible(false);
         loadingWheel.setVisible(false);
