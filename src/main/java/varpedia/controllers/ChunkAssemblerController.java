@@ -109,6 +109,18 @@ public class ChunkAssemblerController extends Controller {
                 alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
                 alert.showAndWait();
     		} else {
+
+    		    // check if creation already exists and offer option to overwrite
+                // this must go here in order to allow application flow to continue if user chooses to overwrite
+    		    if (checkDuplicate(name)) {
+                    Alert alert = new Alert(Alert.AlertType.WARNING, "Creation already exists. Overwrtie?", ButtonType.YES, ButtonType.CANCEL);
+                    alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+                    alert.showAndWait();
+                    if (alert.getResult() == ButtonType.CANCEL) {
+                        return;
+                    }
+                }
+
     			// get Flickr images
     	        FlickrTask flickr = new FlickrTask(imageCount);
     			_createTask = flickr;
@@ -250,6 +262,16 @@ public class ChunkAssemblerController extends Controller {
             rightChunkList.add(selectedIndex + 1, selectedChunk);
             rightChunkListView.getSelectionModel().select(selectedIndex + 1);
         }
+    }
+
+    /**
+     * Helper method that determines if a creation already exists.
+     * @param name Creation being checked for duplicate status
+     * @return true if creation exists
+     */
+    private boolean checkDuplicate(String name) {
+        File file = new File("creations/" + name + ".mp4");
+        return file.exists();
     }
 
     /**
