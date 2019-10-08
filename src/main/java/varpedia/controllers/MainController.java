@@ -45,36 +45,35 @@ public class MainController extends Controller {
         // populate list view with saved creations
         populateList();
         deleteAppfiles();
+
+        // disable play and delete buttons until a creation is selected
+        playBtn.disableProperty().bind(creationListView.getSelectionModel().selectedItemProperty().isNull());
+        deleteBtn.disableProperty().bind(creationListView.getSelectionModel().selectedItemProperty().isNull());
     }
 
     @FXML
     private void pressPlayButton(ActionEvent event) {
-        // if a creation is actually selected, store its filename and open PlaybackScreen
-        if (checkCreationSelected()) {
-            sendDataToFile("creations/" + getSelectedFilename(), "playback-name.txt");
-            changeScene(event, "/varpedia/PlaybackScreen.fxml");
-        }
+        // store a creation's filename and open PlaybackScreen
+        sendDataToFile("creations/" + getSelectedFilename(), "playback-name.txt");
+        changeScene(event, "/varpedia/PlaybackScreen.fxml");
 }
 
     @FXML
     private void pressDeleteButton(ActionEvent event) {
-        // check if an item is actually selected first
-        if (checkCreationSelected()) {
-            // ask for confirmation
-            Alert alert = new Alert(Alert.AlertType.WARNING, "Are you sure you want to delete the " +
-                    "selected creation?", ButtonType.YES, ButtonType.CANCEL); // add selected creation name here later
-            alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
-            alert.showAndWait();
-            if (alert.getResult() == ButtonType.YES) {
-                String filename = getSelectedFilename();
-                // delete creation file
-                File file = new File("creations/" + filename);
-                if (file.delete()) {
-                    // update list view
-                    creationList.remove(filename.substring(0, filename.lastIndexOf('.')));
-                } else {
-                    showNotifyingAlert(Alert.AlertType.ERROR, "Could not delete file.");
-                }
+        // ask for confirmation
+        Alert alert = new Alert(Alert.AlertType.WARNING, "Are you sure you want to delete the " +
+                "selected creation?", ButtonType.YES, ButtonType.CANCEL); // add selected creation name here later
+        alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+        alert.showAndWait();
+        if (alert.getResult() == ButtonType.YES) {
+            String filename = getSelectedFilename();
+            // delete creation file
+            File file = new File("creations/" + filename);
+            if (file.delete()) {
+                // update list view
+                creationList.remove(filename.substring(0, filename.lastIndexOf('.')));
+            } else {
+                showNotifyingAlert(Alert.AlertType.ERROR, "Could not delete file.");
             }
         }
     }
@@ -91,20 +90,6 @@ public class MainController extends Controller {
      */
     private String getSelectedFilename() {
         return creationListView.getSelectionModel().getSelectedItem() + ".mp4";
-    }
-
-    /**
-     * Helper method that checks if a creation is currently selected in the ListView
-     * @return true if creation is selected
-     */
-    private boolean checkCreationSelected() {
-        // check if an item is actually selected first
-        if (creationListView.getSelectionModel().getSelectedItem() == null) {
-            showNotifyingAlert(Alert.AlertType.ERROR, "Please select a creation first.");
-            return false;
-        } else {
-            return true;
-        }
     }
 
     /**
