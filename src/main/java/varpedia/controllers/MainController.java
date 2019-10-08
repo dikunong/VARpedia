@@ -9,6 +9,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.Region;
+import varpedia.AlertHelper;
 import varpedia.VARpediaApp;
 import varpedia.tasks.ClearTask;
 import varpedia.tasks.ListPopulateTask;
@@ -39,6 +40,7 @@ public class MainController extends Controller {
     private ListView<String> creationListView;
 
     private ExecutorService pool = VARpediaApp.newTimedCachedThreadPool();
+    private AlertHelper _alertHelper = AlertHelper.getInstance();
 
     @FXML
     private void initialize() {
@@ -61,11 +63,11 @@ public class MainController extends Controller {
     @FXML
     private void pressDeleteButton(ActionEvent event) {
         // ask for confirmation
-        Alert alert = new Alert(Alert.AlertType.WARNING, "Are you sure you want to delete the " +
-                "selected creation?", ButtonType.YES, ButtonType.CANCEL); // add selected creation name here later
-        alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
-        alert.showAndWait();
-        if (alert.getResult() == ButtonType.YES) {
+        _alertHelper.showAlert(Alert.AlertType.WARNING,
+                "Are you sure you want to delete the selected creation?", // add selected creation name here later
+                ButtonType.YES, ButtonType.CANCEL);
+
+        if (_alertHelper.getResult() == ButtonType.YES) {
             String filename = getSelectedFilename();
             // delete creation file
             File file = new File("creations/" + filename);
@@ -73,7 +75,7 @@ public class MainController extends Controller {
                 // update list view
                 creationList.remove(filename.substring(0, filename.lastIndexOf('.')));
             } else {
-                showNotifyingAlert(Alert.AlertType.ERROR, "Could not delete file.");
+                _alertHelper.showAlert(Alert.AlertType.ERROR, "Could not delete file.");
             }
         }
     }

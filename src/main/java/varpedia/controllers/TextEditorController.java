@@ -9,6 +9,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.Region;
+import varpedia.AlertHelper;
 import varpedia.VARpediaApp;
 import varpedia.tasks.PlayChunkTask;
 import varpedia.tasks.VoiceListTask;
@@ -42,6 +43,7 @@ public class TextEditorController extends Controller {
     private Task<Void> _saveTask;
 
     private ExecutorService pool = VARpediaApp.newTimedCachedThreadPool();
+    private AlertHelper _alertHelper = AlertHelper.getInstance();
 
     @FXML
     private void initialize() {
@@ -69,15 +71,16 @@ public class TextEditorController extends Controller {
             String text = wikiTextArea.getSelectedText();
 
     		if (text == null || text.isEmpty()) {
-    			showNotifyingAlert(Alert.AlertType.ERROR, "Please select some text first.");
+    			_alertHelper.showAlert(Alert.AlertType.ERROR, "Please select some text first.");
     		} else {
     			boolean playText;
 
     			if (text.split(" ").length > 30) {
-    				Alert alert = new Alert(Alert.AlertType.WARNING, "Selected text is very long (>30 words). Do you wish to continue anyway?", ButtonType.YES, ButtonType.CANCEL);
-					alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
-    				alert.showAndWait();
-    	            playText = alert.getResult() == ButtonType.YES;
+    				_alertHelper.showAlert(Alert.AlertType.WARNING,
+							"Selected text is very long (>30 words). Do you wish to continue anyway?",
+							ButtonType.YES, ButtonType.CANCEL);
+
+    	            playText = _alertHelper.getResult() == ButtonType.YES;
     			} else {
     				playText = true;
     			}
@@ -98,7 +101,7 @@ public class TextEditorController extends Controller {
 		            	setLoadingInactive();
 			        });
 		            _playTask.setOnFailed(ev -> {
-		            	showNotifyingAlert(Alert.AlertType.ERROR, "Error playing audio chunk. Try selecting other text or using a different voice.");
+		            	_alertHelper.showAlert(Alert.AlertType.ERROR, "Error playing audio chunk. Try selecting other text or using a different voice.");
 		                _playTask = null;
 		            	previewBtn.setText("Preview");
 						saveBtn.setDisable(false);
@@ -146,15 +149,16 @@ public class TextEditorController extends Controller {
             String text = wikiTextArea.getSelectedText();
 
     		if (text == null || text.isEmpty()) {
-				showNotifyingAlert(Alert.AlertType.ERROR, "Please select some text first.");
+				_alertHelper.showAlert(Alert.AlertType.ERROR, "Please select some text first.");
     		} else {
     			boolean playText;
 
     			if (text.split(" ").length > 30) {
-    				Alert alert = new Alert(Alert.AlertType.WARNING, "Selected text is very long (>30 words). Do you wish to continue anyway?", ButtonType.YES, ButtonType.CANCEL);
-					alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
-    				alert.showAndWait();
-    	            playText = alert.getResult() == ButtonType.YES;
+    				_alertHelper.showAlert(Alert.AlertType.WARNING,
+							"Selected text is very long (>30 words). Do you wish to continue anyway?",
+							ButtonType.YES, ButtonType.CANCEL);
+
+    	            playText = _alertHelper.getResult() == ButtonType.YES;
     			} else {
     				playText = true;
     			}
@@ -177,7 +181,7 @@ public class TextEditorController extends Controller {
 		                setLoadingInactive();
 					});
 		            _saveTask.setOnFailed(ev -> {
-						showNotifyingAlert(Alert.AlertType.ERROR, "Error saving audio chunk. Try selecting other text or using a different voice.");
+						_alertHelper.showAlert(Alert.AlertType.ERROR, "Error saving audio chunk. Try selecting other text or using a different voice.");
 		                _saveTask = null;
 		                saveBtn.setText("Save Chunk");
 						previewBtn.setDisable(false);
@@ -204,11 +208,11 @@ public class TextEditorController extends Controller {
     @FXML
     private void pressCancelButton(ActionEvent event) {
         // ask for confirmation first!
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to cancel making " +
-                "the current creation?", ButtonType.YES, ButtonType.CANCEL);
-		alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
-        alert.showAndWait();
-        if (alert.getResult() == ButtonType.YES) {
+		_alertHelper.showAlert(Alert.AlertType.CONFIRMATION,
+				"Are you sure you want to cancel making the current creation?",
+				ButtonType.YES, ButtonType.CANCEL);
+
+        if (_alertHelper.getResult() == ButtonType.YES) {
 			// if a chunk is currently being played, cancel it
 			if (_playTask != null && _playTask.isRunning()) {
 				_playTask.cancel();
