@@ -22,23 +22,36 @@ public class FFMPEGVideoTask extends Task<Void> {
 	private List<String> _chunks;
 	private String _creation;
 	private List<Integer> _images;
+	private String _background;
+	private double _volume;
 	
 	/**
 	 * @param creation The name of the creation
 	 * @param images The list of image indices to create. These refer to filenames appfiles/image&ltid&gt.jpg
 	 * @param chunks The list of chunk names. These refer to filenames appfiles/audio/&ltchunk name&gt.wav
+	 * @param background The background music in a file
+	 * @param volume The volume of the background music
 	 */
-	public FFMPEGVideoTask(String creation, List<Integer> images, List<String> chunks) {
+	public FFMPEGVideoTask(String creation, List<Integer> images, List<String> chunks, String background, double volume) {
 		_chunks = chunks;
 		_creation = creation;
 		_images = images;
+		_background = background;
+		_volume = volume;
 	}
 	
 	@Override
 	protected Void call() throws Exception {
 
 		//Concatenate audio files into a single audio file at appfiles/audio.wav
-		Command audio = new Command("ffmpeg", "-y", "-f", "concat", "-protocol_whitelist", "file,pipe", "-i", "-", "appfiles/audio.wav");
+		Command audio;
+		
+		if (_background == null) {
+			audio = new Command("ffmpeg", "-y", "-f", "concat", "-protocol_whitelist", "file,pipe", "-i", "-", "appfiles/audio.wav");
+		} else {
+			audio = new Command("ffmpeg", "-y", "-f", "concat", "-protocol_whitelist", "file,pipe", "-i", "-", "-i", _background, "-filter_complex", "[1]volume=volume=" + _volume + "[a];[0][a]amix=inputs=2:duration=first", "appfiles/audio.wav");
+		}
+		
 		audio.run();
 		
 		//Pipe the chunk names in
