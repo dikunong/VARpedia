@@ -107,6 +107,7 @@ public class PlaybackController extends Controller {
 		_player = null;
 		mediaView.setMediaPlayer(null);
 		timeSlider.setDisable(true);
+		createDialog(event, "/varpedia/RatingDialog.fxml", "Rate Your Confidence");
         changeScene(event, "/varpedia/MainScreen.fxml");
     }
 
