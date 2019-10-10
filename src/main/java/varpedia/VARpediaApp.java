@@ -39,6 +39,7 @@ public class VARpediaApp extends Application {
     public void start(Stage primaryStage) {
         try {
             Font.loadFont(VARpediaApp.class.getResource("fonts/Roboto-Regular.ttf").toExternalForm(),10);
+            Font.loadFont(VARpediaApp.class.getResource("fonts/RobotoBold.ttf").toExternalForm(),10);
             Font.loadFont(VARpediaApp.class.getResource("fonts/Montserrat-Medium.ttf").toExternalForm(),10);
 
             FXMLLoader loader = new FXMLLoader();

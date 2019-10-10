@@ -1,11 +1,20 @@
 .root {
-    -fx-font-size: 14px;
+    -fx-font-size: 16px;
     -fx-font-family: Roboto, sans-serif;
     -fx-background-color: #ffffff;
 }
 
-Button {
-    -fx-font-size: 14px;
+.heading {
+    -fx-font-size: 32px;
+    -fx-font-family: "Montserrat Medium", Roboto, sans-serif;
+}
+
+/*------------------------------------*\
+    #BUTTONS
+\*------------------------------------*/
+
+.button {
+    -fx-font-size: 16px;
     -fx-font-family: "Montserrat Medium", Roboto, sans-serif;
     /* Icon formatting */
     -fx-background-size: 24 24;
@@ -127,19 +136,47 @@ Button {
     -fx-background-image: url("images/cancel_black.png");
 }
 
-.label {
-    -fx-font-size: 14px;
+/*------------------------------------*\
+    #TABLEVIEW
+\*------------------------------------*/
+
+.table-view {
+    -fx-background-color: #ffffff;
 }
 
-.text-field {
-    -fx-font-size: 14px;
+.table-view:focused {
+    -fx-background-color: #1a75eb;
 }
 
-.choice-box {
-    -fx-font-size: 14px;
+.table-view .column-header-background .label{
+    -fx-font-weight: bold;
 }
 
-.heading {
-    -fx-font-size: 32px;
-    -fx-font-family: "Montserrat Medium", Roboto, sans-serif;
+.table-view .column-header {
+    -fx-background-color: #ffffff;
+}
+
+.table-view .filler {
+    -fx-background-color: #ffffff;
+}
+
+.table-row-cell{
+    -fx-background-color: -fx-table-cell-border-color, #ffffff;
+    -fx-border-color: #e0e0e0;
+    -fx-table-cell-border-color:#ffffff;
+    -fx-cell-size: 48px;
+}
+
+.table-row-cell:odd{
+    -fx-background-color: -fx-table-cell-border-color, #ffffff; 
+}
+
+.table-row-cell:selected {
+    -fx-background-color: #1a75eb;
+    -fx-background-insets: 0;
+    -fx-background-radius: 1;
+}
+
+.table-column {
+  -fx-alignment: CENTER-LEFT;
 }
