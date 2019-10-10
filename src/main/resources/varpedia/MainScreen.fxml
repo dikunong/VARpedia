@@ -6,6 +6,8 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
@@ -16,14 +18,19 @@
             <Insets left="16.0" top="8.0" />
          </VBox.margin>
       </Label>
-      <ListView fx:id="creationListView" VBox.vgrow="SOMETIMES">
-         <items>
-            <FXCollections fx:id="creationList" fx:factory="observableArrayList" />
-         </items>
+      <TableView fx:id="creationTableView" VBox.vgrow="SOMETIMES" items="${controller.creationList}">
+        <placeholder>
+           <Label text="Make your first creation by clicking the &quot;Create New...&quot; button!"/>
+        </placeholder>
+        <columns>
+          <TableColumn fx:id="creationNameCol" editable="false" minWidth="110.0" prefWidth="300.0" text="Creation name" />
+          <TableColumn fx:id="creationConfCol" editable="false" minWidth="90.0" prefWidth="90.0" text="Confidence" />
+          <TableColumn fx:id="creationViewCol" editable="false" minWidth="90.0" prefWidth="190.0" text="Last viewed" />
+        </columns>
          <VBox.margin>
             <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
          </VBox.margin>
-      </ListView>
+      </TableView>
       <HBox prefHeight="100.0" prefWidth="200.0">
          <children>
             <HBox HBox.hgrow="ALWAYS">
