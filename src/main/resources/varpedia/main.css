@@ -5,7 +5,20 @@
 }
 
 Button {
+    -fx-font-size: 14px;
     -fx-font-family: "Montserrat Medium", Roboto, sans-serif;
+    /* Icon formatting */
+    -fx-background-size: 24 24;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: 4px; 
+}
+
+.icon-only-button {
+    -fx-min-height: 32px;
+    -fx-min-width: 32px;
+    -fx-background-size: 32 32;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: 0px; 
 }
 
 .main-button {
@@ -34,6 +47,96 @@ Button {
     -fx-background-color: #d32f2f;
     -fx-border-color: #d32f2f;
     -fx-text-fill: #ffffff;
+}
+
+#playBtn {
+    -fx-background-image: url("images/play_circle_black.png");
+}
+
+#deleteBtn {
+    -fx-background-image: url("images/delete_black.png");
+}
+
+#createBtn {
+    -fx-background-image: url("images/add_circle_white.png");
+}
+
+#searchBtn {
+    -fx-background-image: url("images/search_white.png");
+}
+
+#cancelBtn {
+    -fx-background-image: url("images/cancel_black.png");
+}
+
+#cancelBtn:hover {
+    -fx-background-image: url("images/cancel_white.png");
+}
+
+#playPauseBtn {
+    -fx-min-height: 48px;
+    -fx-min-width: 48px;
+    -fx-background-size: 40 40;
+    -fx-background-position: 4px; 
+    -fx-border-color: transparent;
+    -fx-background-radius: 24px;
+    -fx-background-image: url("images/pause_circle_white.png");
+}
+
+#exitBtn {
+    -fx-background-image: url("images/cancel_black.png");
+}
+
+#previewBtn {
+    -fx-background-image: url("images/volume_up_black.png");
+}
+
+#saveBtn {
+    -fx-background-image: url("images/save_black.png");
+}
+
+#assembleBtn {
+    -fx-background-image: url("images/subscriptions_white.png");
+}
+
+#backBtn {
+    -fx-background-image: url("images/arrow_back_black.png");
+}
+
+#addToBtn {
+    -fx-background-image: url("images/chevron_right_black.png");
+}
+
+#removeFromBtn {
+    -fx-background-image: url("images/chevron_left_black.png");
+}
+
+#moveUpBtn {
+    -fx-background-image: url("images/chevron_up_black.png");
+}
+
+#moveDownBtn {
+    -fx-background-image: url("images/chevron_down_black.png");
+}
+
+#saveRateBtn {
+    -fx-background-image: url("images/save_white.png");
+}
+
+#dontSaveRateBtn {
+    -fx-background-image: url("images/cancel_black.png");
+}
+
+.label {
+    -fx-font-size: 14px;
+}
+
+.text-field {
+    -fx-font-size: 14px;
+}
+
+.choice-box {
+    -fx-font-size: 14px;
 }
 
 .heading {

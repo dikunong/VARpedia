@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER" prefHeight="400.0" prefWidth="600.0" stylesheets="@main.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="varpedia.controllers.WikitSearchController">
+<VBox alignment="CENTER" prefHeight="450.0" prefWidth="700.0" stylesheets="@main.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="varpedia.controllers.WikitSearchController">
    <children>
       <Label text="Enter a term to search on Wikipedia:" />
       <HBox alignment="CENTER">
@@ -19,12 +19,12 @@
                   <Insets right="8.0" />
                </HBox.margin>
             </TextField>
-            <Button fx:id="searchBtn" mnemonicParsing="false" onAction="#pressSearchButton" prefWidth="100.0" styleClass="main-button" text="Search">
+            <Button fx:id="searchBtn" mnemonicParsing="false" onAction="#pressSearchButton" prefWidth="130.0" styleClass="main-button" text="Search">
                <HBox.margin>
                   <Insets right="8.0" />
                </HBox.margin>
             </Button>
-            <Button fx:id="cancelBtn" mnemonicParsing="false" onAction="#pressCancelButton" prefWidth="100.0" text="Cancel">
+            <Button fx:id="cancelBtn" mnemonicParsing="false" onAction="#pressCancelButton" prefWidth="110.0" text="Cancel">
                <styleClass>
                   <String fx:value="sec-button" />
                   <String fx:value="red-button" />

@@ -14,9 +14,9 @@ public class RatingController extends Controller {
     @FXML
     private Spinner<Integer> ratingSpinner;
     @FXML
-    private Button saveBtn;
+    private Button saveRateBtn;
     @FXML
-    private Button dontSaveBtn;
+    private Button dontSaveRateBtn;
 
     private AlertHelper _alertHelper = AlertHelper.getInstance();
 

@@ -1,46 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import java.lang.String?>
-<?import javafx.collections.FXCollections?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="400.0" prefWidth="600.0" stylesheets="@main.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="varpedia.controllers.MainController">
+<VBox prefHeight="450.0" prefWidth="700.0" stylesheets="@main.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="varpedia.controllers.MainController">
    <children>
       <Label styleClass="heading" text="Existing Creations">
          <VBox.margin>
             <Insets left="16.0" top="8.0" />
          </VBox.margin>
       </Label>
-      <TableView fx:id="creationTableView" VBox.vgrow="SOMETIMES" items="${controller.creationList}">
+      <TableView fx:id="creationTableView" items="${controller.creationList}" VBox.vgrow="SOMETIMES">
         <placeholder>
-           <Label text="Make your first creation by clicking the &quot;Create New...&quot; button!"/>
+           <Label text="Make your first creation by clicking the &quot;Create New...&quot; button!" />
         </placeholder>
         <columns>
-          <TableColumn fx:id="creationNameCol" editable="false" minWidth="110.0" prefWidth="300.0" text="Creation name" />
-          <TableColumn fx:id="creationConfCol" editable="false" minWidth="90.0" prefWidth="90.0" text="Confidence" />
-          <TableColumn fx:id="creationViewCol" editable="false" minWidth="90.0" prefWidth="190.0" text="Last viewed" />
+          <TableColumn fx:id="creationNameCol" editable="false" minWidth="110.0" prefWidth="340.0" text="Creation name" />
+          <TableColumn fx:id="creationConfCol" editable="false" minWidth="90.0" prefWidth="120.0" text="Confidence" />
+          <TableColumn fx:id="creationViewCol" editable="false" minWidth="90.0" prefWidth="220.0" text="Last viewed" />
         </columns>
          <VBox.margin>
             <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
          </VBox.margin>
       </TableView>
-      <HBox prefHeight="100.0" prefWidth="200.0">
+      <HBox>
          <children>
             <HBox HBox.hgrow="ALWAYS">
                <children>
-                  <Button fx:id="playBtn" mnemonicParsing="false" onAction="#pressPlayButton" prefWidth="100.0" styleClass="sec-button" text="Play">
+                  <Button fx:id="playBtn" mnemonicParsing="false" onAction="#pressPlayButton" prefWidth="110.0" styleClass="sec-button" text="Play">
                      <HBox.margin>
                         <Insets right="4.0" />
                      </HBox.margin>
                   </Button>
-                  <Button fx:id="deleteBtn" mnemonicParsing="false" onAction="#pressDeleteButton" prefWidth="100.0" text="Delete">
+                  <Button fx:id="deleteBtn" mnemonicParsing="false" onAction="#pressDeleteButton" prefWidth="110.0" text="Delete">
                      <styleClass>
                         <String fx:value="sec-button" />
                         <String fx:value="red-button" />
@@ -49,7 +47,7 @@
             </HBox>
             <HBox alignment="BOTTOM_RIGHT" HBox.hgrow="ALWAYS">
                <children>
-                  <Button fx:id="createBtn" mnemonicParsing="false" onAction="#pressCreateButton" prefWidth="150.0" styleClass="main-button" text="Create New..." />
+                  <Button fx:id="createBtn" mnemonicParsing="false" onAction="#pressCreateButton" prefWidth="170.0" styleClass="main-button" text="Create New..." />
                </children>
             </HBox>
          </children>

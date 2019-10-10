@@ -15,14 +15,18 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="400.0" prefWidth="600.0" stylesheets="@main.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="varpedia.controllers.ChunkAssemblerController">
+<VBox prefHeight="450.0" prefWidth="700.0" stylesheets="@main.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="varpedia.controllers.ChunkAssemblerController">
    <children>
       <HBox alignment="CENTER_LEFT">
          <children>
-            <Button fx:id="backBtn" mnemonicParsing="false" onAction="#pressBackButton" styleClass="sec-button" text="&lt;- Back">
+            <Button fx:id="backBtn" mnemonicParsing="false" onAction="#pressBackButton">
                <HBox.margin>
                   <Insets />
                </HBox.margin>
+               <styleClass>
+                  <String fx:value="sec-button" />
+                  <String fx:value="icon-only-button" />
+               </styleClass>
             </Button>
             <Label styleClass="heading" text="Assemble audio chunks">
                <HBox.margin>
@@ -60,12 +64,20 @@
             </ListView>
             <VBox alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="2">
                <children>
-                  <Button fx:id="addToBtn" minWidth="80.0" mnemonicParsing="false" onAction="#pressAddToButton" prefWidth="96.0" styleClass="sec-button" text="Add --&gt;">
+                  <Button fx:id="addToBtn" mnemonicParsing="false" onAction="#pressAddToButton">
                      <VBox.margin>
                         <Insets bottom="4.0" />
                      </VBox.margin>
+                     <styleClass>
+                        <String fx:value="sec-button" />
+                        <String fx:value="icon-only-button" />
+                     </styleClass>
                   </Button>
-                  <Button fx:id="removeFromBtn" minWidth="80.0" mnemonicParsing="false" onAction="#pressRemoveFromButton" prefWidth="96.0" styleClass="sec-button" text="&lt;-- Remove" />
+                  <Button fx:id="removeFromBtn" mnemonicParsing="false" onAction="#pressRemoveFromButton">
+                     <styleClass>
+                        <String fx:value="sec-button" />
+                        <String fx:value="icon-only-button" />
+                     </styleClass></Button>
                </children>
                <GridPane.margin>
                   <Insets left="8.0" right="8.0" />
@@ -73,12 +85,20 @@
             </VBox>
             <VBox alignment="CENTER" GridPane.columnIndex="3" GridPane.rowIndex="2">
                <children>
-                  <Button fx:id="moveUpBtn" mnemonicParsing="false" onAction="#pressMoveUpButton" prefWidth="124.0" styleClass="sec-button" text="↑ Move Up ↑">
+                  <Button fx:id="moveUpBtn" mnemonicParsing="false" onAction="#pressMoveUpButton">
                      <VBox.margin>
                         <Insets bottom="4.0" />
                      </VBox.margin>
+                     <styleClass>
+                        <String fx:value="sec-button" />
+                        <String fx:value="icon-only-button" />
+                     </styleClass>
                   </Button>
-                  <Button fx:id="moveDownBtn" mnemonicParsing="false" onAction="#pressMoveDownButton" prefWidth="124.0" styleClass="sec-button" text="↓ Move Down ↓" />
+                  <Button fx:id="moveDownBtn" mnemonicParsing="false" onAction="#pressMoveDownButton">
+                     <styleClass>
+                        <String fx:value="sec-button" />
+                        <String fx:value="icon-only-button" />
+                     </styleClass></Button>
                </children>
                <GridPane.margin>
                   <Insets left="8.0" />
@@ -155,12 +175,12 @@
                         </HBox>
                         <HBox alignment="BOTTOM_RIGHT">
                            <children>
-                              <Button fx:id="createBtn" mnemonicParsing="false" onAction="#pressCreateBtn" prefWidth="100.0" styleClass="main-button" text="Select Photos">
+                              <Button fx:id="createBtn" mnemonicParsing="false" onAction="#pressCreateBtn" prefWidth="150.0" styleClass="main-button" text="Select Photos">
                                  <HBox.margin>
                                     <Insets right="8.0" />
                                  </HBox.margin>
                               </Button>
-                              <Button fx:id="cancelBtn" mnemonicParsing="false" onAction="#pressCancelBtn" prefWidth="100.0" text="Cancel">
+                              <Button fx:id="cancelBtn" mnemonicParsing="false" onAction="#pressCancelBtn" prefWidth="110.0" text="Cancel">
                                  <styleClass>
                                     <String fx:value="sec-button" />
                                     <String fx:value="red-button" />
