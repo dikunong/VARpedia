@@ -9,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.layout.Region;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import varpedia.tasks.ClearTask;
 
@@ -37,6 +38,9 @@ public class VARpediaApp extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
+            Font.loadFont(VARpediaApp.class.getResource("fonts/Roboto-Regular.ttf").toExternalForm(),10);
+            Font.loadFont(VARpediaApp.class.getResource("fonts/Montserrat-Medium.ttf").toExternalForm(),10);
+
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(this.getClass().getResource("MainScreen.fxml"));
             Parent layout = loader.load();

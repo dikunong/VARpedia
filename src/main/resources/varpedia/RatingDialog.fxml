@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" prefHeight="300.0" prefWidth="350.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="varpedia.controllers.RatingController">
+<VBox alignment="CENTER" prefHeight="300.0" prefWidth="350.0" stylesheets="@main.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="varpedia.controllers.RatingController">
    <children>
       <Label text="Rate your confidence in how well you remember what you watched:" textAlignment="CENTER" wrapText="true">
          <VBox.margin>
@@ -42,7 +42,7 @@
             <Insets bottom="32.0" left="8.0" right="8.0" top="32.0" />
          </VBox.margin>
       </HBox>
-      <Button fx:id="saveBtn" minWidth="200.0" mnemonicParsing="false" onAction="#pressSaveBtn" text="Save Rating">
+      <Button fx:id="saveBtn" minWidth="200.0" mnemonicParsing="false" onAction="#pressSaveBtn" styleClass="main-button" text="Save Rating">
          <font>
             <Font name="System Bold" size="12.0" />
          </font>
@@ -50,6 +50,6 @@
             <Insets bottom="8.0" />
          </VBox.margin>
       </Button>
-      <Button fx:id="dontSaveBtn" minWidth="200.0" mnemonicParsing="false" onAction="#pressDontSaveBtn" text="Continue Without Rating" />
+      <Button fx:id="dontSaveBtn" minWidth="200.0" mnemonicParsing="false" onAction="#pressDontSaveBtn" styleClass="sec-button" text="Continue Without Rating" />
    </children>
 </VBox>
