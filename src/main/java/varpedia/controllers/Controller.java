@@ -101,7 +101,7 @@ public abstract class Controller {
             while (line != null) {
                 sb.append(line);
                 // if the message contains a filename, don't add a line break or loop at all
-                if (filename.equals("playback-name.txt") || filename.equals("search-term.txt")) {
+                if (filename.equals("playback-name.txt") || filename.equals("search-term.txt") || filename.equals("selected-chunks.txt") || filename.equals("image-count.txt")) {
                     break;
                 }
                 sb.append(System.lineSeparator());
