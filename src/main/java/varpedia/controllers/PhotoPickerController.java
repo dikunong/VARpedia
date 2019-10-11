@@ -140,27 +140,27 @@ public class PhotoPickerController extends Controller {
 	                    return;
 	                }
 	            }
-
-                // assemble audio + video using ffmpeg
-                _createTask = new FFMPEGVideoTask(name, rightPhotoList, _chunks);
-                _createTask.setOnSucceeded(ev2 -> {
-                    _createTask = null;
-                    _alertHelper.showAlert(Alert.AlertType.INFORMATION, "Created creation.");
-                    setLoadingInactive();
-                    changeScene(event, "/varpedia/MainScreen.fxml"); //TODO: Maybe go straight to player
-                });
-                _createTask.setOnCancelled(ev2 -> {
-                    _createTask = null;
-                    setLoadingInactive();
-                });
-                _createTask.setOnFailed(ev2 -> {
-                    _alertHelper.showAlert(Alert.AlertType.ERROR, "Failed to create creation.");
-                    _createTask = null;
-                    setLoadingInactive();
-                });
-                pool.submit(_createTask);
-                setLoadingActive();
 	        }
+	    	
+			// assemble audio + video using ffmpeg
+	    	_createTask = new FFMPEGVideoTask(name, rightPhotoList, _chunks, null, 0.1);
+	    	_createTask.setOnSucceeded(ev2 -> {
+	            _createTask = null;
+	            _alertHelper.showAlert(Alert.AlertType.INFORMATION, "Created creation.");
+	            setLoadingInactive();
+	            changeScene(event, "/varpedia/MainScreen.fxml"); //TODO: Maybe go straight to player
+	        });
+	    	_createTask.setOnCancelled(ev2 -> {
+	            _createTask = null;
+	            setLoadingInactive();
+	        });
+	        _createTask.setOnFailed(ev2 -> {
+	            _alertHelper.showAlert(Alert.AlertType.ERROR, "Failed to create creation.");
+	            _createTask = null;
+	            setLoadingInactive();
+	        });
+	        pool.submit(_createTask);
+	        setLoadingActive();
     	} else {
     		_createTask.cancel(true);
     		setLoadingInactive();
