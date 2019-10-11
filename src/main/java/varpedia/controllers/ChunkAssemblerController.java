@@ -12,6 +12,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.Region;
+import varpedia.AlertHelper;
 import varpedia.VARpediaApp;
 import varpedia.tasks.FlickrTask;
 import varpedia.tasks.ListPopulateTask;
@@ -60,6 +61,8 @@ public class ChunkAssemblerController extends Controller {
 
     private ExecutorService pool = VARpediaApp.newTimedCachedThreadPool();
 
+    private AlertHelper _alertHelper = AlertHelper.getInstance();
+
     @FXML
     private void initialize() {
         setLoadingInactive();
@@ -96,7 +99,7 @@ public class ChunkAssemblerController extends Controller {
     		int imageCount = 10;
     		
     		if (rightChunkListView.getItems().isEmpty()) {
-                showNotifyingAlert(Alert.AlertType.ERROR, "Please add chunks to assemble.");
+                _alertHelper.showAlert(Alert.AlertType.ERROR, "Please add chunks to assemble.");
     		} else {
     			// get Flickr images
     			_createTask = new FlickrTask(imageCount);
@@ -105,12 +108,12 @@ public class ChunkAssemblerController extends Controller {
                 		int actualImages = _createTask.get();
                 		sendDataToFile(Integer.toString(actualImages), "image-count.txt");
                 		StringBuilder selected = new StringBuilder();
-                		
+
                 		for (String s : rightChunkList) {
                 			selected.append(s);
                 			selected.append(File.pathSeparator);
                 		}
-                		
+
                 		sendDataToFile(selected.toString(), "selected-chunks.txt");
                 		setLoadingInactive();
                 		changeScene(event, "/varpedia/PhotoPickerScreen.fxml");
@@ -123,7 +126,7 @@ public class ChunkAssemblerController extends Controller {
                     setLoadingInactive();
                 });
                 _createTask.setOnFailed(ev -> {
-                    showNotifyingAlert(Alert.AlertType.ERROR, "Failed to download images.");
+                    _alertHelper.showAlert(Alert.AlertType.ERROR, "Failed to download images.");
                     _createTask = null;
                     setLoadingInactive();
                 });
@@ -139,11 +142,11 @@ public class ChunkAssemblerController extends Controller {
     @FXML
     private void pressCancelBtn(ActionEvent event) {
         // ask for confirmation first!
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to cancel making " +
-                "the current creation?", ButtonType.YES, ButtonType.CANCEL);
-        alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
-        alert.showAndWait();
-        if (alert.getResult() == ButtonType.YES) {
+        _alertHelper.showAlert(Alert.AlertType.CONFIRMATION,
+                "Are you sure you want to cancel making the current creation?",
+                ButtonType.YES, ButtonType.CANCEL);
+
+        if (_alertHelper.getResult() == ButtonType.YES) {
             // if a creation is currently in progress, cancel it
             if (_createTask != null && _createTask.isRunning()) {
                 _createTask.cancel();

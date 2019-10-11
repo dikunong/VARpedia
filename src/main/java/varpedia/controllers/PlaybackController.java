@@ -31,7 +31,7 @@ public class PlaybackController extends Controller {
     @FXML
     private Pane mediaPane;
     @FXML
-    private Button playBtn;
+    private Button playPauseBtn;
     @FXML
     private Slider timeSlider;
     @FXML
@@ -88,14 +88,14 @@ public class PlaybackController extends Controller {
     }
 
     @FXML
-    private void pressPlayButton(ActionEvent event) {
+    private void pressPlayPauseButton(ActionEvent event) {
 		if (_player.getStatus() == Status.PLAYING) {
 			_player.pause();
-			playBtn.setText("|>");
+			playPauseBtn.setStyle("-fx-background-image: url(\"/varpedia/images/play_circle_white.png\")");
 			_actualPaused = true;
 		} else {
 			_player.play();
-			playBtn.setText("||");
+			playPauseBtn.setStyle("-fx-background-image: url(\"/varpedia/images/pause_circle_white.png\")");
 			_actualPaused = false;
 		}
     }
@@ -107,6 +107,7 @@ public class PlaybackController extends Controller {
 		_player = null;
 		mediaView.setMediaPlayer(null);
 		timeSlider.setDisable(true);
+		createDialog(event, "/varpedia/RatingDialog.fxml", "Rate Your Confidence");
         changeScene(event, "/varpedia/MainScreen.fxml");
     }
 

@@ -1,14 +1,14 @@
 package varpedia.controllers;
 
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.ListView;
-import javafx.scene.layout.Region;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
+import varpedia.AlertHelper;
+import varpedia.Creation;
 import varpedia.VARpediaApp;
 import varpedia.tasks.ClearTask;
 import varpedia.tasks.ListPopulateTask;
@@ -34,47 +34,55 @@ public class MainController extends Controller {
     private Button createBtn;
 
     @FXML
-    private ObservableList<String> creationList;
+    private final ObservableList<Creation> creationList = FXCollections.observableArrayList();
     @FXML
-    private ListView<String> creationListView;
+    private TableView<Creation> creationTableView;
+    @FXML
+    private TableColumn<Creation, String> creationNameCol;
+    @FXML
+    private TableColumn<Creation, String> creationConfCol;
+    @FXML
+    private TableColumn<Creation, String> creationViewCol;
 
     private ExecutorService pool = VARpediaApp.newTimedCachedThreadPool();
+    private AlertHelper _alertHelper = AlertHelper.getInstance();
 
     @FXML
     private void initialize() {
-        // populate list view with saved creations
-        populateList();
+        // populate table view with saved creations
+        creationNameCol.setCellValueFactory(new PropertyValueFactory<Creation, String>("creationName"));
+        creationConfCol.setCellValueFactory(new PropertyValueFactory<Creation, String>("confidence"));
+        creationViewCol.setCellValueFactory(new PropertyValueFactory<Creation, String>("lastViewed"));
+        populateTable();
         deleteAppfiles();
+
+        // disable play and delete buttons until a creation is selected
+        playBtn.disableProperty().bind(creationTableView.getSelectionModel().selectedItemProperty().isNull());
+        deleteBtn.disableProperty().bind(creationTableView.getSelectionModel().selectedItemProperty().isNull());
     }
 
     @FXML
     private void pressPlayButton(ActionEvent event) {
-        // if a creation is actually selected, store its filename and open PlaybackScreen
-        if (checkCreationSelected()) {
-            sendDataToFile("creations/" + getSelectedFilename(), "playback-name.txt");
-            changeScene(event, "/varpedia/PlaybackScreen.fxml");
-        }
+        // store a creation's filename and open PlaybackScreen
+        sendDataToFile("creations/" + getSelectedFilename(), "playback-name.txt");
+        changeScene(event, "/varpedia/PlaybackScreen.fxml");
 }
 
     @FXML
     private void pressDeleteButton(ActionEvent event) {
-        // check if an item is actually selected first
-        if (checkCreationSelected()) {
-            // ask for confirmation
-            Alert alert = new Alert(Alert.AlertType.WARNING, "Are you sure you want to delete the " +
-                    "selected creation?", ButtonType.YES, ButtonType.CANCEL); // add selected creation name here later
-            alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
-            alert.showAndWait();
-            if (alert.getResult() == ButtonType.YES) {
-                String filename = getSelectedFilename();
-                // delete creation file
-                File file = new File("creations/" + filename);
-                if (file.delete()) {
-                    // update list view
-                    creationList.remove(filename.substring(0, filename.lastIndexOf('.')));
-                } else {
-                    showNotifyingAlert(Alert.AlertType.ERROR, "Could not delete file.");
-                }
+        // ask for confirmation
+        _alertHelper.showAlert(Alert.AlertType.WARNING,
+                "Are you sure you want to delete the selected creation?", // add selected creation name here later
+                ButtonType.YES, ButtonType.CANCEL);
+
+        if (_alertHelper.getResult() == ButtonType.YES) {
+            // delete creation file
+            File file = new File("creations/" + getSelectedFilename());
+            if (file.delete()) {
+                // update table view
+                creationList.remove(creationTableView.getSelectionModel().getSelectedItem());
+            } else {
+                _alertHelper.showAlert(Alert.AlertType.ERROR, "Could not delete file.");
             }
         }
     }
@@ -90,33 +98,33 @@ public class MainController extends Controller {
      * @return Creation filename
      */
     private String getSelectedFilename() {
-        return creationListView.getSelectionModel().getSelectedItem() + ".mp4";
+        return creationTableView.getSelectionModel().getSelectedItem().getCreationName() + ".mp4";
     }
 
     /**
-     * Helper method that checks if a creation is currently selected in the ListView
-     * @return true if creation is selected
+     * Helper method that retrives the observable list for the FXML component.
+     * @return observable list of Creations
      */
-    private boolean checkCreationSelected() {
-        // check if an item is actually selected first
-        if (creationListView.getSelectionModel().getSelectedItem() == null) {
-            showNotifyingAlert(Alert.AlertType.ERROR, "Please select a creation first.");
-            return false;
-        } else {
-            return true;
-        }
+    public ObservableList<Creation> getCreationList() {
+        return creationList;
     }
 
     /**
      * Helper method that runs a task to populate the creationList with chunks in the creations directory.
      */
-    private void populateList() {
+    private void populateTable() {
+        // This method re-populates the List everytime and cannot obtain confidence and lastViewed data
+        // need a new method that can retain this data even between restarts of the app
+        // TODO: redo completely to use serialization of creation objects
+
         Task<List<String>> task = new ListPopulateTask(new File("creations"));
         task.setOnSucceeded(event -> {
             try {
                 List<String> newCreations = task.get();
                 if (newCreations != null) {
-                    creationList.addAll(newCreations);
+                    for (String s : newCreations) {
+                        creationList.add(new Creation(s, null, null));
+                    }
                 }
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();

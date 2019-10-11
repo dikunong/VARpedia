@@ -9,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.layout.Region;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import varpedia.tasks.ClearTask;
 
@@ -37,6 +38,10 @@ public class VARpediaApp extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
+            Font.loadFont(VARpediaApp.class.getResource("fonts/Roboto-Regular.ttf").toExternalForm(),10);
+            Font.loadFont(VARpediaApp.class.getResource("fonts/RobotoBold.ttf").toExternalForm(),10);
+            Font.loadFont(VARpediaApp.class.getResource("fonts/Montserrat-Medium.ttf").toExternalForm(),10);
+
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(this.getClass().getResource("MainScreen.fxml"));
             Parent layout = loader.load();
@@ -50,11 +55,11 @@ public class VARpediaApp extends Application {
             // if the application is abruptly closed, prompt before exiting
             // if the user chooses to exit, delete appfiles first
             primaryStage.setOnCloseRequest(e -> {
-                Alert alert = new Alert(Alert.AlertType.WARNING, "Do you want to exit? Any unsaved creation progress will be lost.", ButtonType.YES, ButtonType.CANCEL);
-                alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
-                alert.showAndWait();
+                AlertHelper.getInstance().showAlert(Alert.AlertType.WARNING,
+                        "Do you want to exit? Any unsaved creation progress will be lost.",
+                        ButtonType.YES, ButtonType.CANCEL);
 
-                if (alert.getResult() == ButtonType.YES) {
+                if (AlertHelper.getInstance().getResult() == ButtonType.YES) {
                     Task<Void> task = new ClearTask(new File("appfiles"));
                     task.run();
                     Platform.exit();

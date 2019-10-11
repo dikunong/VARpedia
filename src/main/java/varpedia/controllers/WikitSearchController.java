@@ -4,6 +4,7 @@ import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import varpedia.AlertHelper;
 import varpedia.VARpediaApp;
 import varpedia.tasks.WikitSearchTask;
 
@@ -29,6 +30,7 @@ public class WikitSearchController extends Controller {
     private Label loadingLabel;
 
     private ExecutorService pool = VARpediaApp.newTimedCachedThreadPool();
+    private AlertHelper _alertHelper = AlertHelper.getInstance();
 
     private Task<Boolean> _wikitTask;
 
@@ -42,7 +44,7 @@ public class WikitSearchController extends Controller {
         // check if there is text in the text field
         String searchTerm = searchTextField.getText();
         if (searchTerm.equals("")) {
-            showNotifyingAlert(Alert.AlertType.ERROR, "Please type in a valid search term.");
+            _alertHelper.showAlert(Alert.AlertType.ERROR, "Please type in a valid search term.");
             return;
         }
 
@@ -60,7 +62,7 @@ public class WikitSearchController extends Controller {
                     changeScene(event, "/varpedia/TextEditorScreen.fxml");
                 } else {
                     setLoadingInactive();
-                    showNotifyingAlert(Alert.AlertType.ERROR, "No valid Wikipedia articles found.");
+                    _alertHelper.showAlert(Alert.AlertType.ERROR, "No valid Wikipedia articles found.");
                 }
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
@@ -71,7 +73,7 @@ public class WikitSearchController extends Controller {
         // and so can't be handled with regular logic
         _wikitTask.setOnFailed(event2 -> {
         	setLoadingInactive();
-            showNotifyingAlert(Alert.AlertType.ERROR, "Search timed out - search term may be too ambiguous.");
+            _alertHelper.showAlert(Alert.AlertType.ERROR, "Search timed out - search term may be too ambiguous.");
         });
 
         pool.submit(_wikitTask);

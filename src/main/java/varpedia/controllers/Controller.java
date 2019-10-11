@@ -6,7 +6,10 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.layout.Region;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -35,15 +38,36 @@ public abstract class Controller {
     }
 
     /**
-     * Displays a notifying alert to the user that does not represent a split in application logic.
-     * Typically an error message or information dialog.
-     * @param type AlertType to be displayed
-     * @param msg Message to be displayed
+     * Creates a new scene and sets it as a "dialog" on top of the main application with modal focus.
+     * @param event The event causing the change (used to retrieve the JavaFX stage)
+     * @param fxml The FXML window to create
+     * @param title The title for the new dialog
      */
-    protected void showNotifyingAlert(Alert.AlertType type, String msg) {
-        Alert alert = new Alert(type, msg);
-        alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
-        alert.showAndWait();
+    protected void createDialog(ActionEvent event, String fxml, String title) {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource(fxml));
+            Stage parentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+
+            Stage dialog = new Stage();
+            dialog.setTitle(title);
+            dialog.setScene(new Scene(root));
+            dialog.setResizable(false);
+
+            dialog.initOwner(parentStage);
+            dialog.initModality(Modality.APPLICATION_MODAL);
+            dialog.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Closes a given dialog's stage.
+     * @param event The event causing the change (used to retrieve the JavaFX stage)
+     */
+    protected void closeDialog(ActionEvent event) {
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.close();
     }
 
     /**
