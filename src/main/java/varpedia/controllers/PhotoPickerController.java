@@ -140,7 +140,7 @@ public class PhotoPickerController extends Controller {
 	        }
 	    	
 			// assemble audio + video using ffmpeg
-	    	_createTask = new FFMPEGVideoTask(name, rightPhotoList, _chunks);
+	    	_createTask = new FFMPEGVideoTask(name, rightPhotoList, _chunks, null, 0.1);
 	    	_createTask.setOnSucceeded(ev2 -> {
 	            _createTask = null;
 	            showNotifyingAlert(Alert.AlertType.INFORMATION, "Created creation.");
