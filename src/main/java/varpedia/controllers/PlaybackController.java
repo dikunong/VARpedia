@@ -84,7 +84,7 @@ public class PlaybackController extends Controller {
 		});
 		
 		//Play the selected media
-		playMedia(new File(getDataFromFile("playback-name.txt")));
+		playMedia(new File(getDataFromFile("playback-name.txt") + ".mp4"));
     }
 
     @FXML

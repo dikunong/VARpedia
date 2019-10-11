@@ -80,12 +80,13 @@ public class MainController extends Controller {
 
         if (_alertHelper.getResult() == ButtonType.YES) {
             // delete creation file
-            File file = new File("creations/" + getSelectedFilename());
-            if (file.delete()) {
+            File file = new File("creations/" + getSelectedFilename() + ".mp4");
+            File file2 = new File("creations/" + getSelectedFilename() + ".dat");
+            if (file.delete() && file2.delete()) {
                 // update table view
                 creationList.remove(creationTableView.getSelectionModel().getSelectedItem());
             } else {
-                _alertHelper.showAlert(Alert.AlertType.ERROR, "Could not delete file.");
+                _alertHelper.showAlert(Alert.AlertType.ERROR, "Could not delete creation.");
             }
         }
     }
@@ -101,7 +102,7 @@ public class MainController extends Controller {
      * @return Creation filename
      */
     private String getSelectedFilename() {
-        return creationTableView.getSelectionModel().getSelectedItem().getCreationName() + ".mp4";
+        return creationTableView.getSelectionModel().getSelectedItem().getCreationName();
     }
 
     /**
