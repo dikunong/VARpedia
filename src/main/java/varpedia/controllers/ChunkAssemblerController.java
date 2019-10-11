@@ -1,7 +1,6 @@
 package varpedia.controllers;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -14,7 +13,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.Region;
 import varpedia.VARpediaApp;
-import varpedia.tasks.FFMPEGVideoTask;
 import varpedia.tasks.FlickrTask;
 import varpedia.tasks.ListPopulateTask;
 
@@ -58,7 +56,7 @@ public class ChunkAssemblerController extends Controller {
     @FXML
     private ListView<String> rightChunkListView;
 
-    private Task<? extends Object> _createTask;
+    private Task<Integer> _createTask;
 
     private ExecutorService pool = VARpediaApp.newTimedCachedThreadPool();
 
@@ -95,77 +93,27 @@ public class ChunkAssemblerController extends Controller {
     @FXML
     private void pressCreateBtn(ActionEvent event) {
         if (_createTask == null) {
-    		int imageCount = numOfImagesSpinner.getValueFactory().getValue();
-    		String name = creationNameTextField.getText();
+    		int imageCount = 10;
     		
-    		if (name == null || name.isEmpty()) {
-    		    showNotifyingAlert(Alert.AlertType.ERROR, "Please enter a creation name.");
-    		} else if (!name.matches("[-_. A-Za-z0-9]+")) {
-                showNotifyingAlert(Alert.AlertType.ERROR, "Please enter a valid creation name (only letters, numbers, spaces, -, _).");
-            } else if (imageCount < 0 || imageCount > 10) {
-                showNotifyingAlert(Alert.AlertType.ERROR, "You must select between 0 and 10 images (inclusive).");
-    		} else if (rightChunkListView.getItems().isEmpty()) {
+    		if (rightChunkListView.getItems().isEmpty()) {
                 showNotifyingAlert(Alert.AlertType.ERROR, "Please add chunks to assemble.");
     		} else {
-
-    		    // check if creation already exists and offer option to overwrite
-                // this must go here in order to allow application flow to continue if user chooses to overwrite
-    		    if (checkDuplicate(name)) {
-                    Alert alert = new Alert(Alert.AlertType.WARNING, "Creation already exists. Overwrtie?", ButtonType.YES, ButtonType.CANCEL);
-                    alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
-                    alert.showAndWait();
-                    if (alert.getResult() == ButtonType.CANCEL) {
-                        return;
-                    }
-                }
-
     			// get Flickr images
-    	        FlickrTask flickr = new FlickrTask(imageCount);
-    			_createTask = flickr;
+    			_createTask = new FlickrTask(imageCount);
     			_createTask.setOnSucceeded(ev -> {
                 	try {
-                		int actualImages = flickr.get();
-                		boolean actual = false;
-
-                		if (actualImages < imageCount) {
-                			Alert alert = new Alert(Alert.AlertType.WARNING, "Fewer images were retrieved than requested (" + actualImages + "). Continue anyway?", ButtonType.YES, ButtonType.CANCEL);
-                            alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
-                			alert.showAndWait();
-
-            	            if (alert.getResult() == ButtonType.YES) {
-            	            	actual = true;
-            	            }
-                		} else {
-                			actual = true;
+                		int actualImages = _createTask.get();
+                		sendDataToFile(Integer.toString(actualImages), "image-count.txt");
+                		StringBuilder selected = new StringBuilder();
+                		
+                		for (String s : rightChunkList) {
+                			selected.append(s);
+                			selected.append(File.pathSeparator);
                 		}
-
-                		if (actual) {
-                			//assemble images
-                			List<Integer> images = new ArrayList<Integer>();
-
-                			for (int i = 0; i < actualImages; i++) {
-                				images.add(i);
-                			}
-
-                			// assemble audio + video using ffmpeg
-                	    	_createTask = new FFMPEGVideoTask(name, images, rightChunkList, null, 0.1);
-    	                	_createTask.setOnSucceeded(ev2 -> {
-    		                    _createTask = null;
-                                showNotifyingAlert(Alert.AlertType.INFORMATION, "Created creation.");
-    	                        setLoadingInactive();
-    	                        changeScene(event, "/varpedia/MainScreen.fxml"); //TODO: Maybe go straight to player
-    		                });
-    	                	_createTask.setOnCancelled(ev2 -> {
-    	                        _createTask = null;
-    	                        setLoadingInactive();
-    	                    });
-    	                    _createTask.setOnFailed(ev2 -> {
-                                showNotifyingAlert(Alert.AlertType.ERROR, "Failed to create creation.");
-    	                        _createTask = null;
-    	                        setLoadingInactive();
-    	                    });
-    	                    pool.submit(_createTask);
-                		}
+                		
+                		sendDataToFile(selected.toString(), "selected-chunks.txt");
+                		setLoadingInactive();
+                		changeScene(event, "/varpedia/PhotoPickerScreen.fxml");
                 	} catch (InterruptedException | ExecutionException e) {
 						e.printStackTrace();
 					}
@@ -254,16 +202,6 @@ public class ChunkAssemblerController extends Controller {
             rightChunkList.add(selectedIndex + 1, selectedChunk);
             rightChunkListView.getSelectionModel().select(selectedIndex + 1);
         }
-    }
-
-    /**
-     * Helper method that determines if a creation already exists.
-     * @param name Creation being checked for duplicate status
-     * @return true if creation exists
-     */
-    private boolean checkDuplicate(String name) {
-        File file = new File("creations/" + name + ".mp4");
-        return file.exists();
     }
 
     /**

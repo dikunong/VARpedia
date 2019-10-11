@@ -10,6 +10,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.Region;
 import varpedia.VARpediaApp;
+import varpedia.VoiceList;
 import varpedia.tasks.PlayChunkTask;
 import varpedia.tasks.VoiceListTask;
 
@@ -47,12 +48,18 @@ public class TextEditorController extends Controller {
     private void initialize() {
         setLoadingInactive();
 
-    	Task<String[]> dat = new VoiceListTask();
+    	Task<VoiceList> dat = new VoiceListTask();
     	dat.run();
     	
     	try {
-			voiceChoiceBox.getItems().addAll(dat.get());
-			voiceChoiceBox.getSelectionModel().selectFirst();
+    		VoiceList list = dat.get();
+			voiceChoiceBox.getItems().addAll(list._voices);
+			
+			if (list._defaultVoice == -1) {
+				voiceChoiceBox.getSelectionModel().selectFirst();
+			} else {
+				voiceChoiceBox.getSelectionModel().select(list._defaultVoice);
+			}
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
 		}
