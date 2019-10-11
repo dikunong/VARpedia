@@ -14,6 +14,9 @@ import varpedia.tasks.ClearTask;
 import varpedia.tasks.ListPopulateTask;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -123,7 +126,17 @@ public class MainController extends Controller {
                 List<String> newCreations = task.get();
                 if (newCreations != null) {
                     for (String s : newCreations) {
-                        creationList.add(new Creation(s, null, null));
+                    	File creationFile = new File("creations/" + s + ".dat");
+                    	
+                    	if (creationFile.exists()) {
+	                    	try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(creationFile))) {
+	                    		creationList.add((Creation)ois.readObject());
+	                        } catch (IOException | ClassNotFoundException e) {
+								e.printStackTrace();
+							}
+                    	} else {
+                    	    creationList.add(new Creation(s, null, null));
+                        }
                     }
                 }
             } catch (InterruptedException | ExecutionException e) {
