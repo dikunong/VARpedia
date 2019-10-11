@@ -136,13 +136,13 @@ public class TextEditorController extends Controller {
 	private String getFileName(String text) {
     	String clean = text.replaceAll("[^A-Za-z0-9\\-_ ]", "").replace(' ', '_');
     	String name = "appfiles/audio/" + clean.substring(0, Math.min(clean.length(), 32));
-    	String str = name + ".wav";
+    	String str = name + ".dir";
 
     	if (new File(str).exists()) {
     		int id = 2;
 
     		do {
-    			str = name + "_" + id + ".wav";
+    			str = name + "_" + id + ".dir";
     			id++;
     	    } while (new File(str).exists());
     	}
