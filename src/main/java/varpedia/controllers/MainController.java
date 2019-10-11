@@ -1,11 +1,13 @@
 package varpedia.controllers;
 
+import javafx.beans.value.ObservableValueBase;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.cell.PropertyValueFactory;
 import varpedia.AlertHelper;
 import varpedia.Creation;
@@ -17,6 +19,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.time.Instant;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -52,11 +55,45 @@ public class MainController extends Controller {
 
     @FXML
     private void initialize() {
-        // populate table view with saved creations
-        creationNameCol.setCellValueFactory(new PropertyValueFactory<Creation, String>("creationName"));
-        creationConfCol.setCellValueFactory(new PropertyValueFactory<Creation, String>("confidence"));
-        creationViewCol.setCellValueFactory(new PropertyValueFactory<Creation, String>("lastViewed"));
-        populateTable();
+    	// populate table view with saved creations
+    	
+    	creationNameCol.setCellValueFactory((CellDataFeatures<Creation, String> p) -> {
+    		return new ObservableValueBase<String>(){
+				public String getValue() {
+					return p.getValue().getCreationName();
+				}
+    		};
+    	});
+    	
+    	creationConfCol.setCellValueFactory((CellDataFeatures<Creation, String> p) -> {
+    		return new ObservableValueBase<String>(){
+				public String getValue() {
+					int conf = p.getValue().getConfidence();
+				
+					if (conf == -1) {
+						return "Unrated";
+					} else {
+						return conf + "/5";
+					}
+				}
+    		};
+    	});
+    	
+    	creationViewCol.setCellValueFactory((CellDataFeatures<Creation, String> p) -> {
+    		return new ObservableValueBase<String>(){
+				public String getValue() {
+					Instant conf = p.getValue().getLastViewed();
+				
+					if (conf == null) {
+						return "Unwatched";
+					} else {
+						return conf.toString();
+					}
+				}
+    		};
+    	});
+    	
+    	populateTable();
         deleteAppfiles();
 
         // disable play and delete buttons until a creation is selected
