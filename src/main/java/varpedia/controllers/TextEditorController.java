@@ -10,6 +10,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.Region;
 import varpedia.VARpediaApp;
+import varpedia.Voice;
 import varpedia.VoiceList;
 import varpedia.tasks.PlayChunkTask;
 import varpedia.tasks.VoiceListTask;
@@ -33,7 +34,7 @@ public class TextEditorController extends Controller {
     @FXML
     private Button cancelBtn;
     @FXML
-    private ChoiceBox<String> voiceChoiceBox;
+    private ChoiceBox<Voice> voiceChoiceBox;
     @FXML
     private ProgressIndicator loadingWheel;
     @FXML
@@ -91,7 +92,7 @@ public class TextEditorController extends Controller {
 
     			if (playText) {
     				// play back selected text in Festival using selected Voice
-    		    	_playTask = new PlayChunkTask(text, null, voiceChoiceBox.getSelectionModel().getSelectedItem());
+    		    	_playTask = new PlayChunkTask(text, null, voiceChoiceBox.getSelectionModel().getSelectedItem().getName());
 		            _playTask.setOnSucceeded(ev -> {
 		            	_playTask = null;
 		            	previewBtn.setText("Preview");
@@ -170,7 +171,7 @@ public class TextEditorController extends Controller {
     				String filename = getFileName(text);
 
     				// save selected text audio into .wav "chunk"
-    		        _saveTask = new PlayChunkTask(text, filename, voiceChoiceBox.getSelectionModel().getSelectedItem());
+    		        _saveTask = new PlayChunkTask(text, filename, voiceChoiceBox.getSelectionModel().getSelectedItem().getName());
 		    		_saveTask.setOnSucceeded(ev -> {
 		                _saveTask = null;
 		                saveBtn.setText("Save Chunk");
