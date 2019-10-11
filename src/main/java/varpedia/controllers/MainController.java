@@ -67,7 +67,7 @@ public class MainController extends Controller {
     @FXML
     private void pressPlayButton(ActionEvent event) {
         // store a creation's filename and open PlaybackScreen
-        sendDataToFile("creations/" + getSelectedFilename(), "playback-name.txt");
+        sendDataToFile(getSelectedFilename(), "playback-name.txt");
         changeScene(event, "/varpedia/PlaybackScreen.fxml");
 }
 
@@ -136,7 +136,7 @@ public class MainController extends Controller {
 								e.printStackTrace();
 							}
                     	} else {
-                    	    creationList.add(new Creation(s, null, null));
+                    	    creationList.add(new Creation(s, -1, null));
                         }
                     }
                 }
