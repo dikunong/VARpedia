@@ -119,7 +119,7 @@ public class MainController extends Controller {
             // delete creation file
             File file = new File("creations/" + getSelectedFilename() + ".mp4");
             File file2 = new File("creations/" + getSelectedFilename() + ".dat");
-            if (file.delete() && file2.delete()) {
+            if (file.delete() && (!file2.exists() || file2.delete())) {
                 // update table view
                 creationList.remove(creationTableView.getSelectionModel().getSelectedItem());
             } else {
