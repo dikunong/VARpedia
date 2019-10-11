@@ -15,14 +15,14 @@ public class VoiceList {
 	/**
 	 * The list of voices.
 	 */
-	public final String[] _voices;
+	public Voice[] _voices;
 	
-	public VoiceList(String defaultVoice, String... voices) {
+	public VoiceList(String defaultVoice, Voice... voices) {
 		_voices = voices;
 		
 		//Find the default voice
 		for (int i = 0; i < voices.length; i++) {
-			if (voices[i].equals(defaultVoice)) {
+			if (voices[i].getName().equals(defaultVoice)) {
 				_defaultVoice = i;
 				return;
 			}
