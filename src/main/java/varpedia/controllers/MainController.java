@@ -117,7 +117,7 @@ public class MainController extends Controller {
         // need a new method that can retain this data even between restarts of the app
         // TODO: redo completely to use serialization of creation objects
 
-        Task<List<String>> task = new ListPopulateTask(new File("creations"));
+        Task<List<String>> task = new ListPopulateTask(new File("creations"), ".mp4");
         task.setOnSucceeded(event -> {
             try {
                 List<String> newCreations = task.get();
