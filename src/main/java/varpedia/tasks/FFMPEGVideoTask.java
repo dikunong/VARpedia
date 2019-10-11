@@ -7,12 +7,7 @@ import java.io.InputStream;
 import java.util.List;
 
 import javax.sound.sampled.AudioFileFormat;
-import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.LineEvent;
-import javax.sound.sampled.LineListener;
-import javax.sound.sampled.LineEvent.Type;
 
 import javafx.concurrent.Task;
 import varpedia.Command;
@@ -124,20 +119,7 @@ public class FFMPEGVideoTask extends Task<Void> {
 		
 		if (_creation == null) {
 			//Play the audio
-			FFMPEGListener listener = new FFMPEGListener();
-			
-			try (AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("appfiles/audio.wav"))) {
-				Clip clip = AudioSystem.getClip();
-			    clip.addLineListener(listener);
-			    clip.open(audioInputStream);
-			    
-			    try {
-			    	clip.start();
-			    	listener.waitFor();
-			    } finally {
-			    	clip.close();
-			    }	
-			}
+			new PreviewAudioTask(new File("appfiles/audio.wav")).run();
 		} else {
 			//Make the video
 			//Get the length of the audio file
@@ -218,23 +200,4 @@ public class FFMPEGVideoTask extends Task<Void> {
 		
 		return null;
 	}
-
-	public static class FFMPEGListener implements LineListener {
-		public volatile boolean done = false;
-		
-		@Override
-		public synchronized void update(LineEvent event) {
-			if (event.getType() == Type.STOP || event.getType() == Type.STOP) {
-				done = true;
-				notifyAll();
-			}
-		}
-		
-		public synchronized void waitFor() throws InterruptedException {
-			while (!done) {
-				wait();
-			}
-		}
-	};
-
 }
