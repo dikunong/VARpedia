@@ -46,6 +46,9 @@ public class FFMPEGVideoTask extends Task<Void> {
 		//Concatenate audio files into a single audio file at appfiles/preaudio.wav or appfiles/audio.wav
 		Command audio = new Command("ffmpeg", "-y", "-f", "concat", "-protocol_whitelist", "file,pipe", "-i", "-", _background == null ? "appfiles/audio.wav" : "appfiles/preaudio.wav");
 		audio.run();
+
+		Command audio2 = new Command("ffmpeg", "-y", "-f", "concat", "-protocol_whitelist", "file,pipe", "-i", "-", _background == null ? "appfiles/audio.wav" : "appfiles/preaudio.wav");
+		audio2.run();
 		
 		//Pipe the chunk names in
 		for (String s : _chunks) {

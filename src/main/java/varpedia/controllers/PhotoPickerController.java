@@ -7,12 +7,13 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Region;
 import varpedia.AlertHelper;
+import varpedia.Audio;
 import varpedia.VARpediaApp;
 import varpedia.tasks.FFMPEGVideoTask;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -28,6 +29,8 @@ public class PhotoPickerController extends Controller {
     private Button moveUpBtn;
     @FXML
     private Button moveDownBtn;
+    @FXML
+    private ChoiceBox<Audio> musicChoiceBox;
     @FXML
     private TextField creationNameTextField;
     @FXML
@@ -108,6 +111,17 @@ public class PhotoPickerController extends Controller {
     	for (int i = 0; i < images; i++) {
     		leftPhotoList.add(i);
     	}
+
+    	// set up choicebox for background music
+        List<Audio> musicList = new ArrayList<>();
+    	musicList.add(new Audio(null, "None"));
+    	musicList.add(new Audio("/varpedia/music/chinese.mp3", "Mandolin Chinese"));
+    	musicList.add(new Audio("/varpedia/music/perspective.mp3", "Another Perspective"));
+    	musicList.add(new Audio("/varpedia/music/sirius.mp3", "Sirius Crystal"));
+    	musicList.add(new Audio("/varpedia/music/yellow.mp3", "Yellow"));
+    	musicChoiceBox.getItems().addAll(musicList);
+        musicChoiceBox.getSelectionModel().selectFirst();
+
     }
 
     /**
@@ -124,6 +138,7 @@ public class PhotoPickerController extends Controller {
     private void pressCreateBtn(ActionEvent event) {
     	if (_createTask == null) {
         	String name = creationNameTextField.getText();
+        	String bgmusic = musicChoiceBox.getSelectionModel().getSelectedItem().getName();
 		
 	    	if (name == null || name.isEmpty()) {
 			    _alertHelper.showAlert(Alert.AlertType.ERROR, "Please enter a creation name.");
@@ -142,7 +157,7 @@ public class PhotoPickerController extends Controller {
 	            }
 
                 // assemble audio + video using ffmpeg
-                _createTask = new FFMPEGVideoTask(name, rightPhotoList, _chunks, null, 0.1);
+                _createTask = new FFMPEGVideoTask(name, rightPhotoList, _chunks, bgmusic, 0.5);
                 _createTask.setOnSucceeded(ev2 -> {
                     _createTask = null;
                     _alertHelper.showAlert(Alert.AlertType.INFORMATION, "Created creation.");
@@ -155,6 +170,7 @@ public class PhotoPickerController extends Controller {
                 });
                 _createTask.setOnFailed(ev2 -> {
                     _alertHelper.showAlert(Alert.AlertType.ERROR, "Failed to create creation.");
+                    _createTask.getException().printStackTrace();
                     _createTask = null;
                     setLoadingInactive();
                 });
