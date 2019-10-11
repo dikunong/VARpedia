@@ -22,14 +22,6 @@
     -fx-background-position: 4px; 
 }
 
-.icon-only-button {
-    -fx-min-height: 32px;
-    -fx-min-width: 32px;
-    -fx-background-size: 32 32;
-    -fx-background-repeat: no-repeat;
-    -fx-background-position: 0px; 
-}
-
 .main-button {
     -fx-background-color: #1a75eb;
     -fx-border-color: #1a75eb;
@@ -50,6 +42,21 @@
 
 .sec-button:hover {
     -fx-background-color: #e0e0e0;
+}
+
+.icon-only-button {
+    -fx-min-height: 48px;
+    -fx-min-width: 48px;
+    -fx-max-height: 48px;
+    -fx-max-width: 48px;
+    -fx-background-size: 32 32;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: 8px;
+    -fx-border-radius: 24px;
+}
+
+.icon-only-button:hover {
+    -fx-background-radius: 24px;
 }
 
 .red-button:hover {
@@ -85,11 +92,11 @@
 #playPauseBtn {
     -fx-min-height: 48px;
     -fx-min-width: 48px;
-    -fx-background-size: 40 40;
-    -fx-background-position: 4px; 
+    -fx-background-size: 32 32;
+    -fx-background-position: 8px;
     -fx-border-color: transparent;
     -fx-background-radius: 24px;
-    -fx-background-image: url("images/pause_circle_white.png");
+    -fx-background-image: url("images/pause_white.png");
 }
 
 #exitBtn {

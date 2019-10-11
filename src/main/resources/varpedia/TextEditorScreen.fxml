@@ -10,9 +10,14 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="450.0" prefWidth="700.0" stylesheets="@main.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="varpedia.controllers.TextEditorController">
+<VBox prefHeight="500.0" prefWidth="800.0" stylesheets="@main.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="varpedia.controllers.TextEditorController">
    <children>
-      <Label styleClass="heading" text="Wikipedia search result:">
+      <Label styleClass="heading" text="Create audio from Wikipedia search result">
+         <VBox.margin>
+            <Insets left="8.0" />
+         </VBox.margin>
+      </Label>
+      <Label text="To create chunks, select text with the mouse and click &quot;Preview&quot; or &quot;Save Chunk&quot;">
          <VBox.margin>
             <Insets bottom="8.0" left="8.0" />
          </VBox.margin>
@@ -24,10 +29,10 @@
                <children>
                   <VBox>
                      <children>
-                        <Button fx:id="previewBtn" mnemonicParsing="false" onAction="#pressPreviewButton" prefWidth="140.0" styleClass="sec-button" text="Preview" />
-                        <Button fx:id="saveBtn" mnemonicParsing="false" onAction="#pressSaveButton" prefWidth="140.0" styleClass="sec-button" text="Save Chunk">
+                        <Button fx:id="previewBtn" mnemonicParsing="false" onAction="#pressPreviewButton" prefWidth="170.0" styleClass="sec-button" text="Preview" />
+                        <Button fx:id="saveBtn" mnemonicParsing="false" onAction="#pressSaveButton" prefWidth="170.0" styleClass="sec-button" text="Save Chunk">
                            <VBox.margin>
-                              <Insets top="4.0" />
+                              <Insets top="8.0" />
                            </VBox.margin>
                         </Button>
                      </children>
@@ -46,7 +51,7 @@
             </HBox>
             <HBox alignment="BOTTOM_RIGHT" HBox.hgrow="ALWAYS">
                <children>
-                  <VBox alignment="TOP_RIGHT">
+                  <VBox alignment="BOTTOM_RIGHT">
                      <children>
                         <HBox alignment="TOP_RIGHT">
                            <children>
@@ -60,19 +65,19 @@
                         </HBox>
                         <HBox>
                            <children>
-                              <Button fx:id="assembleBtn" mnemonicParsing="false" onAction="#pressAssembleButton" prefWidth="180.0" styleClass="main-button" text="Assemble Audio">
+                              <Button fx:id="assembleBtn" mnemonicParsing="false" onAction="#pressAssembleButton" prefWidth="210.0" styleClass="main-button" text="Assemble Audio">
                                  <HBox.margin>
                                     <Insets right="8.0" />
                                  </HBox.margin>
                               </Button>
-                              <Button fx:id="cancelBtn" mnemonicParsing="false" onAction="#pressCancelButton" prefWidth="110.0" text="Cancel">
+                              <Button fx:id="cancelBtn" mnemonicParsing="false" onAction="#pressCancelButton" prefWidth="130.0" text="Cancel">
                                  <styleClass>
                                     <String fx:value="sec-button" />
                                     <String fx:value="red-button" />
                                  </styleClass></Button>
                            </children>
                            <VBox.margin>
-                              <Insets top="4.0" />
+                              <Insets top="8.0" />
                            </VBox.margin>
                         </HBox>
                      </children>

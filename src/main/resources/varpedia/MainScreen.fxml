@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="450.0" prefWidth="700.0" stylesheets="@main.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="varpedia.controllers.MainController">
+<VBox prefHeight="500.0" prefWidth="800.0" stylesheets="@main.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="varpedia.controllers.MainController">
    <children>
       <Label styleClass="heading" text="Existing Creations">
          <VBox.margin>
@@ -33,12 +33,12 @@
          <children>
             <HBox HBox.hgrow="ALWAYS">
                <children>
-                  <Button fx:id="playBtn" mnemonicParsing="false" onAction="#pressPlayButton" prefWidth="110.0" styleClass="sec-button" text="Play">
+                  <Button fx:id="playBtn" mnemonicParsing="false" onAction="#pressPlayButton" prefWidth="120.0" styleClass="sec-button" text="Play">
                      <HBox.margin>
                         <Insets right="4.0" />
                      </HBox.margin>
                   </Button>
-                  <Button fx:id="deleteBtn" mnemonicParsing="false" onAction="#pressDeleteButton" prefWidth="110.0" text="Delete">
+                  <Button fx:id="deleteBtn" mnemonicParsing="false" onAction="#pressDeleteButton" prefWidth="120.0" text="Delete">
                      <styleClass>
                         <String fx:value="sec-button" />
                         <String fx:value="red-button" />
@@ -47,7 +47,7 @@
             </HBox>
             <HBox alignment="BOTTOM_RIGHT" HBox.hgrow="ALWAYS">
                <children>
-                  <Button fx:id="createBtn" mnemonicParsing="false" onAction="#pressCreateButton" prefWidth="170.0" styleClass="main-button" text="Create New..." />
+                  <Button fx:id="createBtn" mnemonicParsing="false" onAction="#pressCreateButton" prefWidth="190.0" styleClass="main-button" text="Create New..." />
                </children>
             </HBox>
          </children>

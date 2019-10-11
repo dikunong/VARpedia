@@ -7,15 +7,13 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.ProgressBar?>
-<?import javafx.scene.control.Spinner?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="450.0" prefWidth="700.0" stylesheets="@main.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="varpedia.controllers.ChunkAssemblerController">
+<VBox prefHeight="500.0" prefWidth="800.0" stylesheets="@main.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="varpedia.controllers.ChunkAssemblerController">
    <children>
       <HBox alignment="CENTER_LEFT">
          <children>
@@ -121,66 +119,32 @@
       </GridPane>
       <HBox>
          <children>
-            <HBox HBox.hgrow="ALWAYS">
+            <HBox alignment="BOTTOM_LEFT" HBox.hgrow="ALWAYS">
                <children>
-                  <VBox HBox.hgrow="SOMETIMES">
-                     <children>
-                        <HBox>
-                           <children>
-                              <Label text="Name of creation:">
-                                 <HBox.margin>
-                                    <Insets right="11.0" top="4.0" />
-                                 </HBox.margin>
-                              </Label>
-                              <TextField fx:id="creationNameTextField" HBox.hgrow="SOMETIMES" />
-                           </children>
-                        </HBox>
-                        <HBox>
-                           <children>
-                              <Label text="Number of images:">
-                                 <HBox.margin>
-                                    <Insets right="4.0" top="4.0" />
-                                 </HBox.margin>
-                              </Label>
-                              <Spinner fx:id="numOfImagesSpinner" editable="true" prefWidth="100.0" />
-                           </children>
-                           <VBox.margin>
-                              <Insets top="8.0" />
-                           </VBox.margin>
-                        </HBox>
-                     </children>
-                  </VBox>
+                  <Label fx:id="loadingLabel" text="Downloading photos...">
+                     <HBox.margin>
+                        <Insets bottom="10.0" left="4.0" right="4.0" />
+                     </HBox.margin>
+                  </Label>
+                  <ProgressBar fx:id="loadingBar" minHeight="39.0" prefWidth="200.0">
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                  </ProgressBar>
                </children>
             </HBox>
             <HBox alignment="BOTTOM_RIGHT" HBox.hgrow="ALWAYS">
                <children>
                   <VBox alignment="BOTTOM_RIGHT" HBox.hgrow="SOMETIMES">
                      <children>
-                        <HBox alignment="CENTER_RIGHT">
-                           <children>
-                              <Label fx:id="loadingLabel" text="Creating...">
-                                 <HBox.margin>
-                                    <Insets bottom="4.0" right="4.0" />
-                                 </HBox.margin>
-                              </Label>
-                              <ProgressBar fx:id="loadingBar" prefWidth="200.0">
-                                 <HBox.margin>
-                                    <Insets bottom="3.0" />
-                                 </HBox.margin>
-                              </ProgressBar>
-                           </children>
-                           <VBox.margin>
-                              <Insets bottom="8.0" />
-                           </VBox.margin>
-                        </HBox>
                         <HBox alignment="BOTTOM_RIGHT">
                            <children>
-                              <Button fx:id="createBtn" mnemonicParsing="false" onAction="#pressCreateBtn" prefWidth="150.0" styleClass="main-button" text="Select Photos">
+                              <Button fx:id="createBtn" mnemonicParsing="false" onAction="#pressCreateBtn" prefWidth="180.0" styleClass="main-button" text="Select Photos">
                                  <HBox.margin>
                                     <Insets right="8.0" />
                                  </HBox.margin>
                               </Button>
-                              <Button fx:id="cancelBtn" mnemonicParsing="false" onAction="#pressCancelBtn" prefWidth="110.0" text="Cancel">
+                              <Button fx:id="cancelBtn" mnemonicParsing="false" onAction="#pressCancelBtn" prefWidth="130.0" text="Cancel">
                                  <styleClass>
                                     <String fx:value="sec-button" />
                                     <String fx:value="red-button" />
