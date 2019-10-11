@@ -8,6 +8,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.TableColumn.CellDataFeatures;
+import javafx.scene.control.TableColumn.SortType;
+import javafx.util.StringConverter;
 import varpedia.AlertHelper;
 import varpedia.Creation;
 import varpedia.VARpediaApp;
@@ -54,7 +56,8 @@ public class MainController extends Controller {
     private ExecutorService pool = VARpediaApp.newTimedCachedThreadPool();
     private AlertHelper _alertHelper = AlertHelper.getInstance();
 
-    @FXML
+    @SuppressWarnings("unchecked")
+	@FXML
     private void initialize() {
     	// populate table view with saved creations
 
@@ -94,6 +97,57 @@ public class MainController extends Controller {
             };
         });
     	
+        sortChoiceBox.setConverter(new StringConverter<TableColumn<Creation,?>>(){
+			@Override
+			public TableColumn<Creation, ?> fromString(String arg0) {
+				if (arg0.equals("Name")) {
+					return creationNameCol;
+				} else if (arg0.equals("Confidence")) {
+					return creationConfCol;
+				} else {
+					return creationViewCol;
+				}
+			}
+
+			@Override
+			public String toString(TableColumn<Creation, ?> arg0) {
+				if (arg0 == creationNameCol) {
+					return "Name";
+				} else if (arg0 == creationConfCol) {
+					return "Confidence";
+				} else {
+					return "Last viewed";
+				}
+			}
+        });
+        
+        sortChoiceBox.getItems().add(creationNameCol);
+        sortChoiceBox.getItems().add(creationConfCol);
+        sortChoiceBox.getItems().add(creationViewCol);
+        sortChoiceBox.getSelectionModel().select(0);
+        
+        sortChoiceBox.setOnAction((event) -> {
+        	TableColumn<Creation, ?> main = sortChoiceBox.getSelectionModel().getSelectedItem();
+        	TableColumn<Creation, ?> second = null;
+        	
+        	if (main == creationConfCol) {
+        		second = creationViewCol;
+        	} else if (main == creationViewCol) {
+        		second = creationConfCol;
+        	}
+
+        	main.setSortType(SortType.ASCENDING);
+        	
+        	if (second != null) {
+        		second.setSortType(SortType.ASCENDING);
+            	creationTableView.getSortOrder().setAll(main, second);
+            } else {
+            	creationTableView.getSortOrder().setAll(main);
+            }
+        	
+        	creationTableView.sort();
+        });
+        
     	populateTable();
         deleteAppfiles();
 
@@ -107,7 +161,7 @@ public class MainController extends Controller {
         // store a creation's filename and open PlaybackScreen
         sendDataToFile(getSelectedFilename(), "playback-name.txt");
         changeScene(event, "/varpedia/PlaybackScreen.fxml");
-}
+    }
 
     @FXML
     private void pressDeleteButton(ActionEvent event) {
