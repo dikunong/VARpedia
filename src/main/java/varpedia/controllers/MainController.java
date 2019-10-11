@@ -8,7 +8,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.TableColumn.CellDataFeatures;
-import javafx.scene.control.cell.PropertyValueFactory;
 import varpedia.AlertHelper;
 import varpedia.Creation;
 import varpedia.VARpediaApp;
@@ -38,6 +37,8 @@ public class MainController extends Controller {
     private Button deleteBtn;
     @FXML
     private Button createBtn;
+    @FXML
+    private ChoiceBox<TableColumn<Creation, ?>> sortChoiceBox;
 
     @FXML
     private final ObservableList<Creation> creationList = FXCollections.observableArrayList();
@@ -56,42 +57,42 @@ public class MainController extends Controller {
     @FXML
     private void initialize() {
     	// populate table view with saved creations
-    	
-    	creationNameCol.setCellValueFactory((CellDataFeatures<Creation, String> p) -> {
-    		return new ObservableValueBase<String>(){
-				public String getValue() {
-					return p.getValue().getCreationName();
-				}
-    		};
-    	});
-    	
-    	creationConfCol.setCellValueFactory((CellDataFeatures<Creation, String> p) -> {
-    		return new ObservableValueBase<String>(){
-				public String getValue() {
-					int conf = p.getValue().getConfidence();
-				
-					if (conf == -1) {
-						return "Unrated";
-					} else {
-						return conf + "/5";
-					}
-				}
-    		};
-    	});
-    	
-    	creationViewCol.setCellValueFactory((CellDataFeatures<Creation, String> p) -> {
-    		return new ObservableValueBase<String>(){
-				public String getValue() {
-					Instant conf = p.getValue().getLastViewed();
-				
-					if (conf == null) {
-						return "Unwatched";
-					} else {
-						return conf.toString();
-					}
-				}
-    		};
-    	});
+
+        creationNameCol.setCellValueFactory((CellDataFeatures<Creation, String> p) -> {
+            return new ObservableValueBase<String>(){
+                public String getValue() {
+                    return p.getValue().getCreationName();
+                }
+            };
+        });
+
+        creationConfCol.setCellValueFactory((CellDataFeatures<Creation, String> p) -> {
+            return new ObservableValueBase<String>(){
+                public String getValue() {
+                    int conf = p.getValue().getConfidence();
+
+                    if (conf == -1) {
+                        return "Unrated";
+                    } else {
+                        return conf + "/5";
+                    }
+                }
+            };
+        });
+
+        creationViewCol.setCellValueFactory((CellDataFeatures<Creation, String> p) -> {
+            return new ObservableValueBase<String>(){
+                public String getValue() {
+                    Instant conf = p.getValue().getLastViewed();
+
+                    if (conf == null) {
+                        return "Unwatched";
+                    } else {
+                        return conf.toString();
+                    }
+                }
+            };
+        });
     	
     	populateTable();
         deleteAppfiles();
