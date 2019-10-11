@@ -16,9 +16,11 @@ import java.util.List;
  */
 public class ListPopulateTask extends Task<List<String>> {
     private File root;
-
-    public ListPopulateTask(File rootFile) {
+    private String ext;
+    
+    public ListPopulateTask(File rootFile, String extension) {
         root = rootFile;
+        ext = extension;
     }
 
     @Override
@@ -34,7 +36,11 @@ public class ListPopulateTask extends Task<List<String>> {
             // remove file extension for clean display to the user
             String filename = p.getFileName().toString();
             if (filename.contains(".")) {
-                filename = filename.substring(0, filename.lastIndexOf('.'));
+            	if (!filename.substring(filename.lastIndexOf('.')).equals(ext)) {
+            		continue;
+            	}
+            	
+            	filename = filename.substring(0, filename.lastIndexOf('.'));
             }
 
             fileList.add(filename);

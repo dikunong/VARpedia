@@ -4,7 +4,13 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import varpedia.AlertHelper;
+import varpedia.Creation;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.time.Instant;
 import java.util.function.UnaryOperator;
 
 public class RatingController extends Controller {
@@ -20,6 +26,8 @@ public class RatingController extends Controller {
 
     private AlertHelper _alertHelper = AlertHelper.getInstance();
 
+    private String _creationName;
+    
     @FXML
     private void initialize() {
         // give the numOfImagesSpinner a range of 0-10
@@ -43,12 +51,19 @@ public class RatingController extends Controller {
                 ratingSpinner.increment(0);
             }
         }));
+        
+        _creationName = getDataFromFile("playback-name.txt");
     }
 
     @FXML
     private void pressSaveBtn(ActionEvent event) {
         // save rating
-
+    	try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(new File("creations/" + _creationName + ".dat")))) {
+    		oos.writeObject(new Creation(_creationName, ratingSpinner.getValue(), Instant.now()));
+    	} catch (IOException e) {
+			e.printStackTrace();
+		}
+    	
         closeDialog(event);
     }
 

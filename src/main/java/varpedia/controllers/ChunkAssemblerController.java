@@ -211,7 +211,7 @@ public class ChunkAssemblerController extends Controller {
      * Helper method that runs a task to populate the leftChunkList with chunks in the appfiles/audio directory.
      */
     private void populateList() {
-        Task<List<String>> task = new ListPopulateTask(new File("appfiles/audio"));
+        Task<List<String>> task = new ListPopulateTask(new File("appfiles/audio"), ".wav");
         task.setOnSucceeded(event -> {
             try {
                 List<String> newCreations = task.get();

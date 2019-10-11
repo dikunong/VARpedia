@@ -1,11 +1,13 @@
 package varpedia.controllers;
 
+import javafx.beans.value.ObservableValueBase;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.cell.PropertyValueFactory;
 import varpedia.AlertHelper;
 import varpedia.Creation;
@@ -14,6 +16,10 @@ import varpedia.tasks.ClearTask;
 import varpedia.tasks.ListPopulateTask;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.time.Instant;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -49,11 +55,45 @@ public class MainController extends Controller {
 
     @FXML
     private void initialize() {
-        // populate table view with saved creations
-        creationNameCol.setCellValueFactory(new PropertyValueFactory<Creation, String>("creationName"));
-        creationConfCol.setCellValueFactory(new PropertyValueFactory<Creation, String>("confidence"));
-        creationViewCol.setCellValueFactory(new PropertyValueFactory<Creation, String>("lastViewed"));
-        populateTable();
+    	// populate table view with saved creations
+    	
+    	creationNameCol.setCellValueFactory((CellDataFeatures<Creation, String> p) -> {
+    		return new ObservableValueBase<String>(){
+				public String getValue() {
+					return p.getValue().getCreationName();
+				}
+    		};
+    	});
+    	
+    	creationConfCol.setCellValueFactory((CellDataFeatures<Creation, String> p) -> {
+    		return new ObservableValueBase<String>(){
+				public String getValue() {
+					int conf = p.getValue().getConfidence();
+				
+					if (conf == -1) {
+						return "Unrated";
+					} else {
+						return conf + "/5";
+					}
+				}
+    		};
+    	});
+    	
+    	creationViewCol.setCellValueFactory((CellDataFeatures<Creation, String> p) -> {
+    		return new ObservableValueBase<String>(){
+				public String getValue() {
+					Instant conf = p.getValue().getLastViewed();
+				
+					if (conf == null) {
+						return "Unwatched";
+					} else {
+						return conf.toString();
+					}
+				}
+    		};
+    	});
+    	
+    	populateTable();
         deleteAppfiles();
 
         // disable play and delete buttons until a creation is selected
@@ -64,7 +104,7 @@ public class MainController extends Controller {
     @FXML
     private void pressPlayButton(ActionEvent event) {
         // store a creation's filename and open PlaybackScreen
-        sendDataToFile("creations/" + getSelectedFilename(), "playback-name.txt");
+        sendDataToFile(getSelectedFilename(), "playback-name.txt");
         changeScene(event, "/varpedia/PlaybackScreen.fxml");
 }
 
@@ -77,12 +117,13 @@ public class MainController extends Controller {
 
         if (_alertHelper.getResult() == ButtonType.YES) {
             // delete creation file
-            File file = new File("creations/" + getSelectedFilename());
-            if (file.delete()) {
+            File file = new File("creations/" + getSelectedFilename() + ".mp4");
+            File file2 = new File("creations/" + getSelectedFilename() + ".dat");
+            if (file.delete() && (!file2.exists() || file2.delete())) {
                 // update table view
                 creationList.remove(creationTableView.getSelectionModel().getSelectedItem());
             } else {
-                _alertHelper.showAlert(Alert.AlertType.ERROR, "Could not delete file.");
+                _alertHelper.showAlert(Alert.AlertType.ERROR, "Could not delete creation.");
             }
         }
     }
@@ -98,7 +139,7 @@ public class MainController extends Controller {
      * @return Creation filename
      */
     private String getSelectedFilename() {
-        return creationTableView.getSelectionModel().getSelectedItem().getCreationName() + ".mp4";
+        return creationTableView.getSelectionModel().getSelectedItem().getCreationName();
     }
 
     /**
@@ -117,13 +158,23 @@ public class MainController extends Controller {
         // need a new method that can retain this data even between restarts of the app
         // TODO: redo completely to use serialization of creation objects
 
-        Task<List<String>> task = new ListPopulateTask(new File("creations"));
+        Task<List<String>> task = new ListPopulateTask(new File("creations"), ".mp4");
         task.setOnSucceeded(event -> {
             try {
                 List<String> newCreations = task.get();
                 if (newCreations != null) {
                     for (String s : newCreations) {
-                        creationList.add(new Creation(s, null, null));
+                    	File creationFile = new File("creations/" + s + ".dat");
+                    	
+                    	if (creationFile.exists()) {
+	                    	try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(creationFile))) {
+	                    		creationList.add((Creation)ois.readObject());
+	                        } catch (IOException | ClassNotFoundException e) {
+								e.printStackTrace();
+							}
+                    	} else {
+                    	    creationList.add(new Creation(s, -1, null));
+                        }
                     }
                 }
             } catch (InterruptedException | ExecutionException e) {
