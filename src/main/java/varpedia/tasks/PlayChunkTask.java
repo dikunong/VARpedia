@@ -34,6 +34,8 @@ public class PlayChunkTask extends Task<Void> {
 	
 	@Override
 	protected Void call() throws Exception {
+		new File(_filename).mkdirs();
+		
 		//Put the scheme file in appfiles because festival won't go inside a jar.
 		try (FileOutputStream dest = new FileOutputStream(new File("appfiles/varpedia.scm")); InputStream in = PlayChunkTask.class.getResourceAsStream("/varpedia/varpedia.scm")) {
 			byte[] transfer = new byte[4096];
@@ -87,7 +89,40 @@ public class PlayChunkTask extends Task<Void> {
 			}
 		} catch (InterruptedException e) {
 			cmd.end();
-		}		
+		}
+		
+		String filename = _filename;
+		
+		if (filename.contains(".")) {
+            filename = filename.substring(0, filename.lastIndexOf('.'));
+        }
+		
+		//Now merge the chunks together
+		Command audio = new Command("ffmpeg", "-y", "-f", "concat", "-protocol_whitelist", "file,pipe", "-i", "-", filename + ".wav");
+		audio.run();
+		
+		//Pipe the chunk names in
+		for (String s : new File(_filename).list()) {
+			if (isCancelled()) {
+				audio.end();
+				return null;
+			}
+			
+			audio.writeString("file '" + _filename + "/" + s + "'");
+		}
+		
+		audio.getProcess().getOutputStream().close();
+		new Thread(() -> {audio.getError();}).start(); //FFmpeg needs its stderr to be emptied
+
+		//Wait for it to be done
+		try {
+			if (audio.getProcess().waitFor() != 0) {
+				throw new Exception("Failed to merge audio " + audio.getProcess().exitValue());
+			}
+		} catch (InterruptedException e) {
+			audio.end();
+			return null;
+		}
 		
 		return null;
 	}
