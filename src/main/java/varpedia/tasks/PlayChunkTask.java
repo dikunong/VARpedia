@@ -10,6 +10,7 @@ import java.util.List;
 
 import javafx.concurrent.Task;
 import varpedia.Command;
+import varpedia.FFMPEGCommand;
 
 /**
  * Background task that handles the playing/saving of audio chunks, using the festival voice synthesizer.
@@ -34,7 +35,9 @@ public class PlayChunkTask extends Task<Void> {
 	
 	@Override
 	protected Void call() throws Exception {
-		new File(_filename).mkdirs();
+		if (_filename != null) {
+			new File(_filename).mkdirs();
+		}
 		
 		//Put the scheme file in appfiles because festival won't go inside a jar.
 		try (FileOutputStream dest = new FileOutputStream(new File("appfiles/varpedia.scm")); InputStream in = PlayChunkTask.class.getResourceAsStream("/varpedia/varpedia.scm")) {
@@ -91,37 +94,39 @@ public class PlayChunkTask extends Task<Void> {
 			cmd.end();
 		}
 		
-		String filename = _filename;
-		
-		if (filename.contains(".")) {
-            filename = filename.substring(0, filename.lastIndexOf('.'));
-        }
-		
-		//Now merge the chunks together
-		Command audio = new Command("ffmpeg", "-y", "-f", "concat", "-protocol_whitelist", "file,pipe", "-i", "-", filename + ".wav");
-		audio.run();
-		
-		//Pipe the chunk names in
-		for (String s : new File(_filename).list()) {
-			if (isCancelled()) {
-				audio.end();
+		if (_filename != null) {
+			String filename = _filename;
+			
+			if (filename.contains(".")) {
+	            filename = filename.substring(0, filename.lastIndexOf('.'));
+	        }
+			
+			//Now merge the chunks together
+			String[] files = new File(_filename).list();
+			String[] fullFiles = new String[files.length];
+			
+			for (int i = 0; i < files.length; i++) {
+				fullFiles[i] = _filename + "/" + files[i];
+			}
+			
+			FFMPEGCommand audio = new FFMPEGCommand(fullFiles, -1, false, filename + ".wav");
+			
+			if (!audio.pipeFilesIn(() -> isCancelled())) {
 				return null;
 			}
 			
-			audio.writeString("file '" + _filename + "/" + s + "'");
-		}
-		
-		audio.getProcess().getOutputStream().close();
-		new Thread(() -> {audio.getError();}).start(); //FFmpeg needs its stderr to be emptied
-
-		//Wait for it to be done
-		try {
-			if (audio.getProcess().waitFor() != 0) {
-				throw new Exception("Failed to merge audio " + audio.getProcess().exitValue());
+			try {
+				audio.waitFor();
+			} catch (Exception e) {
+				//Try again with the old method
+				audio.useOldCommand();
+				
+				if (!audio.pipeFilesIn(() -> isCancelled())) {
+					audio.pipeFilesIn(() -> isCancelled());
+				}
+				
+				audio.waitFor();
 			}
-		} catch (InterruptedException e) {
-			audio.end();
-			return null;
 		}
 		
 		return null;
