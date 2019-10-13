@@ -8,7 +8,7 @@ import varpedia.VoiceList;
 /**
  * Background task that handles retrieving a list of all installed festival voices available on the user's system.
  *
- * Author: Tudor Zagreanu
+ * @author Tudor Zagreanu
  */
 public class VoiceListTask extends Task<VoiceList> {
 	//Returns the display name for the input. Currently hardcoded.

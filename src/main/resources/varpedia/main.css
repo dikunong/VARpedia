@@ -187,3 +187,11 @@
 .table-column {
   -fx-alignment: CENTER-LEFT;
 }
+
+/*------------------------------------*\
+    #LISTVIEW
+\*------------------------------------*/
+
+#leftPhotoListView .list-cell, #rightPhotoListView .list-cell {
+    -fx-alignment: center;
+}

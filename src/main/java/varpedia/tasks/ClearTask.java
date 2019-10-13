@@ -13,7 +13,7 @@ import javafx.concurrent.Task;
 /**
  * Background task that handles deletion of temporary app files.
  *
- * Author: Tudor Zagreanu
+ * @author Tudor Zagreanu
  */
 public class ClearTask extends Task<Void> {
 	public static void deleteTree(File root) throws IOException {
@@ -24,6 +24,7 @@ public class ClearTask extends Task<Void> {
 		Files.walkFileTree(rootPath, new FileVisitor<Path>() {
 			@Override
 			public FileVisitResult postVisitDirectory(Path arg0, IOException arg1) throws IOException {
+				//Don't delete the protected directories
 				if (!arg0.equals(rootPath) && !arg0.equals(audioPath)) {
 					Files.delete(arg0);
 				}

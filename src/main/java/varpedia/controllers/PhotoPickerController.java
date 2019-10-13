@@ -19,6 +19,12 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.regex.Pattern;
 
+/**
+ * Controller for the PhotoAssembler, which handles selection of photos and background music, creation naming,
+ * and assembly of the actual creation via FFMPEG.
+ *
+ * @author Di Kun Ong and Tudor Zagreanu
+ */
 public class PhotoPickerController extends Controller {
 
     @FXML
@@ -64,53 +70,11 @@ public class PhotoPickerController extends Controller {
     @FXML
     private void initialize() {
     	setLoadingInactive();
-    	
-    	int images = Integer.parseInt(getDataFromFile("image-count.txt"));
-    	_chunks = Arrays.asList(getDataFromFile("selected-chunks.txt").split(Pattern.quote(File.pathSeparator)));
-    	
-    	leftPhotoListView.setCellFactory(param -> new ListCell<Integer>() {
-    		private ImageView imageView = new ImageView();
-    		
-    		@Override
-    		public void updateItem(Integer id, boolean empty) {
-    			super.updateItem(id, empty);
-    			
-    			if (empty) {
-    				setText(null);
-    				setGraphic(null);
-    			} else {
-    				imageView.setImage(new Image(new File("appfiles/image" + id + ".jpg").toURI().toString()));
-    				imageView.setPreserveRatio(true);
-    				imageView.fitWidthProperty().bind(leftPhotoListView.widthProperty().subtract(30));
-    				setText(null);
-    				setGraphic(imageView);
-    			}
-    		}
-    	});
-    	
-    	rightPhotoListView.setCellFactory(param -> new ListCell<Integer>() {
-    		private ImageView imageView = new ImageView();
-    		
-    		@Override
-    		public void updateItem(Integer id, boolean empty) {
-    			super.updateItem(id, empty);
-    			
-    			if (empty) {
-    				setText(null);
-    				setGraphic(null);
-    			} else {
-    				imageView.setImage(new Image(new File("appfiles/image" + id + ".jpg").toURI().toString()));
-    				imageView.setPreserveRatio(true);
-    				imageView.fitWidthProperty().bind(rightPhotoListView.widthProperty().subtract(30));
-    				setText(null);
-    				setGraphic(imageView);
-    			}
-    		}
-    	});
-    	
-    	for (int i = 0; i < images; i++) {
-    		leftPhotoList.add(i);
-    	}
+
+    	// load in selected chunks from the ChunkAssembler
+        _chunks = Arrays.asList(getDataFromFile("selected-chunks.txt").split(Pattern.quote(File.pathSeparator)));
+
+        initializePhotos();
 
     	// set up choicebox for background music
         List<Audio> musicList = new ArrayList<>();
@@ -118,20 +82,8 @@ public class PhotoPickerController extends Controller {
     	musicList.add(new Audio("/varpedia/music/chinese.mp3", "Mandolin Chinese"));
     	musicList.add(new Audio("/varpedia/music/perspective.mp3", "Another Perspective"));
     	musicList.add(new Audio("/varpedia/music/sirius.mp3", "Sirius Crystal"));
-    	musicList.add(new Audio("/varpedia/music/yellow.mp3", "Yellow"));
     	musicChoiceBox.getItems().addAll(musicList);
         musicChoiceBox.getSelectionModel().selectFirst();
-
-    }
-
-    /**
-     * Helper method that determines if a creation already exists.
-     * @param name Creation being checked for duplicate status
-     * @return true if creation exists
-     */
-    private boolean checkDuplicate(String name) {
-        File file = new File("creations/" + name + ".mp4");
-        return file.exists();
     }
     
     @FXML
@@ -248,6 +200,86 @@ public class PhotoPickerController extends Controller {
             rightPhotoList.add(selectedIndex + 1, selectedPhoto);
             rightPhotoListView.getSelectionModel().select(selectedIndex + 1);
         }
+    }
+
+    /**
+     * Helper method that initializes the display of photos in the ListViews by defining the display
+     * of images, before actually loading them in.
+     */
+    private void initializePhotos() {
+        int images = Integer.parseInt(getDataFromFile("image-count.txt"));
+
+        // set up the left and right list views to hold ImageViews
+
+        leftPhotoListView.setCellFactory(param -> new ListCell<Integer>() {
+            private ImageView imageView = new ImageView();
+
+            // removes horizontal scrollbar from listview
+            {
+                setPrefWidth(0);
+            }
+
+            @Override
+            public void updateItem(Integer id, boolean empty) {
+                super.updateItem(id, empty);
+
+                if (empty) {
+                    setText(null);
+                    setGraphic(null);
+                } else {
+                    // set the image to be no taller than 150 pixels but as wide
+                    // as possible while preserving aspect ratio
+                    imageView.setImage(new Image(new File("appfiles/image" + id + ".jpg").toURI().toString()));
+                    imageView.setPreserveRatio(true);
+                    imageView.fitWidthProperty().bind(leftPhotoListView.widthProperty().subtract(30));
+                    imageView.setFitHeight(150);
+                    setText(null);
+                    setGraphic(imageView);
+                }
+            }
+        });
+
+        rightPhotoListView.setCellFactory(param -> new ListCell<Integer>() {
+            private ImageView imageView = new ImageView();
+
+            // removes horizontal scrollbar from listview
+            {
+                setPrefWidth(0);
+            }
+
+            @Override
+            public void updateItem(Integer id, boolean empty) {
+                super.updateItem(id, empty);
+
+                if (empty) {
+                    setText(null);
+                    setGraphic(null);
+                } else {
+                    // set the image to be no taller than 150 pixels but as wide
+                    // as possible while preserving aspect ratio
+                    imageView.setImage(new Image(new File("appfiles/image" + id + ".jpg").toURI().toString()));
+                    imageView.setPreserveRatio(true);
+                    imageView.fitWidthProperty().bind(rightPhotoListView.widthProperty().subtract(30));
+                    imageView.setFitHeight(150);
+                    setText(null);
+                    setGraphic(imageView);
+                }
+            }
+        });
+
+        for (int i = 0; i < images; i++) {
+            leftPhotoList.add(i);
+        }
+    }
+
+    /**
+     * Helper method that determines if a creation already exists.
+     * @param name Creation being checked for duplicate status
+     * @return true if creation exists
+     */
+    private boolean checkDuplicate(String name) {
+        File file = new File("creations/" + name + ".mp4");
+        return file.exists();
     }
 
     /**

@@ -15,7 +15,7 @@ import java.util.concurrent.TimeoutException;
 /**
  * Background task that handles searching for a given term on Wikipedia via wikit.
  *
- * Authors: Di Kun Ong and Tudor Zagreanu
+ * @author Di Kun Ong and Tudor Zagreanu
  */
 public class WikitSearchTask extends Task<Boolean> {
 
@@ -48,7 +48,7 @@ public class WikitSearchTask extends Task<Boolean> {
         String searchOutput = wikit.getOutput();
 
         // report failure if the search term is not found on Wikipedia
-        if (searchOutput.contains(_searchTerm + " not found :^(") || searchOutput.equals("")) {
+        if (searchOutput.contains(" not found :^(") || searchOutput.equals("")) {
             return Boolean.FALSE;
         }
 

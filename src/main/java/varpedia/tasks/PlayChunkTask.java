@@ -7,7 +7,6 @@ import java.nio.charset.StandardCharsets;
 import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 
 import javafx.concurrent.Task;
@@ -15,7 +14,7 @@ import varpedia.Command;
 import varpedia.FFMPEGCommand;
 
 /**
- * Background task that handles the playing/saving of audio chunks, using the festival voice synthesizer.
+ * Background task that handles the previewing/saving of audio chunks, using the festival voice synthesizer.
  *
  * Author: Tudor Zagreanu
  */
@@ -26,7 +25,7 @@ public class PlayChunkTask extends Task<Void> {
 	
 	/**
 	 * @param input The text to speak/save
-	 * @param filename The filename to save. Set to null to play the text out the speaker instead.
+	 * @param filename The filename to save. Set to null to preview the text instead.
 	 * @param voice The voice to use. Set to null to use the default.
 	 */
 	public PlayChunkTask(String input, String filename, String voice) {
@@ -114,6 +113,8 @@ public class PlayChunkTask extends Task<Void> {
 			});
 			
 			String[] fullFiles = files.stream().map((String a) -> _filename + "/" + a).toArray(String[]::new);
+			
+			//Concatenate the subchunks (similar to how FFMPEGVideoTask makes audio
 			FFMPEGCommand audio = new FFMPEGCommand(fullFiles, -1, false, filename + ".wav");
 
 			if (!audio.pipeFilesIn(() -> isCancelled())) {

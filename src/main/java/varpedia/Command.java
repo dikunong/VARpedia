@@ -9,7 +9,7 @@ import java.nio.charset.StandardCharsets;
 /**
  * Represents a Command given to the system's terminal (e.g. Bash on Linux).
  *
- * Authors: Di Kun Ong and Tudor Zagreanu
+ * @author Di Kun Ong and Tudor Zagreanu
  */
 public class Command {
 
@@ -20,6 +20,10 @@ public class Command {
         _cmd = cmd;
     }
 
+    /**
+     * Builds a process based off of the given command, then runs it.
+     * @return the Process that was built
+     */
     public Process run() {
         try {
             ProcessBuilder pb = new ProcessBuilder(_cmd);
@@ -34,7 +38,11 @@ public class Command {
     public Process getProcess() {
     	return _process;
     }
-    
+
+    /**
+     * Gets the output of the command via stdout and returns it in String format.
+     * @return the output String from the command
+     */
     public String getOutput() {
         String output = "";
         try {
@@ -49,7 +57,11 @@ public class Command {
         }
         return output;
     }
-    
+
+    /**
+     * Gets any error from the command via stderr and returns it in String format.
+     * @return the error String from the command
+     */
     public String getError() {
         String output = "";
         try {
@@ -89,10 +101,13 @@ public class Command {
 			}
 		}
 	}
-	
-	// Used only for wikit. When opening a disambiguation page it freezes waiting for user "input", which it will never take.
-	// It will be stuck like this even when using destroyForcibly. So, instead, we just let it go.
-	public void endForcibly() {
+
+    /**
+     * Allows for the forced destruction of the running Process.
+     * Used only for wikit if a timeout is needed - typically when searching for a disambiguation page, where it
+     * will get stuck waiting for user "input" it can't take.
+     */
+    public void endForcibly() {
 		_process.destroyForcibly();
 	}
 }

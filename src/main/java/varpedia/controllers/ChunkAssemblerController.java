@@ -1,27 +1,29 @@
 package varpedia.controllers;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
-import java.util.function.UnaryOperator;
 
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.layout.Region;
 import varpedia.AlertHelper;
+import varpedia.Audio;
 import varpedia.VARpediaApp;
 import varpedia.tasks.FlickrTask;
 import varpedia.tasks.ListPopulateTask;
 
 /**
- * Controller for the ChunkAssemblerScreen, which handles assembly of audio chunks, input of creation name and number
- * of images, and the actual creation of the creation itself via Flickr and FFMPEG.
+ * Controller for the ChunkAssemblerScreen, which handles assembly of audio chunks,
+ * and the downloading of images via Flickr.
  *
- * Authors: Di Kun Ong and Tudor Zagreanu
+ * @author Di Kun Ong and Tudor Zagreanu
  */
 public class ChunkAssemblerController extends Controller {
 
@@ -45,13 +47,13 @@ public class ChunkAssemblerController extends Controller {
     private Label loadingLabel;
 
     @FXML
-    private ObservableList<String> leftChunkList;
+    private ObservableList<Audio> leftChunkList;
     @FXML
-    private ListView<String> leftChunkListView;
+    private ListView<Audio> leftChunkListView;
     @FXML
-    private ObservableList<String> rightChunkList;
+    private ObservableList<Audio> rightChunkList;
     @FXML
-    private ListView<String> rightChunkListView;
+    private ListView<Audio> rightChunkListView;
 
     private Task<Integer> _createTask;
 
@@ -83,12 +85,14 @@ public class ChunkAssemblerController extends Controller {
                 		sendDataToFile(Integer.toString(actualImages), "image-count.txt");
                 		StringBuilder selected = new StringBuilder();
 
-                		for (String s : rightChunkList) {
-                			selected.append(s);
-                			selected.append(File.pathSeparator);
-                		}
-
+                		// for each selected chunk, store its name in a StringBuilder and save it to a file
+                		for (Audio a : rightChunkList) {
+                		    String filename = a.getName();
+                		    selected.append(filename);
+                		    selected.append(File.pathSeparator);
+                        }
                 		sendDataToFile(selected.toString(), "selected-chunks.txt");
+
                 		setLoadingInactive();
                 		changeScene(event, "/varpedia/PhotoPickerScreen.fxml");
                 	} catch (InterruptedException | ExecutionException e) {
@@ -138,7 +142,7 @@ public class ChunkAssemblerController extends Controller {
 
     @FXML
     private void pressAddToButton(ActionEvent event) {
-        String selectedChunk = leftChunkListView.getSelectionModel().getSelectedItem();
+        Audio selectedChunk = leftChunkListView.getSelectionModel().getSelectedItem();
         // if something is selected in leftChunkList, shift it to rightChunkList
         if (selectedChunk != null) {
             rightChunkList.add(selectedChunk);
@@ -148,7 +152,7 @@ public class ChunkAssemblerController extends Controller {
 
     @FXML
     private void pressRemoveFromButton(ActionEvent event) {
-        String selectedChunk = rightChunkListView.getSelectionModel().getSelectedItem();
+        Audio selectedChunk = rightChunkListView.getSelectionModel().getSelectedItem();
         // if something is selected in rightChunkList, shift it to leftChunkList
         if (selectedChunk != null) {
             leftChunkList.add(selectedChunk);
@@ -158,7 +162,7 @@ public class ChunkAssemblerController extends Controller {
 
     @FXML
     private void pressMoveUpButton(ActionEvent event) {
-        String selectedChunk = rightChunkListView.getSelectionModel().getSelectedItem();
+        Audio selectedChunk = rightChunkListView.getSelectionModel().getSelectedItem();
         int selectedIndex = rightChunkListView.getSelectionModel().getSelectedIndex();
         // if something is selected in rightChunkList and it's not already first, shift its index by -1
         if (selectedChunk != null && selectedIndex > 0) {
@@ -170,7 +174,7 @@ public class ChunkAssemblerController extends Controller {
 
     @FXML
     private void pressMoveDownButton(ActionEvent event) {
-        String selectedChunk = rightChunkListView.getSelectionModel().getSelectedItem();
+        Audio selectedChunk = rightChunkListView.getSelectionModel().getSelectedItem();
         int selectedIndex = rightChunkListView.getSelectionModel().getSelectedIndex();
         int maxIndex = rightChunkListView.getItems().size() - 1;
         // if something is selected in rightChunkList and it's not already last, shift its index by +1
@@ -183,14 +187,29 @@ public class ChunkAssemblerController extends Controller {
 
     /**
      * Helper method that runs a task to populate the leftChunkList with chunks in the appfiles/audio directory.
+     * This relies on serialized objects that were generated in the previous screen.
      */
     private void populateList() {
         Task<List<String>> task = new ListPopulateTask(new File("appfiles/audio"), ".wav");
         task.setOnSucceeded(event -> {
             try {
-                List<String> newCreations = task.get();
-                if (newCreations != null) {
-                    leftChunkList.addAll(newCreations);
+                List<String> chunks = task.get();
+                if (chunks != null) {
+                    // for each chunk, find its serialisation and add it to the list
+                    for (String s : chunks) {
+                        File chunkFile = new File("appfiles/audio/" + s + ".dat");
+
+                        if (chunkFile.exists()) {
+                            try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(chunkFile))) {
+                                leftChunkList.add((Audio) ois.readObject());
+                            } catch (IOException | ClassNotFoundException e) {
+                                e.printStackTrace();
+                            }
+                        } else {
+                            // if somehow a chunk hasn't been serialized, add it with its filename for display
+                            leftChunkList.add(new Audio(s, s));		// this scenario should never happen!
+                        }
+                    }
                 }
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();

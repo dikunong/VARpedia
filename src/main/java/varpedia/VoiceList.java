@@ -3,10 +3,9 @@ package varpedia;
 /**
  * Holds a list of voices and the default voice index.
  * 
- * @author PisuCat
+ * @author Tudor Zagreanu
  */
 public class VoiceList {
-	//Warthog, could do this in a better way.
 	/**
 	 * The default voice index, or -1 if it isn't there.
 	 */

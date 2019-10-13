@@ -1,5 +1,6 @@
 package varpedia.controllers;
 
+import javafx.beans.binding.Bindings;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -14,7 +15,7 @@ import java.util.concurrent.ExecutorService;
 /**
  * Controller for the WikitSearchScreen, which handles the searching of Wikipedia for a given search term (via wikit).
  *
- * Authors: Di Kun Ong and Tudor Zagreanu
+ * @author Di Kun Ong and Tudor Zagreanu
  */
 public class WikitSearchController extends Controller {
 
@@ -41,12 +42,7 @@ public class WikitSearchController extends Controller {
 
     @FXML
     private void pressSearchButton(ActionEvent event) {
-        // check if there is text in the text field
         String searchTerm = searchTextField.getText();
-        if (searchTerm.equals("")) {
-            _alertHelper.showAlert(Alert.AlertType.ERROR, "Please type in a valid search term.");
-            return;
-        }
 
         // save search term into txt file for use later
         sendDataToFile(searchTerm, "search-term.txt");
@@ -96,6 +92,7 @@ public class WikitSearchController extends Controller {
      * Helper method to disable most UI elements and show loading indicators while a Wikit task is in progress.
      */
     private void setLoadingActive() {
+        searchBtn.disableProperty().unbind();
         searchBtn.setDisable(true);
         loadingLabel.setVisible(true);
         loadingWheel.setVisible(true);
@@ -105,7 +102,8 @@ public class WikitSearchController extends Controller {
      * Helper method to enable most UI elements and hide loading indicators when a Wikit task ends.
      */
     private void setLoadingInactive() {
-        searchBtn.setDisable(false);
+        // disable search button until a search term is typed
+        searchBtn.disableProperty().bind(Bindings.isEmpty(searchTextField.textProperty()));
         loadingLabel.setVisible(false);
         loadingWheel.setVisible(false);
     }

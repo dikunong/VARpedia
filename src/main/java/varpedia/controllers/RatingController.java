@@ -1,5 +1,6 @@
 package varpedia.controllers;
 
+import javafx.beans.Observable;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -13,6 +14,12 @@ import java.io.ObjectOutputStream;
 import java.time.Instant;
 import java.util.function.UnaryOperator;
 
+/**
+ * Controller for the RatingDialog, which handles input and serialization of the user's confidence
+ * rating in a given creation after playback.
+ *
+ * @author Di Kun Ong and Tudor Zagreanu
+ */
 public class RatingController extends Controller {
 
     @FXML
@@ -30,13 +37,13 @@ public class RatingController extends Controller {
     
     @FXML
     private void initialize() {
-        // give the numOfImagesSpinner a range of 0-10
+        // give the ratingSpinner a range of 1-5
         ratingSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 5));
 
         // set numOfImagesSpinner TextFormatter to only accept integers
         UnaryOperator<TextFormatter.Change> filter = change -> {
             String text = change.getText();
-            if (text.matches("[1-5]*")) {
+            if (text.matches("[0-9]*")) {
                 return change;
             }
             return null;
@@ -45,12 +52,20 @@ public class RatingController extends Controller {
         ratingSpinner.getEditor().setTextFormatter(intFormatter);
 
         // make numOfImagesSpinner listen for typed input
-        ratingSpinner.getValueFactory().setValue(0);
+        ratingSpinner.getValueFactory().setValue(1);
         ratingSpinner.focusedProperty().addListener(((observable, oldValue, newValue) -> {
             if (!newValue) {
                 ratingSpinner.increment(0);
             }
         }));
+
+        // bind the rating slider and spinner components to each other so they display synced values
+        ratingSlider.valueProperty().addListener((Observable o) -> {
+            ratingSpinner.getValueFactory().setValue((int) ratingSlider.getValue());
+        });
+        ratingSpinner.valueProperty().addListener((Observable o) -> {
+            ratingSlider.setValue((double) ratingSpinner.getValue());
+        });
         
         _creationName = getDataFromFile("playback-name.txt");
     }

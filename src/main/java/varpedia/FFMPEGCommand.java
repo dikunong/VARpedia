@@ -4,6 +4,11 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.concurrent.Callable;
 
+/**
+ * Wraps the FFMPEG command for creating with a set of images.
+ *
+ * @author Tudor Zagreanu
+ */
 public class FFMPEGCommand {
 	private static final String[] ARGS = new String[] {"ffmpeg", "-y", "-f", "concat", "-protocol_whitelist", "file,pipe", "-i", "-"};
 	private static final String[] ARGS_OLD = new String[] {"ffmpeg", "-y", "-f", "concat", "-i", "-"};
@@ -28,6 +33,15 @@ public class FFMPEGCommand {
 	private boolean _altMethod;
 	
 	//This implements a commandline ffmpeg -y -f concat (-protocol_whitelist file,pipe) -i - [extra args] <output>
+	/**
+	 * This implements the "ffmpeg -y -f concat (-protocol_whitelist file,pipe) -i - [extra args] &ltoutput&gt" command,
+	 * or "ffmpeg -y -f image2pipe -framerate (durationPerFile) -i - [extra args] -max_muxing_queue_size (frames) &ltoutput&gt"
+	 * @param files The list of filenames to pipe in
+	 * @param durationPerFile The duration per file, or -1 if there is no duration per file
+	 * @param pipeMethod The method. true for image2pipe (1-2 images), false for concat (>2 images)
+	 * @param output The output filename
+	 * @param extraArgs Any extra arguments (e.g. drawtext filters)
+	 */
 	public FFMPEGCommand(String[] files, float durationPerFile, boolean pipeMethod, String output, String... extraArgs) throws Exception {
 		_files = files;
 		_durationPerFile = durationPerFile;
@@ -48,7 +62,12 @@ public class FFMPEGCommand {
 		_currentCommand.run();
 	}
 	
-	//This implements a commandline ffmpeg -y -f lavfi -t <duration> -i - [extra args] <output>
+	/**
+	 * This implements the "ffmpeg -y -f lavfi -t &ltduration&gt -i - [extra args] &ltoutput&gt"
+	 * @param duration The duration of the whole video
+	 * @param output The output filename
+	 * @param extraArgs Any extra arguments (e.g. drawtext filters)
+	 */
 	public FFMPEGCommand(float duration, String output, String... extraArgs) {
 		_altMethod = true;
 		
@@ -60,6 +79,7 @@ public class FFMPEGCommand {
 		_currentCommand.run();
 	}
 	
+	//Pipe in a file using concat (pipe file '<filename>', optionally followed by duration <duration>
 	private boolean pipeConcat(String name, float duration, Callable<Boolean> isCancelled) throws Exception {
 		if (isCancelled.call()) {
 			_currentCommand.end();
@@ -75,6 +95,7 @@ public class FFMPEGCommand {
 		return true;
 	}
 	
+	//Pipe in a file using image2pipe (copy from file to pipe)
 	private boolean pipeFile(String name, Callable<Boolean> isCancelled) throws Exception {
 		try (InputStream in = new FileInputStream(name)) {
 			byte[] transfer = new byte[4096];
@@ -93,6 +114,11 @@ public class FFMPEGCommand {
 		return true;
 	}
 
+	/**
+	 * Pipe in the images using the pipe method.
+	 * @param isCancelled Returns true if the loop should terminate early. pipeFilesIn returns false in this case.
+	 * @return true if the loop was not cancelled.
+	 */
 	public boolean pipeFilesIn(Callable<Boolean> isCancelled) throws Exception {
 		if (_altMethod) {
 			return true;
@@ -117,11 +143,10 @@ public class FFMPEGCommand {
 	
 	/**
 	 * Waits for the command to complete
-	 * @throws Exception
 	 */
 	public void waitFor() throws Exception {
 		_currentCommand.getProcess().getOutputStream().close();
-		new Thread(() -> {System.err.println(_currentCommand.getError());}).start(); //FFmpeg needs its stderr to be emptied
+		new Thread(() -> {_currentCommand.getError();}).start(); //FFmpeg needs its stderr to be emptied
 
 		//Wait for it to be done
 		try {
@@ -135,10 +160,12 @@ public class FFMPEGCommand {
 	
 	/**
 	 * Set the command to be the old command
+	 * @return true if there is an old command
 	 */
 	public boolean useOldCommand() {
 		_currentCommand = _commandOld;
 		
+		//Run the old command if it actually exists
 		if (_currentCommand != null) {
 			_currentCommand.run();
 			return true;
