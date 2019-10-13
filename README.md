@@ -3,6 +3,8 @@ Assignment 4 for SOFTENG 206 (VARpedia)
 
 Group 12 - Di Kun Ong (dngo711) & Tudor Zagreanu (tzag747)
 
+VARpedia is an encyclopedia tool that provides visual, aural and reading capabilities for **a second language learner, young adult (18-25 years).**
+
 ## Building the JAR file
 
 Execute the following command:
@@ -20,13 +22,15 @@ where `HOME_DIRECTORY` is your JDK install directory e.g. `C:\\Program Files\\Ja
 
 ## Running the JAR file
 
-First, move the JAR file from /build/libs to the root directory.
+If you wish for dev builds in IntelliJ and the production JAR to access the same /creations folder, move the JAR file from /build/libs to the root directory.
 
 #### On Windows AND On Linux (incl. Beta Linux in UoA labs)
 
 _For marking purposes, this should be tested on the Beta Linux image on the lab computers._
 
-**_NOTE: VARpedia is dependent on an_** `ffmpeg` **_version of at least 4.x. Before marking, please check your computer's_** `ffmpeg` **_version using the following command:_**
+_As stated above, the target audience of this app is a second language learner, young adult (18-25 years)._
+
+**_NOTE: VARpedia is dependent on an_** `ffmpeg` **_version of at least 4.x. Some lab computers have an older version 2.x, which will not work. Before marking, please check your computer's_** `ffmpeg` **_version using the following command:_**
 
 `ffmpeg -version`
 
@@ -36,8 +40,7 @@ Execute the following command:
 
 #### On SOFTENG 206 VirtualBox Image ONLY
 
-A script file has been provided for running the JAR in the VirtualBox. It assumes that the JAR file has been moved out of /build/libs
-and into the root directory (this is so dev builds in IntelliJ and the production JAR access the same /creations folder).
+A script file has been provided for running the JAR in the VirtualBox. It assumes that the JAR file has been moved out of /build/libs and into the root directory.
 
 `./run_varpedia.sh`
 
