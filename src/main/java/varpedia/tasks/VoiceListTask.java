@@ -1,8 +1,8 @@
 package varpedia.tasks;
 
 import javafx.concurrent.Task;
+import varpedia.Audio;
 import varpedia.Command;
-import varpedia.Voice;
 import varpedia.VoiceList;
 
 /**
@@ -35,10 +35,10 @@ public class VoiceListTask extends Task<VoiceList> {
 		String[] lines = output.split("\n");
 		String[] voices = lines[0].substring(1, lines[0].length() - 1).split(" ");
 		String defaultVoice = lines[1].substring(7, lines[1].length() - 1);
-		Voice[] voiceObjs = new Voice[voices.length];
+		Audio[] voiceObjs = new Audio[voices.length];
 		
 		for (int i = 0; i < voices.length; i++) {
-			voiceObjs[i] = new Voice(voices[i], getDisplayName(voices[i]));
+			voiceObjs[i] = new Audio(voices[i], getDisplayName(voices[i]));
 		}
 		
 		return new VoiceList(defaultVoice, voiceObjs);

@@ -34,10 +34,6 @@ public class ChunkAssemblerController extends Controller {
     @FXML
     private Button moveDownBtn;
     @FXML
-    private TextField creationNameTextField;
-    @FXML
-    private Spinner<Integer> numOfImagesSpinner;
-    @FXML
     private Button createBtn;
     @FXML
     private Button cancelBtn;
@@ -66,28 +62,6 @@ public class ChunkAssemblerController extends Controller {
     @FXML
     private void initialize() {
         setLoadingInactive();
-
-        // give the numOfImagesSpinner a range of 0-10
-        numOfImagesSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10));
-
-        // set numOfImagesSpinner TextFormatter to only accept integers
-        UnaryOperator<TextFormatter.Change> filter = change -> {
-            String text = change.getText();
-            if (text.matches("[0-9]*")) {
-                return change;
-            }
-            return null;
-        };
-        TextFormatter<String> intFormatter = new TextFormatter<>(filter);
-        numOfImagesSpinner.getEditor().setTextFormatter(intFormatter);
-
-        // make numOfImagesSpinner listen for typed input
-        numOfImagesSpinner.getValueFactory().setValue(10);
-        numOfImagesSpinner.focusedProperty().addListener(((observable, oldValue, newValue) -> {
-            if (!newValue) {
-                numOfImagesSpinner.increment(0);
-            }
-        }));
 
     	// populate list view with saved chunks
         populateList();
@@ -234,8 +208,6 @@ public class ChunkAssemblerController extends Controller {
         removeFromBtn.setDisable(true);
         moveUpBtn.setDisable(true);
         moveDownBtn.setDisable(true);
-        creationNameTextField.setDisable(true);
-        numOfImagesSpinner.setDisable(true);
         backBtn.setDisable(true);
         loadingBar.setVisible(true);
         loadingLabel.setVisible(true);
@@ -250,8 +222,6 @@ public class ChunkAssemblerController extends Controller {
         removeFromBtn.setDisable(false);
         moveUpBtn.setDisable(false);
         moveDownBtn.setDisable(false);
-        creationNameTextField.setDisable(false);
-        numOfImagesSpinner.setDisable(false);
         backBtn.setDisable(false);
         loadingBar.setVisible(false);
         loadingLabel.setVisible(false);

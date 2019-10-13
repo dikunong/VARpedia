@@ -91,11 +91,11 @@ public class PlaybackController extends Controller {
     private void pressPlayPauseButton(ActionEvent event) {
 		if (_player.getStatus() == Status.PLAYING) {
 			_player.pause();
-			playPauseBtn.setStyle("-fx-background-image: url(\"/varpedia/images/play_circle_white.png\")");
+			playPauseBtn.setStyle("-fx-background-image: url(\"/varpedia/images/play_arrow_white.png\")");
 			_actualPaused = true;
 		} else {
 			_player.play();
-			playPauseBtn.setStyle("-fx-background-image: url(\"/varpedia/images/pause_circle_white.png\")");
+			playPauseBtn.setStyle("-fx-background-image: url(\"/varpedia/images/pause_white.png\")");
 			_actualPaused = false;
 		}
     }

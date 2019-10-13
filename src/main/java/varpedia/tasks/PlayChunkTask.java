@@ -96,35 +96,35 @@ public class PlayChunkTask extends Task<Void> {
 		
 		if (_filename != null) {
 			String filename = _filename;
-			
+
 			if (filename.contains(".")) {
 	            filename = filename.substring(0, filename.lastIndexOf('.'));
 	        }
-			
+
 			//Now merge the chunks together
 			String[] files = new File(_filename).list();
 			String[] fullFiles = new String[files.length];
-			
+
 			for (int i = 0; i < files.length; i++) {
 				fullFiles[i] = _filename + "/" + files[i];
 			}
-			
+
 			FFMPEGCommand audio = new FFMPEGCommand(fullFiles, -1, false, filename + ".wav");
-			
+
 			if (!audio.pipeFilesIn(() -> isCancelled())) {
 				return null;
 			}
-			
+
 			try {
 				audio.waitFor();
 			} catch (Exception e) {
 				//Try again with the old method
 				audio.useOldCommand();
-				
+
 				if (!audio.pipeFilesIn(() -> isCancelled())) {
 					audio.pipeFilesIn(() -> isCancelled());
 				}
-				
+
 				audio.waitFor();
 			}
 		}
