@@ -21,6 +21,7 @@ public class ClearTask extends Task<Void> {
 		Files.walkFileTree(root.toPath(), new FileVisitor<Path>() {
 			@Override
 			public FileVisitResult postVisitDirectory(Path arg0, IOException arg1) throws IOException {
+				Files.delete(arg0);
 				return FileVisitResult.CONTINUE;
 			}
 
@@ -54,6 +55,7 @@ public class ClearTask extends Task<Void> {
 	@Override
 	protected Void call() throws Exception {
 		deleteTree(_file);
+		new File("appfiles/audio").mkdirs();
 		return null;
 	}
 }

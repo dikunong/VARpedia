@@ -15,9 +15,9 @@ public class VoiceList {
 	/**
 	 * The list of voices.
 	 */
-	public Voice[] _voices;
+	public Audio[] _voices;
 	
-	public VoiceList(String defaultVoice, Voice... voices) {
+	public VoiceList(String defaultVoice, Audio... voices) {
 		_voices = voices;
 		
 		//Find the default voice

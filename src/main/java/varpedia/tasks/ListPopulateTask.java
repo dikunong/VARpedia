@@ -35,6 +35,11 @@ public class ListPopulateTask extends Task<List<String>> {
 
             // remove file extension for clean display to the user
             String filename = p.getFileName().toString();
+
+            if (filename.endsWith(".dir")) {
+            	continue;
+            }
+            
             if (filename.contains(".")) {
             	if (!filename.substring(filename.lastIndexOf('.')).equals(ext)) {
             		continue;

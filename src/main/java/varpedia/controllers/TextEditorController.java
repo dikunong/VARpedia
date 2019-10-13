@@ -8,10 +8,9 @@ import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.layout.Region;
 import varpedia.AlertHelper;
+import varpedia.Audio;
 import varpedia.VARpediaApp;
-import varpedia.Voice;
 import varpedia.VoiceList;
 import varpedia.tasks.PlayChunkTask;
 import varpedia.tasks.VoiceListTask;
@@ -35,7 +34,7 @@ public class TextEditorController extends Controller {
     @FXML
     private Button cancelBtn;
     @FXML
-    private ChoiceBox<Voice> voiceChoiceBox;
+    private ChoiceBox<Audio> voiceChoiceBox;
     @FXML
     private ProgressIndicator loadingWheel;
     @FXML
@@ -110,7 +109,7 @@ public class TextEditorController extends Controller {
 			        });
 		            _playTask.setOnFailed(ev -> {
 		            	_alertHelper.showAlert(Alert.AlertType.ERROR, "Error playing audio chunk. Try selecting other text or using a different voice.");
-		                _playTask = null;
+		            	_playTask = null;
 		            	previewBtn.setText("Preview");
 						saveBtn.setDisable(false);
 		            	setLoadingInactive();
@@ -136,13 +135,13 @@ public class TextEditorController extends Controller {
 	private String getFileName(String text) {
     	String clean = text.replaceAll("[^A-Za-z0-9\\-_ ]", "").replace(' ', '_');
     	String name = "appfiles/audio/" + clean.substring(0, Math.min(clean.length(), 32));
-    	String str = name + ".wav";
+    	String str = name + ".dir";
 
     	if (new File(str).exists()) {
     		int id = 2;
 
     		do {
-    			str = name + "_" + id + ".wav";
+    			str = name + "_" + id + ".dir";
     			id++;
     	    } while (new File(str).exists());
     	}
@@ -190,7 +189,8 @@ public class TextEditorController extends Controller {
 					});
 		            _saveTask.setOnFailed(ev -> {
 						_alertHelper.showAlert(Alert.AlertType.ERROR, "Error saving audio chunk. Try selecting other text or using a different voice.");
-		                _saveTask = null;
+						_saveTask.getException().printStackTrace();
+						_saveTask = null;
 		                saveBtn.setText("Save Chunk");
 						previewBtn.setDisable(false);
 		                setLoadingInactive();
