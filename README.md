@@ -26,6 +26,10 @@ First, move the JAR file from /build/libs to the root directory.
 
 _For marking purposes, this should be tested on the Beta Linux image on the lab computers._
 
+**_NOTE: VARpedia is dependent on an_** `ffmpeg` **_version of at least 4.x. Before marking, please check your computer's_** `ffmpeg` **_version using the following command:_**
+
+`ffmpeg -version`
+
 Execute the following command:
 
 `java -jar VARpedia-1.0-SNAPSHOT-all.jar`
@@ -53,12 +57,6 @@ Under CC BY NC license http://creativecommons.org/licenses/by-nc/3.0/
 
 Music "mandolin chinese (moscardo remix)" by moscardo  
 Available at ccMixter.org http://ccmixter.org/files/moscardo/60170  
-Under CC BY NC license http://creativecommons.org/licenses/by-nc/3.0/  
-
-#### src/main/resources/varpedia/music/yellow.mp3
-
-Music "yellow" by cyba  
-Available at ccMixter.org http://ccmixter.org/files/cyba/60166  
 Under CC BY NC license http://creativecommons.org/licenses/by-nc/3.0/  
 
 #### src/main/resources/varpedia/music/sirius.mp3
