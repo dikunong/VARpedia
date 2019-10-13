@@ -6,10 +6,13 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.text.Normalizer;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 import javafx.concurrent.Task;
 import varpedia.Command;
+import varpedia.FFMPEGCommand;
 
 /**
  * Background task that handles the playing/saving of audio chunks, using the festival voice synthesizer.
@@ -92,42 +95,45 @@ public class PlayChunkTask extends Task<Void> {
 		} catch (InterruptedException e) {
 			cmd.end();
 		}
-
+		
 		if (_filename != null) {
 			String filename = _filename;
 
 			if (filename.contains(".")) {
-				filename = filename.substring(0, filename.lastIndexOf('.'));
-			}
+	            filename = filename.substring(0, filename.lastIndexOf('.'));
+	        }
 
 			//Now merge the chunks together
-			Command audio = new Command("ffmpeg", "-y", "-f", "concat", "-protocol_whitelist", "file,pipe", "-i", "-", filename + ".wav");
-			audio.run();
+			List<String> files = Arrays.asList(new File(_filename).list());
+			
+			//Sort them numerically
+			files.sort((String a, String b) -> {
+				int aInt = Integer.parseInt(a.substring(0, a.lastIndexOf('.')));
+				int bInt = Integer.parseInt(b.substring(0, b.lastIndexOf('.')));
+				return Integer.compare(aInt, bInt);
+			});
+			
+			String[] fullFiles = files.stream().map((String a) -> _filename + "/" + a).toArray(String[]::new);
+			FFMPEGCommand audio = new FFMPEGCommand(fullFiles, -1, false, filename + ".wav");
 
-			//Pipe the chunk names in
-			for (String s : new File(_filename).list()) {
-				if (isCancelled()) {
-					audio.end();
-					return null;
-				}
-
-				audio.writeString("file '" + _filename + "/" + s + "'");
-			}
-
-			audio.getProcess().getOutputStream().close();
-			new Thread(() -> {System.err.println(audio.getError());}).start(); //FFmpeg needs its stderr to be emptied
-
-			//Wait for it to be done
-			try {
-				if (audio.getProcess().waitFor() != 0) {
-					throw new Exception("Failed to merge audio " + audio.getProcess().exitValue());
-				}
-			} catch (InterruptedException e) {
-				audio.end();
+			if (!audio.pipeFilesIn(() -> isCancelled())) {
 				return null;
 			}
-		}
 
+			try {
+				audio.waitFor();
+			} catch (Exception e) {
+				//Try again with the old method
+				audio.useOldCommand();
+
+				if (!audio.pipeFilesIn(() -> isCancelled())) {
+					audio.pipeFilesIn(() -> isCancelled());
+				}
+
+				audio.waitFor();
+			}
+		}
+		
 		return null;
 	}
 }
