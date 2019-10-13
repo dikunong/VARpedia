@@ -48,7 +48,7 @@ public class WikitSearchTask extends Task<Boolean> {
         String searchOutput = wikit.getOutput();
 
         // report failure if the search term is not found on Wikipedia
-        if (searchOutput.contains(_searchTerm + " not found :^(") || searchOutput.equals("")) {
+        if (searchOutput.contains(" not found :^(") || searchOutput.equals("")) {
             return Boolean.FALSE;
         }
 
