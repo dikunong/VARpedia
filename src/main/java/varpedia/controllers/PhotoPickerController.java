@@ -70,7 +70,12 @@ public class PhotoPickerController extends Controller {
     	
     	leftPhotoListView.setCellFactory(param -> new ListCell<Integer>() {
     		private ImageView imageView = new ImageView();
-    		
+
+            // removes horizontal scrollbar from listview
+            {
+                setPrefWidth(0);
+            }
+
     		@Override
     		public void updateItem(Integer id, boolean empty) {
     			super.updateItem(id, empty);
@@ -90,6 +95,11 @@ public class PhotoPickerController extends Controller {
     	
     	rightPhotoListView.setCellFactory(param -> new ListCell<Integer>() {
     		private ImageView imageView = new ImageView();
+
+            // removes horizontal scrollbar from listview
+            {
+                setPrefWidth(0);
+            }
     		
     		@Override
     		public void updateItem(Integer id, boolean empty) {
