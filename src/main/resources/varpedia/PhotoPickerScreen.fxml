@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="450.0" prefWidth="700.0" stylesheets="@main.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="varpedia.controllers.PhotoPickerController">
+<VBox prefHeight="500.0" prefWidth="800.0" stylesheets="@main.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="varpedia.controllers.PhotoPickerController">
    <children>
       <HBox alignment="CENTER_LEFT">
          <children>
@@ -162,7 +162,7 @@
                                     <Insets bottom="4.0" right="4.0" />
                                  </HBox.margin>
                               </Label>
-                              <ProgressBar fx:id="loadingBar" prefWidth="200.0">
+                              <ProgressBar fx:id="loadingBar" prefHeight="39.0" prefWidth="200.0">
                                  <HBox.margin>
                                     <Insets bottom="3.0" />
                                  </HBox.margin>
@@ -174,12 +174,12 @@
                         </HBox>
                         <HBox alignment="BOTTOM_RIGHT">
                            <children>
-                              <Button fx:id="createBtn" mnemonicParsing="false" onAction="#pressCreateBtn" prefWidth="150.0" styleClass="main-button" text="Create!">
+                              <Button fx:id="createBtn" mnemonicParsing="false" onAction="#pressCreateBtn" prefWidth="180.0" styleClass="main-button" text="Create!">
                                  <HBox.margin>
                                     <Insets right="8.0" />
                                  </HBox.margin>
                               </Button>
-                              <Button fx:id="cancelBtn" mnemonicParsing="false" onAction="#pressCancelBtn" prefWidth="110.0" text="Cancel">
+                              <Button fx:id="cancelBtn" mnemonicParsing="false" onAction="#pressCancelBtn" prefWidth="130.0" text="Cancel">
                                  <styleClass>
                                     <String fx:value="sec-button" />
                                     <String fx:value="red-button" />

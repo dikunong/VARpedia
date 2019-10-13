@@ -8,7 +8,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.TableColumn.CellDataFeatures;
-import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.TableColumn.SortType;
+import javafx.util.StringConverter;
 import varpedia.AlertHelper;
 import varpedia.Creation;
 import varpedia.VARpediaApp;
@@ -38,6 +39,8 @@ public class MainController extends Controller {
     private Button deleteBtn;
     @FXML
     private Button createBtn;
+    @FXML
+    private ChoiceBox<TableColumn<Creation, ?>> sortChoiceBox;
 
     @FXML
     private final ObservableList<Creation> creationList = FXCollections.observableArrayList();
@@ -53,46 +56,98 @@ public class MainController extends Controller {
     private ExecutorService pool = VARpediaApp.newTimedCachedThreadPool();
     private AlertHelper _alertHelper = AlertHelper.getInstance();
 
-    @FXML
+    @SuppressWarnings("unchecked")
+	@FXML
     private void initialize() {
     	// populate table view with saved creations
+
+        creationNameCol.setCellValueFactory((CellDataFeatures<Creation, String> p) -> {
+            return new ObservableValueBase<String>(){
+                public String getValue() {
+                    return p.getValue().getCreationName();
+                }
+            };
+        });
+
+        creationConfCol.setCellValueFactory((CellDataFeatures<Creation, String> p) -> {
+            return new ObservableValueBase<String>(){
+                public String getValue() {
+                    int conf = p.getValue().getConfidence();
+
+                    if (conf == -1) {
+                        return "Unrated";
+                    } else {
+                        return conf + "/5";
+                    }
+                }
+            };
+        });
+
+        creationViewCol.setCellValueFactory((CellDataFeatures<Creation, String> p) -> {
+            return new ObservableValueBase<String>(){
+                public String getValue() {
+                    Instant conf = p.getValue().getLastViewed();
+
+                    if (conf == null) {
+                        return "Unwatched";
+                    } else {
+                        return conf.toString();
+                    }
+                }
+            };
+        });
     	
-    	creationNameCol.setCellValueFactory((CellDataFeatures<Creation, String> p) -> {
-    		return new ObservableValueBase<String>(){
-				public String getValue() {
-					return p.getValue().getCreationName();
+        sortChoiceBox.setConverter(new StringConverter<TableColumn<Creation,?>>(){
+			@Override
+			public TableColumn<Creation, ?> fromString(String arg0) {
+				if (arg0.equals("Name")) {
+					return creationNameCol;
+				} else if (arg0.equals("Confidence")) {
+					return creationConfCol;
+				} else {
+					return creationViewCol;
 				}
-    		};
-    	});
-    	
-    	creationConfCol.setCellValueFactory((CellDataFeatures<Creation, String> p) -> {
-    		return new ObservableValueBase<String>(){
-				public String getValue() {
-					int conf = p.getValue().getConfidence();
-				
-					if (conf == -1) {
-						return "Unrated";
-					} else {
-						return conf + "/5";
-					}
+			}
+
+			@Override
+			public String toString(TableColumn<Creation, ?> arg0) {
+				if (arg0 == creationNameCol) {
+					return "Name";
+				} else if (arg0 == creationConfCol) {
+					return "Confidence";
+				} else {
+					return "Last viewed";
 				}
-    		};
-    	});
-    	
-    	creationViewCol.setCellValueFactory((CellDataFeatures<Creation, String> p) -> {
-    		return new ObservableValueBase<String>(){
-				public String getValue() {
-					Instant conf = p.getValue().getLastViewed();
-				
-					if (conf == null) {
-						return "Unwatched";
-					} else {
-						return conf.toString();
-					}
-				}
-    		};
-    	});
-    	
+			}
+        });
+        
+        sortChoiceBox.getItems().add(creationNameCol);
+        sortChoiceBox.getItems().add(creationConfCol);
+        sortChoiceBox.getItems().add(creationViewCol);
+        sortChoiceBox.getSelectionModel().select(0);
+        
+        sortChoiceBox.setOnAction((event) -> {
+        	TableColumn<Creation, ?> main = sortChoiceBox.getSelectionModel().getSelectedItem();
+        	TableColumn<Creation, ?> second = null;
+        	
+        	if (main == creationConfCol) {
+        		second = creationViewCol;
+        	} else if (main == creationViewCol) {
+        		second = creationConfCol;
+        	}
+
+        	main.setSortType(SortType.ASCENDING);
+        	
+        	if (second != null) {
+        		second.setSortType(SortType.ASCENDING);
+            	creationTableView.getSortOrder().setAll(main, second);
+            } else {
+            	creationTableView.getSortOrder().setAll(main);
+            }
+        	
+        	creationTableView.sort();
+        });
+        
     	populateTable();
         deleteAppfiles();
 
@@ -106,7 +161,7 @@ public class MainController extends Controller {
         // store a creation's filename and open PlaybackScreen
         sendDataToFile(getSelectedFilename(), "playback-name.txt");
         changeScene(event, "/varpedia/PlaybackScreen.fxml");
-}
+    }
 
     @FXML
     private void pressDeleteButton(ActionEvent event) {
