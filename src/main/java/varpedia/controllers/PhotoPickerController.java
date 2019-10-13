@@ -87,6 +87,7 @@ public class PhotoPickerController extends Controller {
     				imageView.setImage(new Image(new File("appfiles/image" + id + ".jpg").toURI().toString()));
     				imageView.setPreserveRatio(true);
     				imageView.fitWidthProperty().bind(leftPhotoListView.widthProperty().subtract(30));
+    				imageView.setFitHeight(150);
     				setText(null);
     				setGraphic(imageView);
     			}
@@ -112,6 +113,7 @@ public class PhotoPickerController extends Controller {
     				imageView.setImage(new Image(new File("appfiles/image" + id + ".jpg").toURI().toString()));
     				imageView.setPreserveRatio(true);
     				imageView.fitWidthProperty().bind(rightPhotoListView.widthProperty().subtract(30));
+                    imageView.setFitHeight(150);
     				setText(null);
     				setGraphic(imageView);
     			}
