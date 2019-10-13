@@ -10,8 +10,8 @@ public class FFMPEGCommand {
 	private static final String[] ARGS_LINUX = new String[] {"ffmpeg", "-y", "-f", "image2pipe", "-framerate", "", "-i", "-"};
 	private static final String[] ARGS_IMAGE = new String[] {"ffmpeg", "-y", "-f", "lavfi", "-t", "", "-i", "color=color=white:size=960x540"};
 	
-	private static String[] generateArguments(String[] base, String[] extra, String output) {
-		String[] args = new String[base.length + extra.length + 1];
+	private static String[] generateArguments(String[] base, String[] extra, String output, int suffixArgs) {
+		String[] args = new String[base.length + extra.length + suffixArgs];
 		System.arraycopy(base, 0, args, 0, base.length);
 		System.arraycopy(extra, 0, args, base.length, extra.length);
 		args[args.length - 1] = output;
@@ -34,12 +34,14 @@ public class FFMPEGCommand {
 		_pipeMethod = pipeMethod;
 		
 		if (pipeMethod) {
-			String[] args = generateArguments(ARGS_LINUX, extraArgs, output);
+			String[] args = generateArguments(ARGS_LINUX, extraArgs, output, 3);
 			args[5] = "1/" + Float.toString(durationPerFile);
+			args[args.length - 3] = "-max_muxing_queue_size";
+			args[args.length - 2] = Integer.toString((int)(25 * durationPerFile * files.length + 1));
 			_command = new Command(args);
 		} else {
-			_command = new Command(generateArguments(ARGS, extraArgs, output));
-			_commandOld = new Command(generateArguments(ARGS_OLD, extraArgs, output));
+			_command = new Command(generateArguments(ARGS, extraArgs, output, 1));
+			_commandOld = new Command(generateArguments(ARGS_OLD, extraArgs, output, 1));
 		}
 	
 		_currentCommand = _command;
@@ -50,7 +52,7 @@ public class FFMPEGCommand {
 	public FFMPEGCommand(float duration, String output, String... extraArgs) {
 		_altMethod = true;
 		
-		String[] args = generateArguments(ARGS_IMAGE, extraArgs, output);
+		String[] args = generateArguments(ARGS_IMAGE, extraArgs, output, 1);
 		args[5] = Float.toString(duration);
 		_command = new Command(args);
 		
@@ -119,7 +121,7 @@ public class FFMPEGCommand {
 	 */
 	public void waitFor() throws Exception {
 		_currentCommand.getProcess().getOutputStream().close();
-		new Thread(() -> {_currentCommand.getError();}).start(); //FFmpeg needs its stderr to be emptied
+		new Thread(() -> {System.err.println(_currentCommand.getError());}).start(); //FFmpeg needs its stderr to be emptied
 
 		//Wait for it to be done
 		try {
