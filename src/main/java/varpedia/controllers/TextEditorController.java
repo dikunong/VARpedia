@@ -173,7 +173,8 @@ public class TextEditorController extends Controller {
 						}
 
 						// create and serialize new Audio object representing the chunk
-						Audio newChunk = new Audio(chunkName, displayText);
+						// FFMPEG assumes chunk names don't have "appfiles/audio/", so this must be removed here only
+						Audio newChunk = new Audio(chunkName.substring(15), displayText);
 						chunkList.add(newChunk);
 
 						try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(new File(chunkName + ".dat")))) {
