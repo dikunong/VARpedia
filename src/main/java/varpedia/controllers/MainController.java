@@ -21,7 +21,11 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 
@@ -86,12 +90,17 @@ public class MainController extends Controller {
         creationViewCol.setCellValueFactory((CellDataFeatures<Creation, String> p) -> {
             return new ObservableValueBase<String>(){
                 public String getValue() {
+                    // formatter to parse the Instant into a user-readable format
+                    // ISO date format to prevent sort breaking
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm a")
+                            .withLocale(Locale.UK)
+                            .withZone(ZoneId.systemDefault());
                     Instant conf = p.getValue().getLastViewed();
 
                     if (conf == null) {
                         return "Unwatched";
                     } else {
-                        return conf.toString();
+                        return formatter.format(conf);
                     }
                 }
             };
@@ -209,10 +218,6 @@ public class MainController extends Controller {
      * Helper method that runs a task to populate the creationList with chunks in the creations directory.
      */
     private void populateTable() {
-        // This method re-populates the List everytime and cannot obtain confidence and lastViewed data
-        // need a new method that can retain this data even between restarts of the app
-        // TODO: redo completely to use serialization of creation objects
-
         Task<List<String>> task = new ListPopulateTask(new File("creations"), ".mp4");
         task.setOnSucceeded(event -> {
             try {
