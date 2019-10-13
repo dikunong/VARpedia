@@ -18,6 +18,10 @@ public class ListPopulateTask extends Task<List<String>> {
     private File root;
     private String ext;
     
+    /**
+     * @param rootFile The directory to stream
+     * @param extension The extension to look at
+     */
     public ListPopulateTask(File rootFile, String extension) {
         root = rootFile;
         ext = extension;
@@ -36,11 +40,8 @@ public class ListPopulateTask extends Task<List<String>> {
             // remove file extension for clean display to the user
             String filename = p.getFileName().toString();
 
-            if (filename.endsWith(".dir")) {
-            	continue;
-            }
-            
             if (filename.contains(".")) {
+            	//Skip if it has the wrong extension
             	if (!filename.substring(filename.lastIndexOf('.')).equals(ext)) {
             		continue;
             	}
