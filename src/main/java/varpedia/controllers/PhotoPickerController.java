@@ -128,7 +128,6 @@ public class PhotoPickerController extends Controller {
     	musicList.add(new Audio("/varpedia/music/chinese.mp3", "Mandolin Chinese"));
     	musicList.add(new Audio("/varpedia/music/perspective.mp3", "Another Perspective"));
     	musicList.add(new Audio("/varpedia/music/sirius.mp3", "Sirius Crystal"));
-    	musicList.add(new Audio("/varpedia/music/yellow.mp3", "Yellow"));
     	musicChoiceBox.getItems().addAll(musicList);
         musicChoiceBox.getSelectionModel().selectFirst();
 
