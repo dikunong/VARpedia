@@ -1,9 +1,11 @@
 package varpedia.controllers;
 
 import java.io.File;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 
+import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -12,6 +14,7 @@ import varpedia.AlertHelper;
 import varpedia.Audio;
 import varpedia.VARpediaApp;
 import varpedia.VoiceList;
+import varpedia.tasks.ListPopulateTask;
 import varpedia.tasks.PlayChunkTask;
 import varpedia.tasks.VoiceListTask;
 
@@ -39,6 +42,10 @@ public class TextEditorController extends Controller {
     private ProgressIndicator loadingWheel;
     @FXML
     private Label loadingLabel;
+    @FXML
+	private ObservableList<String> chunkList;
+    @FXML
+	private ListView<String> chunkListView;
 
     private Task<Void> _playTask;
     private Task<Void> _saveTask;
@@ -49,6 +56,7 @@ public class TextEditorController extends Controller {
     @FXML
     private void initialize() {
         setLoadingInactive();
+        populateList();
 
     	Task<VoiceList> dat = new VoiceListTask();
     	dat.run();
@@ -177,6 +185,7 @@ public class TextEditorController extends Controller {
     		        _saveTask = new PlayChunkTask(text, filename, voiceChoiceBox.getSelectionModel().getSelectedItem().getName());
 		    		_saveTask.setOnSucceeded(ev -> {
 		                _saveTask = null;
+		                chunkList.add(filename.substring(15, Math.min(filename.length(), 47)));
 		                saveBtn.setText("Save Chunk");
 		                previewBtn.setDisable(false);
 		                setLoadingInactive();
@@ -232,6 +241,24 @@ public class TextEditorController extends Controller {
             changeScene(event, "/varpedia/MainScreen.fxml");
         }
     }
+
+	/**
+	 * Helper method that runs a task to populate the leftChunkList with chunks in the appfiles/audio directory.
+	 */
+	private void populateList() {
+		Task<List<String>> task = new ListPopulateTask(new File("appfiles/audio"), ".wav");
+		task.setOnSucceeded(event -> {
+			try {
+				List<String> newCreations = task.get();
+				if (newCreations != null) {
+					chunkList.addAll(newCreations);
+				}
+			} catch (InterruptedException | ExecutionException e) {
+				e.printStackTrace();
+			}
+		});
+		pool.submit(task);
+	}
 
 	/**
 	 * Helper method to disable most UI elements and show loading indicators while an audio chunk task is in progress.
