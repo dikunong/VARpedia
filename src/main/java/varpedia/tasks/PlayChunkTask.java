@@ -6,6 +6,8 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.text.Normalizer;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 import javafx.concurrent.Task;
@@ -102,13 +104,16 @@ public class PlayChunkTask extends Task<Void> {
 	        }
 
 			//Now merge the chunks together
-			String[] files = new File(_filename).list();
-			String[] fullFiles = new String[files.length];
-
-			for (int i = 0; i < files.length; i++) {
-				fullFiles[i] = _filename + "/" + files[i];
-			}
-
+			List<String> files = Arrays.asList(new File(_filename).list());
+			
+			//Sort them numerically
+			files.sort((String a, String b) -> {
+				int aInt = Integer.parseInt(a.substring(0, a.lastIndexOf('.')));
+				int bInt = Integer.parseInt(b.substring(0, b.lastIndexOf('.')));
+				return Integer.compare(aInt, bInt);
+			});
+			
+			String[] fullFiles = files.stream().map((String a) -> _filename + "/" + a).toArray(String[]::new);
 			FFMPEGCommand audio = new FFMPEGCommand(fullFiles, -1, false, filename + ".wav");
 
 			if (!audio.pipeFilesIn(() -> isCancelled())) {
