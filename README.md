@@ -1,7 +1,7 @@
 # se206-a4 - VARpedia Beta
 Assignment 4 for SOFTENG 206 (VARpedia)
 
-Group 12 - Di Kun Ong (dngo711) & Tudor Zagreanu (tzag947)
+Group 12 - Di Kun Ong (dngo711) & Tudor Zagreanu (tzag747)
 
 ## Building the JAR file
 
