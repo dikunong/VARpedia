@@ -23,7 +23,6 @@ import java.io.ObjectInputStream;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ExecutionException;
@@ -60,11 +59,71 @@ public class MainController extends Controller {
     private ExecutorService pool = VARpediaApp.newTimedCachedThreadPool();
     private AlertHelper _alertHelper = AlertHelper.getInstance();
 
-    @SuppressWarnings("unchecked")
-	@FXML
+    @FXML
     private void initialize() {
-    	// populate table view with saved creations
+    	// set up table view columns and sorting
+        initializeColumns();
+        initializeSort();
 
+        // populate table view with saved creations
+    	populateTable();
+        deleteAppfiles();
+
+        // disable play and delete buttons until a creation is selected
+        playBtn.disableProperty().bind(creationTableView.getSelectionModel().selectedItemProperty().isNull());
+        deleteBtn.disableProperty().bind(creationTableView.getSelectionModel().selectedItemProperty().isNull());
+    }
+
+    @FXML
+    private void pressPlayButton(ActionEvent event) {
+        // store a creation's name and open PlaybackScreen
+        sendDataToFile(getSelectedName(), "playback-name.txt");
+        changeScene(event, "/varpedia/PlaybackScreen.fxml");
+    }
+
+    @FXML
+    private void pressDeleteButton(ActionEvent event) {
+        // ask for confirmation
+        _alertHelper.showAlert(Alert.AlertType.WARNING,
+                "Are you sure you want to delete the " + getSelectedName() + " creation?",
+                ButtonType.YES, ButtonType.CANCEL);
+
+        if (_alertHelper.getResult() == ButtonType.YES) {
+            // delete creation file
+            File file = new File("creations/" + getSelectedName() + ".mp4");
+            File file2 = new File("creations/" + getSelectedName() + ".dat");
+            if (file.delete() && (!file2.exists() || file2.delete())) {
+                // update table view
+                creationList.remove(creationTableView.getSelectionModel().getSelectedItem());
+            } else {
+                _alertHelper.showAlert(Alert.AlertType.ERROR, "Could not delete creation.");
+            }
+        }
+    }
+
+    @FXML
+    private void pressCreateButton(ActionEvent event) {
+        // open WikitSearchScreen
+        changeScene(event, "/varpedia/WikitSearchScreen.fxml");
+    }
+
+    /**
+     * Helper method that retrieves a filename of a selected creation.
+     * @return Creation filename
+     */
+    private String getSelectedName() {
+        return creationTableView.getSelectionModel().getSelectedItem().getCreationName();
+    }
+
+    /**
+     * Helper method that retrieves the observable list for the FXML component.
+     * @return observable list of Creations
+     */
+    public ObservableList<Creation> getCreationList() {
+        return creationList;
+    }
+
+    private void initializeColumns() {
         creationNameCol.setCellValueFactory((CellDataFeatures<Creation, String> p) -> {
             return new ObservableValueBase<String>(){
                 public String getValue() {
@@ -105,113 +164,62 @@ public class MainController extends Controller {
                 }
             };
         });
-    	
-        sortChoiceBox.setConverter(new StringConverter<TableColumn<Creation,?>>(){
-			@Override
-			public TableColumn<Creation, ?> fromString(String arg0) {
-				if (arg0.equals("Name")) {
-					return creationNameCol;
-				} else if (arg0.equals("Confidence")) {
-					return creationConfCol;
-				} else {
-					return creationViewCol;
-				}
-			}
+    }
 
-			@Override
-			public String toString(TableColumn<Creation, ?> arg0) {
-				if (arg0 == creationNameCol) {
-					return "Name";
-				} else if (arg0 == creationConfCol) {
-					return "Confidence";
-				} else {
-					return "Last viewed";
-				}
-			}
+    @SuppressWarnings("unchecked")
+    private void initializeSort() {
+        sortChoiceBox.setConverter(new StringConverter<TableColumn<Creation,?>>(){
+            @Override
+            public TableColumn<Creation, ?> fromString(String arg0) {
+                if (arg0.equals("Name")) {
+                    return creationNameCol;
+                } else if (arg0.equals("Confidence")) {
+                    return creationConfCol;
+                } else {
+                    return creationViewCol;
+                }
+            }
+
+            @Override
+            public String toString(TableColumn<Creation, ?> arg0) {
+                if (arg0 == creationNameCol) {
+                    return "Name";
+                } else if (arg0 == creationConfCol) {
+                    return "Confidence";
+                } else {
+                    return "Last viewed";
+                }
+            }
         });
-        
+
         sortChoiceBox.getItems().add(creationNameCol);
         sortChoiceBox.getItems().add(creationConfCol);
         sortChoiceBox.getItems().add(creationViewCol);
-        sortChoiceBox.getSelectionModel().select(0);
-        
+
         sortChoiceBox.setOnAction((event) -> {
-        	TableColumn<Creation, ?> main = sortChoiceBox.getSelectionModel().getSelectedItem();
-        	TableColumn<Creation, ?> second = null;
-        	
-        	if (main == creationConfCol) {
-        		second = creationViewCol;
-        	} else if (main == creationViewCol) {
-        		second = creationConfCol;
-        	}
+            TableColumn<Creation, ?> main = sortChoiceBox.getSelectionModel().getSelectedItem();
+            TableColumn<Creation, ?> second = null;
 
-        	main.setSortType(SortType.ASCENDING);
-        	
-        	if (second != null) {
-        		second.setSortType(SortType.ASCENDING);
-            	creationTableView.getSortOrder().setAll(main, second);
-            } else {
-            	creationTableView.getSortOrder().setAll(main);
+            if (main == creationConfCol) {
+                second = creationViewCol;
+            } else if (main == creationViewCol) {
+                second = creationConfCol;
             }
-        	
-        	creationTableView.sort();
+
+            main.setSortType(SortType.ASCENDING);
+
+            if (second != null) {
+                second.setSortType(SortType.ASCENDING);
+                creationTableView.getSortOrder().setAll(main, second);
+            } else {
+                creationTableView.getSortOrder().setAll(main);
+            }
+
+            creationTableView.sort();
         });
-        
-    	populateTable();
-        deleteAppfiles();
 
-        // disable play and delete buttons until a creation is selected
-        playBtn.disableProperty().bind(creationTableView.getSelectionModel().selectedItemProperty().isNull());
-        deleteBtn.disableProperty().bind(creationTableView.getSelectionModel().selectedItemProperty().isNull());
-    }
-
-    @FXML
-    private void pressPlayButton(ActionEvent event) {
-        // store a creation's filename and open PlaybackScreen
-        sendDataToFile(getSelectedFilename(), "playback-name.txt");
-        changeScene(event, "/varpedia/PlaybackScreen.fxml");
-    }
-
-    @FXML
-    private void pressDeleteButton(ActionEvent event) {
-        // ask for confirmation
-        _alertHelper.showAlert(Alert.AlertType.WARNING,
-                "Are you sure you want to delete the selected creation?", // add selected creation name here later
-                ButtonType.YES, ButtonType.CANCEL);
-
-        if (_alertHelper.getResult() == ButtonType.YES) {
-            // delete creation file
-            File file = new File("creations/" + getSelectedFilename() + ".mp4");
-            File file2 = new File("creations/" + getSelectedFilename() + ".dat");
-            if (file.delete() && (!file2.exists() || file2.delete())) {
-                // update table view
-                creationList.remove(creationTableView.getSelectionModel().getSelectedItem());
-            } else {
-                _alertHelper.showAlert(Alert.AlertType.ERROR, "Could not delete creation.");
-            }
-        }
-    }
-
-    @FXML
-    private void pressCreateButton(ActionEvent event) {
-        // open WikitSearchScreen
-        changeScene(event, "/varpedia/WikitSearchScreen.fxml");
-    }
-
-    /**
-     * Helper method that retrieves a filename of a selected creation.
-     * @return Creation filename
-     */
-    private String getSelectedFilename() {
-        return creationTableView.getSelectionModel().getSelectedItem().getCreationName();
-    }
-
-    /**
-     * Helper method that retrives the observable list for the FXML component.
-     * @return observable list of Creations
-     */
-    public ObservableList<Creation> getCreationList() {
-        return creationList;
+        // sort by Name by default
+        sortChoiceBox.getSelectionModel().select(0);
     }
 
     /**

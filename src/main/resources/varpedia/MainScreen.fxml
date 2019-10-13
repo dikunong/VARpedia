@@ -24,21 +24,24 @@
                   <Insets left="16.0" />
                </HBox.margin>
             </Label>
-            <ChoiceBox fx:id="sortChoiceBox" prefWidth="200.0">
+            <ChoiceBox fx:id="sortChoiceBox" prefWidth="135.0">
                <HBox.margin>
                   <Insets left="4.0" />
                </HBox.margin>
             </ChoiceBox>
          </children>
+         <VBox.margin>
+            <Insets top="8.0" />
+         </VBox.margin>
       </HBox>
       <TableView fx:id="creationTableView" items="${controller.creationList}" VBox.vgrow="SOMETIMES">
         <placeholder>
            <Label text="Make your first creation by clicking the &quot;Create New...&quot; button!" />
         </placeholder>
         <columns>
-          <TableColumn fx:id="creationNameCol" editable="false" minWidth="110.0" prefWidth="340.0" text="Creation name" />
-          <TableColumn fx:id="creationConfCol" editable="false" minWidth="90.0" prefWidth="120.0" text="Confidence" />
-          <TableColumn fx:id="creationViewCol" editable="false" minWidth="90.0" prefWidth="220.0" text="Last viewed" />
+          <TableColumn fx:id="creationNameCol" editable="false" minWidth="110.0" prefWidth="${creationTableView.width * 0.43}" text="Creation name" />
+          <TableColumn fx:id="creationConfCol" editable="false" minWidth="90.0" prefWidth="${creationTableView.width * 0.20}" text="Confidence" />
+          <TableColumn fx:id="creationViewCol" editable="false" minWidth="90.0" prefWidth="${creationTableView.width * 0.34}" text="Last viewed" />
         </columns>
          <VBox.margin>
             <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
