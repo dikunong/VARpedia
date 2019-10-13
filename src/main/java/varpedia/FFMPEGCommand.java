@@ -146,7 +146,7 @@ public class FFMPEGCommand {
 	 */
 	public void waitFor() throws Exception {
 		_currentCommand.getProcess().getOutputStream().close();
-		new Thread(() -> {System.err.println(_currentCommand.getError());}).start(); //FFmpeg needs its stderr to be emptied
+		new Thread(() -> {_currentCommand.getError();}).start(); //FFmpeg needs its stderr to be emptied
 
 		//Wait for it to be done
 		try {

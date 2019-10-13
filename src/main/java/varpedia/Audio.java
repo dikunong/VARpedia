@@ -1,11 +1,13 @@
 package varpedia;
 
+import java.io.Serializable;
+
 /**
  * Represents a bit of audio. Combines name and display
  * 
  * @author PisuCat
  */
-public class Audio {
+public class Audio implements Serializable {
 	private String _name;
 	private String _display;
 	

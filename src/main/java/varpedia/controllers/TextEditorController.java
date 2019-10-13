@@ -1,6 +1,6 @@
 package varpedia.controllers;
 
-import java.io.File;
+import java.io.*;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -43,9 +43,9 @@ public class TextEditorController extends Controller {
     @FXML
     private Label loadingLabel;
     @FXML
-	private ObservableList<String> chunkList;
+	private ObservableList<Audio> chunkList;
     @FXML
-	private ListView<String> chunkListView;
+	private ListView<Audio> chunkListView;
 
     private Task<Void> _playTask;
     private Task<Void> _saveTask;
@@ -134,29 +134,6 @@ public class TextEditorController extends Controller {
     	}
     }
 
-	/**
-	 * Helper method that converts a segment of the chunk text into a suitable filename, by stripping invalid
-	 * characters and replacing spaces with underscores.
-	 * @param text Text to be converted
-	 * @return Filename-safe text
-	 */
-	private String getFileName(String text) {
-    	String clean = text.replaceAll("[^A-Za-z0-9\\-_ ]", "").replace(' ', '_');
-    	String name = "appfiles/audio/" + clean.substring(0, Math.min(clean.length(), 32));
-    	String str = name + ".dir";
-
-    	if (new File(str).exists()) {
-    		int id = 2;
-
-    		do {
-    			str = name + "_" + id + ".dir";
-    			id++;
-    	    } while (new File(str).exists());
-    	}
-
-    	return str;
-    }
-
     @FXML
     private void pressSaveButton(ActionEvent event) {
         if (_saveTask == null) {
@@ -179,13 +156,32 @@ public class TextEditorController extends Controller {
     			}
 
     			if (playText) {
-    				String filename = getFileName(text);
+    				String filename = getFilename(text, true);
 
     				// save selected text audio into .wav "chunk"
     		        _saveTask = new PlayChunkTask(text, filename, voiceChoiceBox.getSelectionModel().getSelectedItem().getName());
 		    		_saveTask.setOnSucceeded(ev -> {
 		                _saveTask = null;
-		                chunkList.add(filename.substring(15, Math.min(filename.length(), 47)));
+
+						// create the user-friendly chunk name - trim if selected text is too long
+						String chunkName = getFilename(text, false);
+						String displayText;
+						if (text.length() > 32) {
+							displayText = text.substring(0, 32) + "...";
+						} else {
+							displayText = text;
+						}
+
+						// create and serialize new Audio object representing the chunk
+						Audio newChunk = new Audio(chunkName, displayText);
+						chunkList.add(newChunk);
+
+						try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(new File(chunkName + ".dat")))) {
+							oos.writeObject(newChunk);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+
 		                saveBtn.setText("Save Chunk");
 		                previewBtn.setDisable(false);
 		                setLoadingInactive();
@@ -243,7 +239,37 @@ public class TextEditorController extends Controller {
     }
 
 	/**
-	 * Helper method that runs a task to populate the leftChunkList with chunks in the appfiles/audio directory.
+	 * Helper method that converts a segment of the chunk text into a suitable filename, by stripping invalid
+	 * characters and replacing spaces with underscores.
+	 * @param text Text to be converted
+	 * @param getDir if true, returns string with .dir extension (false is for serialization)
+	 * @return Filename-safe text
+	 */
+	private String getFilename(String text, boolean getDir) {
+		String clean = text.replaceAll("[^A-Za-z0-9\\-_ ]", "").replace(' ', '_');
+		String name = "appfiles/audio/" + clean.substring(0, Math.min(clean.length(), 32));
+
+		if (getDir) {
+			String str = name + ".dir";
+
+			if (new File(str).exists()) {
+				int id = 2;
+
+				do {
+					str = name + "_" + id + ".dir";
+					id++;
+				} while (new File(str).exists());
+			}
+
+			return str;
+		} else {
+			return name;
+		}
+	}
+
+	/**
+	 * Helper method that runs a task to populate the chunkList with chunks in the appfiles/audio directory.
+	 * This is only useful if the user decides to come back to this screen from the ChunkAssembler.
 	 */
 	private void populateList() {
 		Task<List<String>> task = new ListPopulateTask(new File("appfiles/audio"), ".wav");
@@ -251,7 +277,19 @@ public class TextEditorController extends Controller {
 			try {
 				List<String> newCreations = task.get();
 				if (newCreations != null) {
-					chunkList.addAll(newCreations);
+					for (String s : newCreations) {
+						File creationFile = new File("appfiles/audio/" + s + ".dat");
+
+						if (creationFile.exists()) {
+							try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(creationFile))) {
+								chunkList.add((Audio) ois.readObject());
+							} catch (IOException | ClassNotFoundException e) {
+								e.printStackTrace();
+							}
+						} else {
+							chunkList.add(new Audio(s, s));		// this scenario should never happen!
+						}
+					}
 				}
 			} catch (InterruptedException | ExecutionException e) {
 				e.printStackTrace();
