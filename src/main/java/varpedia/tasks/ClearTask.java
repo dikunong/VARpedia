@@ -24,6 +24,7 @@ public class ClearTask extends Task<Void> {
 		Files.walkFileTree(rootPath, new FileVisitor<Path>() {
 			@Override
 			public FileVisitResult postVisitDirectory(Path arg0, IOException arg1) throws IOException {
+				//Don't delete the protected directories
 				if (!arg0.equals(rootPath) && !arg0.equals(audioPath)) {
 					Files.delete(arg0);
 				}

@@ -27,10 +27,10 @@ public class FFMPEGVideoTask extends Task<Void> {
 	private double _volume;
 	
 	/**
-	 * @param creation The name of the creation
+	 * @param creation The name of the creation (or null if previewing)
 	 * @param images The list of image indices to create. These refer to filenames appfiles/image&ltid&gt.jpg
 	 * @param chunks The list of chunk names. These refer to filenames appfiles/audio/&ltchunk name&gt.wav
-	 * @param background The background music in a file
+	 * @param background The background music in a file (or null if there is no background music)
 	 * @param volume The volume of the background music
 	 */
 	public FFMPEGVideoTask(String creation, List<Integer> images, List<String> chunks, String background, double volume) {
@@ -65,6 +65,7 @@ public class FFMPEGVideoTask extends Task<Void> {
 		
 		//Now mix it with the music into appfiles/audio.wav
 		if (_background != null) {
+			//This command merges the preaudio.wav with the background music
 			Command mixer = new Command("ffmpeg", "-y", "-i", "appfiles/preaudio.wav", "-i", "-", "-filter_complex", "[1]volume=volume=" + _volume + "[a];[0][a]amix=inputs=2:duration=first", "appfiles/audio.wav");
 			mixer.run();
 			
@@ -73,6 +74,7 @@ public class FFMPEGVideoTask extends Task<Void> {
 				byte[] transfer = new byte[4096];
 				int count;
 				
+				//Copy the mp3 into the pipe
 				while ((count = in.read(transfer)) != -1) {
 					if (isCancelled()) {
 						return null;
@@ -135,7 +137,7 @@ public class FFMPEGVideoTask extends Task<Void> {
 				video.waitFor();
 			}
 		} else if (_images.size() > 0) {
-			//FFMPEG and MediaPlayer do not work properly with 1-2 images.
+			//FFMPEG and MediaPlayer do not work properly with 1-2 images with the other method, so it uses an alternative method.
 			String[] strings = new String[2];
 
 			if (_images.size() > 1) {
@@ -155,7 +157,7 @@ public class FFMPEGVideoTask extends Task<Void> {
 
 			video.waitFor();
 		} else {
-			//Method for no images
+			//Method for no images. Just renders a white background
 			FFMPEGCommand video = new FFMPEGCommand(length, "creations/" + _creation + ".mp4", "-i", "appfiles/audio.wav", "-vf", "scale=w=min(iw*540/ih\\,960):h=min(540\\,ih*960/iw),pad=w=960:h=540:x=(960-iw)/2:y=(540-ih)/2,drawtext=textfile=appfiles/search-term.txt:x=(w-text_w)/2:y=(h*3/4-text_h/2):fontsize=72:borderw=2:bordercolor=white:expansion=none", "-pix_fmt", "yuv420p", "-r", "25");
 			video.waitFor();
 		}

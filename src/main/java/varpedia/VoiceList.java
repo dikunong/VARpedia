@@ -6,7 +6,6 @@ package varpedia;
  * @author PisuCat
  */
 public class VoiceList {
-	//Warthog, could do this in a better way.
 	/**
 	 * The default voice index, or -1 if it isn't there.
 	 */

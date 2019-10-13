@@ -7,7 +7,6 @@ import java.nio.charset.StandardCharsets;
 import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 
 import javafx.concurrent.Task;
@@ -114,6 +113,8 @@ public class PlayChunkTask extends Task<Void> {
 			});
 			
 			String[] fullFiles = files.stream().map((String a) -> _filename + "/" + a).toArray(String[]::new);
+			
+			//Concatenate the subchunks (similar to how FFMPEGVideoTask makes audio
 			FFMPEGCommand audio = new FFMPEGCommand(fullFiles, -1, false, filename + ".wav");
 
 			if (!audio.pipeFilesIn(() -> isCancelled())) {

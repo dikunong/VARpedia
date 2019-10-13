@@ -14,6 +14,10 @@ import javafx.concurrent.Task;
 public class PreviewAudioTask extends Task<Object> {
 	private File _audio;
 	
+	/**
+	 * Play an audio file using Java
+	 * @param audio The audio file to play
+	 */
 	public PreviewAudioTask(File audio) {
 		_audio = audio;
 	}
@@ -25,10 +29,12 @@ public class PreviewAudioTask extends Task<Object> {
 		try (Clip clip = AudioSystem.getClip()) {
 		    clip.addLineListener(listener);
 		    
+		    //Open the file in the clip
 		    try (AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(_audio)) {
 		    	clip.open(audioInputStream);
 			}
 			
+		    //Play and wait for it to finish
 		    try {
 		    	clip.start();
 		    	listener.waitFor();
@@ -36,6 +42,7 @@ public class PreviewAudioTask extends Task<Object> {
 		    	clip.close();
 		    }
 		} finally {
+			//Hopefully unstick any open files so they can be deleted.
 			System.gc();
 		}
 		
@@ -47,12 +54,13 @@ public class PreviewAudioTask extends Task<Object> {
 		
 		@Override
 		public synchronized void update(LineEvent event) {
-			if (event.getType() == Type.STOP || event.getType() == Type.STOP) {
+			if (event.getType() == Type.STOP || event.getType() == Type.CLOSE) {
 				done = true;
 				notifyAll();
 			}
 		}
 		
+		//Wait for the audio system to claim it is done
 		public synchronized void waitFor() throws InterruptedException {
 			while (!done) {
 				wait();

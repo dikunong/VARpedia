@@ -4,14 +4,12 @@ import java.io.File;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
-import java.util.function.UnaryOperator;
 
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.layout.Region;
 import varpedia.AlertHelper;
 import varpedia.VARpediaApp;
 import varpedia.tasks.FlickrTask;
