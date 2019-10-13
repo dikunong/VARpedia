@@ -16,7 +16,7 @@ import varpedia.FFMPEGCommand;
  * Background task that handles all FFMPEG commands for creation creation - including concatenation of audio chunks,
  * and merging of audio with Flickr images to produce the final creation video.
  *
- * Author: Tudor Zagreanu
+ * @author Tudor Zagreanu
  */
 public class FFMPEGVideoTask extends Task<Void> {
 	

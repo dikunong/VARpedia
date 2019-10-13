@@ -20,10 +20,10 @@ import varpedia.tasks.FlickrTask;
 import varpedia.tasks.ListPopulateTask;
 
 /**
- * Controller for the ChunkAssemblerScreen, which handles assembly of audio chunks, input of creation name and number
- * of images, and the actual creation of the creation itself via Flickr and FFMPEG.
+ * Controller for the ChunkAssemblerScreen, which handles assembly of audio chunks,
+ * and the downloading of images via Flickr.
  *
- * Authors: Di Kun Ong and Tudor Zagreanu
+ * @author Di Kun Ong and Tudor Zagreanu
  */
 public class ChunkAssemblerController extends Controller {
 
@@ -85,13 +85,14 @@ public class ChunkAssemblerController extends Controller {
                 		sendDataToFile(Integer.toString(actualImages), "image-count.txt");
                 		StringBuilder selected = new StringBuilder();
 
+                		// for each selected chunk, store its name in a StringBuilder and save it to a file
                 		for (Audio a : rightChunkList) {
                 		    String filename = a.getName();
                 		    selected.append(filename);
                 		    selected.append(File.pathSeparator);
                         }
-
                 		sendDataToFile(selected.toString(), "selected-chunks.txt");
+
                 		setLoadingInactive();
                 		changeScene(event, "/varpedia/PhotoPickerScreen.fxml");
                 	} catch (InterruptedException | ExecutionException e) {
@@ -192,18 +193,20 @@ public class ChunkAssemblerController extends Controller {
         Task<List<String>> task = new ListPopulateTask(new File("appfiles/audio"), ".wav");
         task.setOnSucceeded(event -> {
             try {
-                List<String> newCreations = task.get();
-                if (newCreations != null) {
-                    for (String s : newCreations) {
-                        File creationFile = new File("appfiles/audio/" + s + ".dat");
+                List<String> chunks = task.get();
+                if (chunks != null) {
+                    // for each chunk, find its serialisation and add it to the list
+                    for (String s : chunks) {
+                        File chunkFile = new File("appfiles/audio/" + s + ".dat");
 
-                        if (creationFile.exists()) {
-                            try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(creationFile))) {
+                        if (chunkFile.exists()) {
+                            try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(chunkFile))) {
                                 leftChunkList.add((Audio) ois.readObject());
                             } catch (IOException | ClassNotFoundException e) {
                                 e.printStackTrace();
                             }
                         } else {
+                            // if somehow a chunk hasn't been serialized, add it with its filename for display
                             leftChunkList.add(new Audio(s, s));		// this scenario should never happen!
                         }
                     }

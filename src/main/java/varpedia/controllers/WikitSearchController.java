@@ -15,7 +15,7 @@ import java.util.concurrent.ExecutorService;
 /**
  * Controller for the WikitSearchScreen, which handles the searching of Wikipedia for a given search term (via wikit).
  *
- * Authors: Di Kun Ong and Tudor Zagreanu
+ * @author Di Kun Ong and Tudor Zagreanu
  */
 public class WikitSearchController extends Controller {
 

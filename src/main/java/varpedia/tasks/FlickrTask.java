@@ -27,7 +27,7 @@ import javafx.concurrent.Task;
  * the downloading of a user-specified quantity of images.
  * Requires a Flickr API key to work, which is stored in src/main/resources/varpedia/key.txt.
  *
- * Author: Tudor Zagreanu
+ * @author Tudor Zagreanu
  */
 public class FlickrTask extends Task<Integer> {
 

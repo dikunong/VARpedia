@@ -4,9 +4,10 @@ import java.io.Serializable;
 import java.time.Instant;
 
 /**
- * This object represents the information associated with a creation
- * It is saved in a .dat file (creations/&ltcreationName&gt.dat)
- * @author PisuCat
+ * Represents the information associated with a creation.
+ * It can be serialized, in which case it is saved in a .dat file (creations/creationName.dat)
+ *
+ * @author Di Kun Ong and Tudor Zagreanu
  */
 public class Creation implements Serializable {
 
@@ -17,9 +18,9 @@ public class Creation implements Serializable {
 	private final Instant _lastViewed;
 
 	/**
-	 * @param name The filename of the creation without the extension
+	 * @param name The filename of the creation, without the extension
 	 * @param conf The confidence (1-5, or -1 for unrated)
-	 * @param view The last view time (or null for unwatched)
+	 * @param view The time the creation was last viewed (or null for unwatched)
 	 */
     public Creation(String name, int conf, Instant view) {
         _creationName = name;

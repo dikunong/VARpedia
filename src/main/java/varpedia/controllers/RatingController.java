@@ -1,7 +1,6 @@
 package varpedia.controllers;
 
 import javafx.beans.Observable;
-import javafx.beans.property.DoubleProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -15,6 +14,12 @@ import java.io.ObjectOutputStream;
 import java.time.Instant;
 import java.util.function.UnaryOperator;
 
+/**
+ * Controller for the RatingDialog, which handles input and serialization of the user's confidence
+ * rating in a given creation after playback.
+ *
+ * @author Di Kun Ong and Tudor Zagreanu
+ */
 public class RatingController extends Controller {
 
     @FXML
@@ -54,14 +59,13 @@ public class RatingController extends Controller {
             }
         }));
 
+        // bind the rating slider and spinner components to each other so they display synced values
         ratingSlider.valueProperty().addListener((Observable o) -> {
             ratingSpinner.getValueFactory().setValue((int) ratingSlider.getValue());
         });
         ratingSpinner.valueProperty().addListener((Observable o) -> {
             ratingSlider.setValue((double) ratingSpinner.getValue());
         });
-
-        //ratingSlider.valueProperty().bindBidirectional(ratingSpinner.getValueFactory().valueProperty());
         
         _creationName = getDataFromFile("playback-name.txt");
     }

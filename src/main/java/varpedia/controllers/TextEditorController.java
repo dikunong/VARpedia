@@ -22,7 +22,7 @@ import varpedia.tasks.VoiceListTask;
  * Controller for the TextEditorScreen, which handles the selection and creation of audio "chunks" from the Wikipedia
  * search results, including selecting any available festival voice synthesizer.
  *
- * Authors: Di Kun Ong and Tudor Zagreanu
+ * @author Di Kun Ong and Tudor Zagreanu
  */
 public class TextEditorController extends Controller {
 

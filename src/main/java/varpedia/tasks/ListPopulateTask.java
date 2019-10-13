@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Background task that handles listing of all files in a directory.
  *
- * Author: Di Kun Ong
+ * @author Di Kun Ong
  */
 public class ListPopulateTask extends Task<List<String>> {
     private File root;
@@ -41,7 +41,7 @@ public class ListPopulateTask extends Task<List<String>> {
             String filename = p.getFileName().toString();
 
             if (filename.contains(".")) {
-            	//Skip if it has the wrong extension
+            	// skip if it has the wrong extension
             	if (!filename.substring(filename.lastIndexOf('.')).equals(ext)) {
             		continue;
             	}

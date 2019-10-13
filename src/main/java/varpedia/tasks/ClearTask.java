@@ -13,7 +13,7 @@ import javafx.concurrent.Task;
 /**
  * Background task that handles deletion of temporary app files.
  *
- * Author: Tudor Zagreanu
+ * @author Tudor Zagreanu
  */
 public class ClearTask extends Task<Void> {
 	public static void deleteTree(File root) throws IOException {

@@ -14,7 +14,7 @@ import varpedia.Command;
 import varpedia.FFMPEGCommand;
 
 /**
- * Background task that handles the playing/saving of audio chunks, using the festival voice synthesizer.
+ * Background task that handles the previewing/saving of audio chunks, using the festival voice synthesizer.
  *
  * Author: Tudor Zagreanu
  */
@@ -25,7 +25,7 @@ public class PlayChunkTask extends Task<Void> {
 	
 	/**
 	 * @param input The text to speak/save
-	 * @param filename The filename to save. Set to null to play the text out the speaker instead.
+	 * @param filename The filename to save. Set to null to preview the text instead.
 	 * @param voice The voice to use. Set to null to use the default.
 	 */
 	public PlayChunkTask(String input, String filename, String voice) {

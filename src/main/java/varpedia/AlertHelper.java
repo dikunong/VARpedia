@@ -7,7 +7,7 @@ import javafx.scene.layout.Region;
 /**
  * Singleton class that manages creation and display of alerts, as well as receiving user input in response.
  *
- * Author: Di Kun Ong
+ * @author Di Kun Ong
  */
 public final class AlertHelper {
 

@@ -48,8 +48,8 @@ public class VARpediaApp extends Application {
             primaryStage.setScene(new Scene(layout));
             primaryStage.show();
 
-            primaryStage.setMinHeight(280);
-            primaryStage.setMinWidth(560);
+            primaryStage.setMinHeight(400);
+            primaryStage.setMinWidth(700);
 
             // if the application is abruptly closed, prompt before exiting
             // if the user chooses to exit, delete appfiles first

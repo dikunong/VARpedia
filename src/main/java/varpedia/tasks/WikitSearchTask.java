@@ -15,7 +15,7 @@ import java.util.concurrent.TimeoutException;
 /**
  * Background task that handles searching for a given term on Wikipedia via wikit.
  *
- * Authors: Di Kun Ong and Tudor Zagreanu
+ * @author Di Kun Ong and Tudor Zagreanu
  */
 public class WikitSearchTask extends Task<Boolean> {
 

@@ -32,7 +32,7 @@ import java.util.concurrent.ExecutorService;
  * Controller for the MainScreen, which displays current creations that can be played and deleted, as well as acting as
  * the gateway to making new creations.
  *
- * Authors: Di Kun Ong and Tudor Zagreanu
+ * @author Di Kun Ong and Tudor Zagreanu
  */
 public class MainController extends Controller {
 
@@ -123,6 +123,10 @@ public class MainController extends Controller {
         return creationList;
     }
 
+    /**
+     * Helper method that initialises the values of each column in the TableView, and how they should parse
+     * the serialized data in a way that will become user-friendly output.
+     */
     private void initializeColumns() {
         creationNameCol.setCellValueFactory((CellDataFeatures<Creation, String> p) -> {
             return new ObservableValueBase<String>(){
@@ -150,7 +154,7 @@ public class MainController extends Controller {
             return new ObservableValueBase<String>(){
                 public String getValue() {
                     // formatter to parse the Instant into a user-readable format
-                    // ISO date format to prevent sort breaking
+                    // ISO date format to ensure sorting works correctly
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm a")
                             .withLocale(Locale.UK)
                             .withZone(ZoneId.systemDefault());
@@ -166,6 +170,10 @@ public class MainController extends Controller {
         });
     }
 
+    /**
+     * Helper method that initializes the sorting controls for the active learning component,
+     * as well as how each sorting mode should behave.
+     */
     @SuppressWarnings("unchecked")
     private void initializeSort() {
         sortChoiceBox.setConverter(new StringConverter<TableColumn<Creation,?>>(){
@@ -200,6 +208,8 @@ public class MainController extends Controller {
             TableColumn<Creation, ?> main = sortChoiceBox.getSelectionModel().getSelectedItem();
             TableColumn<Creation, ?> second = null;
 
+            // if sorting by confidence or last viewed first, set the other attribute as second sort
+            // for if there's need of a tiebreaker
             if (main == creationConfCol) {
                 second = creationViewCol;
             } else if (main == creationViewCol) {

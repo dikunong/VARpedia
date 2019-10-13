@@ -7,7 +7,7 @@ import java.util.concurrent.Callable;
 /**
  * Wraps the FFMPEG command for creating with a set of images.
  *
- * @author PisuCat
+ * @author Tudor Zagreanu
  */
 public class FFMPEGCommand {
 	private static final String[] ARGS = new String[] {"ffmpeg", "-y", "-f", "concat", "-protocol_whitelist", "file,pipe", "-i", "-"};

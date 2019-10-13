@@ -15,7 +15,7 @@ import java.nio.charset.StandardCharsets;
  * Abstract Controller class that provides scene-changing and temporary data storage/retrieval functionality
  * to all Controllers.
  *
- * Authors: Di Kun Ong and Tudor Zagreanu
+ * @author Di Kun Ong and Tudor Zagreanu
  */
 public abstract class Controller {
 
