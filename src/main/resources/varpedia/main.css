@@ -167,6 +167,11 @@
     -fx-background-color: #ffffff;
 }
 
+.table-view:disabled, .table-view:disabled > .placeholder > .label {
+    -fx-opacity: 1.0;
+    -fx-font-weight: bold;
+}
+
 .table-row-cell{
     -fx-background-color: -fx-table-cell-border-color, #ffffff;
     -fx-border-color: #e0e0e0;
