@@ -195,7 +195,6 @@ public class TextEditorController extends Controller {
 					});
 		            _saveTask.setOnFailed(ev -> {
 						_alertHelper.showAlert(Alert.AlertType.ERROR, "Error saving audio chunk. Try selecting other text or using a different voice.");
-						_saveTask.getException().printStackTrace();
 						_saveTask = null;
 		                saveBtn.setText("Save Chunk");
 						previewBtn.setDisable(false);
