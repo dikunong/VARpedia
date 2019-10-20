@@ -38,7 +38,7 @@
                         <Insets bottom="8.0" right="8.0" />
                      </VBox.margin>
                   </Label>
-                  <ListView fx:id="chunkListView" prefWidth="420.0" VBox.vgrow="SOMETIMES">
+                  <ListView fx:id="chunkListView" disable="true" prefWidth="420.0" VBox.vgrow="SOMETIMES">
                      <items>
                         <FXCollections fx:id="chunkList" fx:factory="observableArrayList" />
                      </items>

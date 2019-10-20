@@ -164,10 +164,6 @@
     -fx-background-color: -fx-bg-color;
 }
 
-.table-view:focused {
-    -fx-background-color: -fx-primary-color;
-}
-
 .table-view .column-header-background .label{
     -fx-font-weight: bold;
 }
@@ -185,7 +181,7 @@
     -fx-font-weight: bold;
 }
 
-.table-row-cell{
+.table-row-cell {
     -fx-background-color: -fx-bg-color;
     -fx-border-color: -fx-hover-color;
     -fx-table-cell-border-color:-fx-bg-color;
@@ -212,8 +208,43 @@
     #LISTVIEW
 \*------------------------------------*/
 
+.list-view {
+    -fx-background-color: -fx-bg-color;
+    -fx-border-color: -fx-hover-color;
+}
+
+.list-view .list-cell {
+    -fx-background-color: -fx-bg-color;
+}
+
+.list-view .list-cell:selected {
+    -fx-background-color: -fx-primary-color;
+    -fx-text-fill: -fx-bg-color;
+}
+
+.list-view:focused .list-cell:selected {
+    -fx-background-color: -fx-primary-color;
+}
+
+.list-view:disabled {
+    -fx-opacity: 1.0;
+}
+
 #leftPhotoListView .list-cell, #rightPhotoListView .list-cell {
     -fx-alignment: center;
+}
+
+/*------------------------------------*\
+    #TEXTAREA
+\*------------------------------------*/
+.text-area {
+    -fx-background-color: -fx-bg-color;
+    -fx-highlight-fill: -fx-primary-color;
+    -fx-highlight-text-fill: -fx-bg-color;
+}
+
+.text-area:focused {
+    -fx-highlight-fill: -fx-primary-color;
 }
 
 /*------------------------------------*\
