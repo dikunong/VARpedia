@@ -70,7 +70,7 @@
 
 .red-button:hover {
     -fx-background-color: -fx-cancel-color;
-    -fx-border-color: -fx-edge-color;
+    -fx-border-color: -fx-cancel-color;
     -fx-text-fill: -fx-bg-color;
 }
 
@@ -80,6 +80,10 @@
 
 #deleteBtn {
     -fx-background-image: url("images/delete_black.png");
+}
+
+#deleteBtn:hover {
+    -fx-background-image: url("images/delete_white.png");
 }
 
 #createBtn {
@@ -194,6 +198,8 @@
 
 .table-row-cell:selected {
     -fx-background-color: -fx-primary-color;
+    -fx-border-color: -fx-primary-color;
+    -fx-table-cell-border-color:-fx-primary-color;
     -fx-background-insets: 0;
     -fx-background-radius: 1;
 }
@@ -208,4 +214,17 @@
 
 #leftPhotoListView .list-cell, #rightPhotoListView .list-cell {
     -fx-alignment: center;
+}
+
+/*------------------------------------*\
+    #CHOICEBOX
+\*------------------------------------*/
+
+.choice-box {
+    -fx-background-color: -fx-bg-color;
+    -fx-text-fill: -fx-font-color;
+}
+
+.choice-box .menu-item:focused {
+    -fx-background-color: -fx-primary-color;
 }
