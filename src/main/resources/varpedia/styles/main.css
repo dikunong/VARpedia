@@ -90,31 +90,31 @@
 }
 
 #playBtn {
-    -fx-background-image: url("images/play_circle_black.png");
+    -fx-background-image: url("../images/play_circle_black.png");
 }
 
 #deleteBtn {
-    -fx-background-image: url("images/delete_black.png");
+    -fx-background-image: url("../images/delete_black.png");
 }
 
 #deleteBtn:hover {
-    -fx-background-image: url("images/delete_white.png");
+    -fx-background-image: url("../images/delete_white.png");
 }
 
 #createBtn {
-    -fx-background-image: url("images/add_circle_white.png");
+    -fx-background-image: url("../images/add_circle_white.png");
 }
 
 #searchBtn {
-    -fx-background-image: url("images/search_white.png");
+    -fx-background-image: url("../images/search_white.png");
 }
 
 #cancelBtn {
-    -fx-background-image: url("images/cancel_black.png");
+    -fx-background-image: url("../images/cancel_black.png");
 }
 
 #cancelBtn:hover {
-    -fx-background-image: url("images/cancel_white.png");
+    -fx-background-image: url("../images/cancel_white.png");
 }
 
 #playPauseBtn {
@@ -124,51 +124,51 @@
     -fx-background-position: 8px;
     -fx-border-color: transparent;
     -fx-background-radius: 24px;
-    -fx-background-image: url("images/pause_white.png");
+    -fx-background-image: url("../images/pause_white.png");
 }
 
 #exitBtn {
-    -fx-background-image: url("images/cancel_black.png");
+    -fx-background-image: url("../images/cancel_black.png");
 }
 
 #previewBtn {
-    -fx-background-image: url("images/volume_up_black.png");
+    -fx-background-image: url("../images/volume_up_black.png");
 }
 
 #saveBtn {
-    -fx-background-image: url("images/save_black.png");
+    -fx-background-image: url("../images/save_black.png");
 }
 
 #assembleBtn {
-    -fx-background-image: url("images/subscriptions_white.png");
+    -fx-background-image: url("../images/subscriptions_white.png");
 }
 
 #backBtn {
-    -fx-background-image: url("images/arrow_back_black.png");
+    -fx-background-image: url("../images/arrow_back_black.png");
 }
 
 #addToBtn {
-    -fx-background-image: url("images/chevron_right_black.png");
+    -fx-background-image: url("../images/chevron_right_black.png");
 }
 
 #removeFromBtn {
-    -fx-background-image: url("images/chevron_left_black.png");
+    -fx-background-image: url("../images/chevron_left_black.png");
 }
 
 #moveUpBtn {
-    -fx-background-image: url("images/chevron_up_black.png");
+    -fx-background-image: url("../images/chevron_up_black.png");
 }
 
 #moveDownBtn {
-    -fx-background-image: url("images/chevron_down_black.png");
+    -fx-background-image: url("../images/chevron_down_black.png");
 }
 
 #saveRateBtn {
-    -fx-background-image: url("images/save_white.png");
+    -fx-background-image: url("../images/save_white.png");
 }
 
 #dontSaveRateBtn {
-    -fx-background-image: url("images/cancel_black.png");
+    -fx-background-image: url("../images/cancel_black.png");
 }
 
 /*------------------------------------*\

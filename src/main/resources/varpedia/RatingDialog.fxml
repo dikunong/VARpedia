@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" prefHeight="300.0" prefWidth="400.0" stylesheets="@main.css" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="varpedia.controllers.RatingController">
+<VBox alignment="CENTER" prefHeight="300.0" prefWidth="400.0" stylesheets="@styles/main.css" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="varpedia.controllers.RatingController">
    <children>
       <Label text="On a scale of 1 to 5, rate your confidence in how well you remember what you watched:" textAlignment="CENTER" wrapText="true">
          <VBox.margin>
