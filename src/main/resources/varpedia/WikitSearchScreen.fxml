@@ -14,7 +14,7 @@
       <Label text="Enter a term to search on Wikipedia:" />
       <HBox alignment="CENTER">
          <children>
-            <TextField fx:id="searchTextField" maxWidth="200.0" prefWidth="200.0">
+            <TextField fx:id="searchTextField" maxWidth="200.0" onAction="#pressSearchButton" prefWidth="200.0">
                <HBox.margin>
                   <Insets right="8.0" />
                </HBox.margin>

@@ -144,7 +144,7 @@
                                     <Insets right="11.0" top="4.0" />
                                  </HBox.margin>
                               </Label>
-                              <TextField fx:id="creationNameTextField" HBox.hgrow="SOMETIMES" />
+                              <TextField fx:id="creationNameTextField" onAction="#pressCreateBtn" HBox.hgrow="SOMETIMES" />
                            </children>
                         </HBox>
                      </children>
