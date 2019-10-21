@@ -56,11 +56,17 @@
            </rowConstraints>
            <children>
                <ListView fx:id="leftPhotoListView" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1" GridPane.rowSpan="3">
+                   <placeholder>
+                       <Label text="There are no more photos left to add!" wrapText="true" />
+                   </placeholder>
                    <items>
                        <FXCollections fx:id="leftPhotoList" fx:factory="observableArrayList" />
                    </items>
                </ListView>
                <ListView fx:id="rightPhotoListView" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="1" GridPane.rowSpan="3">
+                   <placeholder>
+                       <Label text="Add photos here to put them in your creation!" wrapText="true" />
+                   </placeholder>
                    <items>
                        <FXCollections fx:id="rightPhotoList" fx:factory="observableArrayList" />
                    </items>

@@ -251,6 +251,12 @@ public class ChunkAssemblerController extends Controller {
         addToBtn.disableProperty().bind(leftChunkListView.getSelectionModel().selectedItemProperty().isNull());
         removeFromBtn.disableProperty().bind(rightChunkListView.getSelectionModel().selectedItemProperty().isNull());
         moveUpBtn.disableProperty().bind(Bindings.equal(0,rightChunkListView.getSelectionModel().selectedIndexProperty()));
+
+        // This binding fails because it only takes the size when first bound, and doesn't update as items are added/removed
+        // so it always thinks the "last item" is at position 0
+        // solutions I've tried include using Bindings.size and un/rebinding upon every addTo and removeFrom click
+        // I suspect a real solution will involve writing a custom BooleanBinding
+        // TODO: figure this binding out
         //moveDownBtn.disableProperty().bind(Bindings.equal(rightChunkList.size(),rightChunkListView.getSelectionModel().selectedIndexProperty()));
 
         selectBtn.setText("Select Photos");
