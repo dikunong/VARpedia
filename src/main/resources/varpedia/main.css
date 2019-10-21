@@ -11,6 +11,21 @@
     -fx-font-size: 16px;
     -fx-font-family: Roboto, sans-serif;
     -fx-background-color: -fx-bg-color;
+
+    -fx-control-inner-background: -fx-bg-color;
+    -fx-control-inner-background-alt: -fx-bg-color;
+    -fx-dark-text-color: -fx-font-color;
+    -fx-mid-text-color: -fx-font-color;
+    -fx-light-text-color: -fx-bg-color;
+
+    -fx-accent: -fx-primary-color;
+    -fx-focus-color: -fx-primary-color;
+    -fx-faint-focus-color: #1a75eb22;
+
+    -fx-color: -fx-bg-color;
+
+    -fx-selection-bar: -fx-primary-color;
+    -fx-selection-bar-non-focused: -fx-hover-color;
 }
 
 .heading {
@@ -160,14 +175,6 @@
     #TABLEVIEW
 \*------------------------------------*/
 
-.table-view {
-    -fx-background-color: -fx-bg-color;
-}
-
-.table-view .column-header-background .label{
-    -fx-font-weight: bold;
-}
-
 .table-view .column-header {
     -fx-background-color: -fx-bg-color;
 }
@@ -182,22 +189,12 @@
 }
 
 .table-row-cell {
-    -fx-background-color: -fx-bg-color;
-    -fx-border-color: -fx-hover-color;
-    -fx-table-cell-border-color:-fx-bg-color;
     -fx-cell-size: 48px;
 }
 
-.table-row-cell:odd{
-    -fx-background-color: -fx-bg-color; 
-}
-
-.table-row-cell:selected {
-    -fx-background-color: -fx-primary-color;
-    -fx-border-color: -fx-primary-color;
-    -fx-table-cell-border-color:-fx-primary-color;
-    -fx-background-insets: 0;
-    -fx-background-radius: 1;
+.table-row-cell:focused {
+    -fx-border-color: transparent;
+    -fx-table-cell-border-color: transparent;
 }
 
 .table-column {
@@ -208,24 +205,6 @@
     #LISTVIEW
 \*------------------------------------*/
 
-.list-view {
-    -fx-background-color: -fx-bg-color;
-    -fx-border-color: -fx-hover-color;
-}
-
-.list-view .list-cell {
-    -fx-background-color: -fx-bg-color;
-}
-
-.list-view .list-cell:selected {
-    -fx-background-color: -fx-primary-color;
-    -fx-text-fill: -fx-bg-color;
-}
-
-.list-view:focused .list-cell:selected {
-    -fx-background-color: -fx-primary-color;
-}
-
 .list-view:disabled {
     -fx-opacity: 1.0;
 }
@@ -235,27 +214,10 @@
 }
 
 /*------------------------------------*\
-    #TEXTAREA
-\*------------------------------------*/
-.text-area {
-    -fx-background-color: -fx-bg-color;
-    -fx-highlight-fill: -fx-primary-color;
-    -fx-highlight-text-fill: -fx-bg-color;
-}
-
-.text-area:focused {
-    -fx-highlight-fill: -fx-primary-color;
-}
-
-/*------------------------------------*\
     #CHOICEBOX
 \*------------------------------------*/
 
 .choice-box {
     -fx-background-color: -fx-bg-color;
     -fx-text-fill: -fx-font-color;
-}
-
-.choice-box .menu-item:focused {
-    -fx-background-color: -fx-primary-color;
 }
