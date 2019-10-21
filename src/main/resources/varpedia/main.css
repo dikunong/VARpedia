@@ -221,3 +221,16 @@
     -fx-background-color: -fx-bg-color;
     -fx-text-fill: -fx-font-color;
 }
+
+/*------------------------------------*\
+    #SLIDER
+\*------------------------------------*/
+
+.slider .track {
+    -fx-padding: 2px;
+    -fx-background-color: -fx-primary-color;
+}
+
+.slider .thumb {
+    -fx-background-color: -fx-primary-color;
+}
