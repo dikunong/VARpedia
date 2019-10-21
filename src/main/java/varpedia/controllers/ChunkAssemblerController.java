@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 
+import javafx.beans.binding.Bindings;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -36,7 +38,7 @@ public class ChunkAssemblerController extends Controller {
     @FXML
     private Button moveDownBtn;
     @FXML
-    private Button createBtn;
+    private Button selectBtn;
     @FXML
     private Button cancelBtn;
     @FXML
@@ -55,7 +57,7 @@ public class ChunkAssemblerController extends Controller {
     @FXML
     private ListView<Audio> rightChunkListView;
 
-    private Task<Integer> _createTask;
+    private Task<Integer> _photoTask;
 
     private ExecutorService pool = VARpediaApp.newTimedCachedThreadPool();
 
@@ -67,21 +69,25 @@ public class ChunkAssemblerController extends Controller {
 
     	// populate list view with saved chunks
         populateList();
+
+        // disable chunk lists if they are empty
+        leftChunkListView.disableProperty().bind(Bindings.size(leftChunkList).isEqualTo(0));
+        rightChunkListView.disableProperty().bind(Bindings.size(rightChunkList).isEqualTo(0));
     }
 
     @FXML
-    private void pressCreateBtn(ActionEvent event) {
-        if (_createTask == null) {
+    private void pressSelectBtn(ActionEvent event) {
+        if (_photoTask == null) {
     		int imageCount = 10;
     		
     		if (rightChunkListView.getItems().isEmpty()) {
                 _alertHelper.showAlert(Alert.AlertType.ERROR, "Please add chunks to assemble.");
     		} else {
     			// get Flickr images
-    			_createTask = new FlickrTask(imageCount);
-    			_createTask.setOnSucceeded(ev -> {
+    			_photoTask = new FlickrTask(imageCount);
+    			_photoTask.setOnSucceeded(ev -> {
                 	try {
-                		int actualImages = _createTask.get();
+                		int actualImages = _photoTask.get();
                 		sendDataToFile(Integer.toString(actualImages), "image-count.txt");
                 		StringBuilder selected = new StringBuilder();
 
@@ -99,20 +105,20 @@ public class ChunkAssemblerController extends Controller {
 						e.printStackTrace();
 					}
                 });
-                _createTask.setOnCancelled(ev -> {
-                    _createTask = null;
+                _photoTask.setOnCancelled(ev -> {
+                    _photoTask = null;
                     setLoadingInactive();
                 });
-                _createTask.setOnFailed(ev -> {
+                _photoTask.setOnFailed(ev -> {
                     _alertHelper.showAlert(Alert.AlertType.ERROR, "Failed to download images.");
-                    _createTask = null;
+                    _photoTask = null;
                     setLoadingInactive();
                 });
-            	pool.submit(_createTask);
+            	pool.submit(_photoTask);
             	setLoadingActive();
         	}
     	} else {
-    		_createTask.cancel(true);
+    		_photoTask.cancel(true);
     		setLoadingInactive();
     	}
     }
@@ -126,8 +132,8 @@ public class ChunkAssemblerController extends Controller {
 
         if (_alertHelper.getResult() == ButtonType.YES) {
             // if a creation is currently in progress, cancel it
-            if (_createTask != null && _createTask.isRunning()) {
-                _createTask.cancel();
+            if (_photoTask != null && _photoTask.isRunning()) {
+                _photoTask.cancel();
             }
             // open MainScreen
             changeScene(event, "/varpedia/MainScreen.fxml");
@@ -222,7 +228,12 @@ public class ChunkAssemblerController extends Controller {
      * Helper method to disable most UI elements and show loading indicators while a creation task is in progress.
      */
     private void setLoadingActive() {
-        createBtn.setText("Stop");
+        addToBtn.disableProperty().unbind();
+        removeFromBtn.disableProperty().unbind();
+        moveUpBtn.disableProperty().unbind();
+        //moveDownBtn.disableProperty().unbind();
+
+        selectBtn.setText("Stop");
         addToBtn.setDisable(true);
         removeFromBtn.setDisable(true);
         moveUpBtn.setDisable(true);
@@ -236,10 +247,13 @@ public class ChunkAssemblerController extends Controller {
      * Helper method to enable most UI elements and hide loading indicators when a creation task ends.
      */
     private void setLoadingInactive() {
-        createBtn.setText("Create!");
-        addToBtn.setDisable(false);
-        removeFromBtn.setDisable(false);
-        moveUpBtn.setDisable(false);
+        // disable add to and remove from buttons until respective chunks are selected
+        addToBtn.disableProperty().bind(leftChunkListView.getSelectionModel().selectedItemProperty().isNull());
+        removeFromBtn.disableProperty().bind(rightChunkListView.getSelectionModel().selectedItemProperty().isNull());
+        moveUpBtn.disableProperty().bind(Bindings.equal(0,rightChunkListView.getSelectionModel().selectedIndexProperty()));
+        //moveDownBtn.disableProperty().bind(Bindings.equal(rightChunkList.size(),rightChunkListView.getSelectionModel().selectedIndexProperty()));
+
+        selectBtn.setText("Select Photos");
         moveDownBtn.setDisable(false);
         backBtn.setDisable(false);
         loadingBar.setVisible(false);

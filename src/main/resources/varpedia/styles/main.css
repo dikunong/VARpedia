@@ -163,6 +163,10 @@
     -fx-background-image: url("../images/chevron_down_black.png");
 }
 
+#selectBtn {
+    -fx-background-image: url("../images/add_photo_white.png");
+}
+
 #saveRateBtn {
     -fx-background-image: url("../images/save_white.png");
 }

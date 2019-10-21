@@ -51,11 +51,17 @@
         </rowConstraints>
          <children>
             <ListView fx:id="leftChunkListView" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1" GridPane.rowSpan="3">
+               <placeholder>
+                  <Label text="There are no more chunks left to add!" wrapText="true" />
+               </placeholder>
                <items>
                   <FXCollections fx:id="leftChunkList" fx:factory="observableArrayList" />
                </items>
             </ListView>
             <ListView fx:id="rightChunkListView" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="1" GridPane.rowSpan="3">
+               <placeholder>
+                  <Label text="Add chunks here to put them in your creation!" wrapText="true" />
+               </placeholder>
                <items>
                   <FXCollections fx:id="rightChunkList" fx:factory="observableArrayList" />
                </items>
@@ -139,7 +145,7 @@
                      <children>
                         <HBox alignment="BOTTOM_RIGHT">
                            <children>
-                              <Button fx:id="createBtn" mnemonicParsing="false" onAction="#pressCreateBtn" prefWidth="180.0" styleClass="main-button" text="Select Photos">
+                              <Button fx:id="selectBtn" mnemonicParsing="false" onAction="#pressSelectBtn" prefWidth="180.0" styleClass="main-button" text="Select Photos">
                                  <HBox.margin>
                                     <Insets right="8.0" />
                                  </HBox.margin>
