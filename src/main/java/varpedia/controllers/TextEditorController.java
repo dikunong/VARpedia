@@ -200,6 +200,7 @@ public class TextEditorController extends Controller {
     @FXML
     private void pressAssembleButton(ActionEvent event) {
         // open ChunkAssemblerScreen
+    	sendDataToFile(wikiTextArea.getText(), "search-output.txt");
         changeScene(event, "/varpedia/ChunkAssemblerScreen.fxml");
     }
 

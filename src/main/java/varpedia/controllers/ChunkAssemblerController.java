@@ -4,9 +4,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
+import java.util.regex.Pattern;
 
 import javafx.beans.binding.Bindings;
 import javafx.collections.ListChangeListener;
@@ -68,7 +70,13 @@ public class ChunkAssemblerController extends Controller {
         setLoadingInactive();
 
     	// populate list view with saved chunks
-        populateList();
+        if (new File("appfiles/selected-chunks.txt").exists()) {
+        	populateList(Arrays.asList(getDataFromFile("selected-chunks.txt").split(Pattern.quote(File.pathSeparator))));
+        } else {
+        	populateList(null);
+        }
+        
+        
 
         // disable chunk lists if they are empty
         leftChunkListView.disableProperty().bind(Bindings.size(leftChunkList).isEqualTo(0));
@@ -194,8 +202,9 @@ public class ChunkAssemblerController extends Controller {
     /**
      * Helper method that runs a task to populate the leftChunkList with chunks in the appfiles/audio directory.
      * This relies on serialized objects that were generated in the previous screen.
+     * @param selected 
      */
-    private void populateList() {
+    private void populateList(List<String> selected) {
         Task<List<String>> task = new ListPopulateTask(new File("appfiles/audio"), ".wav");
         task.setOnSucceeded(event -> {
             try {
@@ -203,17 +212,19 @@ public class ChunkAssemblerController extends Controller {
                 if (chunks != null) {
                     // for each chunk, find its serialisation and add it to the list
                     for (String s : chunks) {
+                    	ObservableList<Audio> selectionList = selected != null && selected.contains(s) ? rightChunkList : leftChunkList;
+                    	
                         File chunkFile = new File("appfiles/audio/" + s + ".dat");
 
                         if (chunkFile.exists()) {
                             try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(chunkFile))) {
-                                leftChunkList.add((Audio) ois.readObject());
+                            	selectionList.add((Audio) ois.readObject());
                             } catch (IOException | ClassNotFoundException e) {
                                 e.printStackTrace();
                             }
                         } else {
                             // if somehow a chunk hasn't been serialized, add it with its filename for display
-                            leftChunkList.add(new Audio(s, s));		// this scenario should never happen!
+                        	selectionList.add(new Audio(s, s));		// this scenario should never happen!
                         }
                     }
                 }
