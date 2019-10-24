@@ -9,6 +9,7 @@ import varpedia.AlertHelper;
 import varpedia.VARpediaApp;
 import varpedia.tasks.WikitSearchTask;
 
+import java.io.File;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 
@@ -37,6 +38,10 @@ public class WikitSearchController extends Controller {
 
     @FXML
     private void initialize() {
+    	if (new File("appfiles/search-term.txt").exists()) {
+    		searchTextField.setText(getDataFromFile("search-term.txt"));
+    	}
+    	
         setLoadingInactive();
     }
 

@@ -16,7 +16,7 @@ import varpedia.FFMPEGCommand;
  * @author Tudor Zagreanu
  */
 public class FFMPEGVideoTask extends Task<Void> {
-	
+
 	private String _creation;
 	private List<Integer> _images;
 	

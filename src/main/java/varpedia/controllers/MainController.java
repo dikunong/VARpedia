@@ -12,6 +12,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableColumn.SortType;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.util.StringConverter;
 import varpedia.AlertHelper;
 import varpedia.Creation;
@@ -57,7 +59,7 @@ public class MainController extends Controller {
     @FXML
     private TableView<Creation> creationTableView;
     @FXML
-    private TableColumn<Creation, Integer> creationThumbCol;
+    private TableColumn<Creation, Image> creationThumbCol;
     @FXML
     private TableColumn<Creation, String> creationNameCol;
     @FXML
@@ -120,7 +122,8 @@ public class MainController extends Controller {
             // delete creation file
             File file = new File("creations/" + getSelectedName() + ".mp4");
             File file2 = new File("creations/" + getSelectedName() + ".dat");
-            if (file.delete() && (!file2.exists() || file2.delete())) {
+            File file3 = new File("creations/" + getSelectedName() + ".jpg");
+            if (file.delete() && (!file2.exists() || file2.delete()) && (!file3.exists() || file3.delete())) {
                 // update table view
                 creationList.remove(creationTableView.getSelectionModel().getSelectedItem());
             } else {
@@ -156,7 +159,37 @@ public class MainController extends Controller {
      * the serialized data in a way that will become user-friendly output.
      */
     private void initializeColumns() {
-        creationNameCol.setCellValueFactory((CellDataFeatures<Creation, String> p) -> {
+        creationThumbCol.setCellValueFactory((CellDataFeatures<Creation, Image> p) -> {
+            return new ObservableValueBase<Image>(){
+                public Image getValue() {
+                    return p.getValue().getImage();
+                }
+            };
+        });
+        
+        creationThumbCol.setCellFactory((TableColumn<Creation, Image> col) -> new TableCell<Creation, Image>() {
+            private ImageView imageView = new ImageView();
+
+            @Override
+            public void updateItem(Image item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (empty || item == null) {
+                    setText(null);
+                    setGraphic(null);
+                } else {
+                    // set the image to be no taller than 100 pixels but as wide
+                    // as possible while preserving aspect ratio
+                	imageView.setImage(item);
+                    imageView.setPreserveRatio(true);
+                    imageView.setFitHeight(100);
+                    setText(null);
+                    setGraphic(imageView);
+                }
+            }	
+        });
+    	
+    	creationNameCol.setCellValueFactory((CellDataFeatures<Creation, String> p) -> {
             return new ObservableValueBase<String>(){
                 public String getValue() {
                     return p.getValue().getCreationName();
