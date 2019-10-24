@@ -51,6 +51,8 @@ public class MainController extends Controller {
     @FXML
     private TableView<Creation> creationTableView;
     @FXML
+    private TableColumn<Creation, Integer> creationThumbCol;
+    @FXML
     private TableColumn<Creation, String> creationNameCol;
     @FXML
     private TableColumn<Creation, String> creationConfCol;
@@ -204,6 +206,8 @@ public class MainController extends Controller {
                 }
             }
         });
+
+        creationThumbCol.setSortable(false);
 
         sortChoiceBox.getItems().add(creationNameCol);
         sortChoiceBox.getItems().add(creationConfCol);
