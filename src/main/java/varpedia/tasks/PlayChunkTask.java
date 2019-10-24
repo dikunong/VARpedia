@@ -69,10 +69,17 @@ public class PlayChunkTask extends Task<Void> {
 			args.add(_voice);
 		}
 		
-		if (_filename != null) {
-			args.add("-o");
-			args.add(_filename);
+		String origFilename = _filename;
+		boolean play = false;
+		
+		if (origFilename == null) {
+			origFilename = "appfiles/audio-fulinux.dir";
+			new File(origFilename).mkdirs();
+			play = true;
 		}
+		
+		args.add("-o");
+		args.add(origFilename);
 		
 		cmd = new Command(args.toArray(new String[0]));
 		cmd.run();
@@ -92,18 +99,19 @@ public class PlayChunkTask extends Task<Void> {
 				throw new Exception("Failed to create audio because " + err);
 			}
 		} catch (InterruptedException e) {
-			cmd.end();
+			cmd.endForcibly();
+			return null;
 		}
 		
-		if (_filename != null) {
-			String filename = _filename;
-
+		if (origFilename != null) {
+			String filename = origFilename;
+			
 			if (filename.contains(".")) {
 	            filename = filename.substring(0, filename.lastIndexOf('.'));
 	        }
 
 			//Now merge the chunks together
-			List<String> files = Arrays.asList(new File(_filename).list());
+			List<String> files = Arrays.asList(new File(origFilename).list());
 			
 			//Sort them numerically
 			files.sort((String a, String b) -> {
@@ -112,7 +120,8 @@ public class PlayChunkTask extends Task<Void> {
 				return Integer.compare(aInt, bInt);
 			});
 			
-			String[] fullFiles = files.stream().map((String a) -> _filename + "/" + a).toArray(String[]::new);
+			final String reallyJavaFilename = origFilename;
+			String[] fullFiles = files.stream().map((String a) -> reallyJavaFilename + "/" + a).toArray(String[]::new);
 			
 			//Concatenate the subchunks (similar to how FFMPEGVideoTask makes audio
 			FFMPEGCommand audio = new FFMPEGCommand(fullFiles, -1, false, filename + ".wav");
@@ -132,6 +141,10 @@ public class PlayChunkTask extends Task<Void> {
 				}
 
 				audio.waitFor();
+			}
+		
+			if (play) {
+				new PreviewAudioTask(new File(filename + ".wav")).run();
 			}
 		}
 		
