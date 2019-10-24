@@ -11,6 +11,7 @@ import javafx.scene.image.ImageView;
 import varpedia.AlertHelper;
 import varpedia.Audio;
 import varpedia.VARpediaApp;
+import varpedia.tasks.FFMPEGAudioTask;
 import varpedia.tasks.FFMPEGVideoTask;
 
 import java.io.File;
@@ -114,12 +115,25 @@ public class PhotoPickerController extends Controller {
 	            }
 
                 // assemble audio + video using ffmpeg
-                _createTask = new FFMPEGVideoTask(name, rightPhotoList, _chunks, bgmusic, 0.5);
+                _createTask = new FFMPEGAudioTask(_chunks, bgmusic, 0.5);
                 _createTask.setOnSucceeded(ev2 -> {
-                    _createTask = null;
-                    _alertHelper.showAlert(Alert.AlertType.INFORMATION, "Created creation.");
-                    setLoadingInactive();
-                    changeScene(event, "/varpedia/MainScreen.fxml"); //TODO: Maybe go straight to player
+                    _createTask = new FFMPEGVideoTask(name, rightPhotoList);
+                    _createTask.setOnSucceeded(ev3 -> {
+                        _createTask = null;
+                        _alertHelper.showAlert(Alert.AlertType.INFORMATION, "Created creation.");
+                        setLoadingInactive();
+                        changeScene(event, "/varpedia/MainScreen.fxml"); //TODO: Maybe go straight to player
+                    });
+                    _createTask.setOnCancelled(ev3 -> {
+                        _createTask = null;
+                        setLoadingInactive();
+                    });
+                    _createTask.setOnFailed(ev3 -> {
+                        _alertHelper.showAlert(Alert.AlertType.ERROR, "Failed to create creation.");
+                        _createTask = null;
+                        setLoadingInactive();
+                    });
+                    pool.submit(_createTask);
                 });
                 _createTask.setOnCancelled(ev2 -> {
                     _createTask = null;
@@ -127,7 +141,6 @@ public class PhotoPickerController extends Controller {
                 });
                 _createTask.setOnFailed(ev2 -> {
                     _alertHelper.showAlert(Alert.AlertType.ERROR, "Failed to create creation.");
-                    _createTask.getException().printStackTrace();
                     _createTask = null;
                     setLoadingInactive();
                 });
