@@ -403,7 +403,7 @@ public class PhotoPickerController extends Controller {
         moveUpBtn.disableProperty().bind(Bindings.equal(0,rightPhotoListView.getSelectionModel().selectedIndexProperty()));
 
         createBtn.setText("Create!");
-        previewBtn.setText("Preview Audio!");
+        previewBtn.setText("Preview");
         moveDownBtn.setDisable(false);
         creationNameTextField.setDisable(false);
         backBtn.setDisable(false);

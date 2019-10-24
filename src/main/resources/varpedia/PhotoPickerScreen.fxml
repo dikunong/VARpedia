@@ -135,9 +135,9 @@
          <children>
             <HBox HBox.hgrow="ALWAYS">
                <children>
-                  <VBox alignment="BOTTOM_RIGHT" HBox.hgrow="SOMETIMES">
+                  <VBox alignment="BOTTOM_RIGHT" HBox.hgrow="ALWAYS">
                      <children>
-                        <HBox alignment="TOP_LEFT">
+                        <HBox alignment="CENTER_LEFT">
                            <children>
                               <Label text="Background music:  " />
                               <ChoiceBox fx:id="musicChoiceBox" prefWidth="200.0" />
@@ -148,38 +148,32 @@
                         </HBox>
                         <HBox alignment="CENTER_LEFT">
                            <children>
-                              <ImageView fitHeight="36.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@images/volume_up_black.png" />
-                                 </image>
-                                 <HBox.margin>
-                                    <Insets right="4.0" />
-                                 </HBox.margin>
-                              </ImageView>
+                              <Label text="Background volume:  " />
                               <Slider fx:id="volSlider" maxWidth="300.0">
                                  <HBox.margin>
                                     <Insets right="8.0" />
                                  </HBox.margin>
                               </Slider>
-                              <Label fx:id="volLabel" minWidth="40.0" text="50%">
-                                 <HBox.margin>
-                                    <Insets right="8.0" />
-                                 </HBox.margin>
-                              </Label>
+                              <Label fx:id="volLabel" minWidth="40.0" text="50%" />
                            </children>
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
                            <VBox.margin>
                               <Insets bottom="8.0" />
                            </VBox.margin>
                         </HBox>
-                        <HBox>
+                        <HBox alignment="CENTER_LEFT">
                            <children>
-                              <Label text="Name of creation:">
-                                 <HBox.margin>
-                                    <Insets right="11.0" top="4.0" />
-                                 </HBox.margin>
-                              </Label>
-                              <TextField fx:id="creationNameTextField" onAction="#pressCreateBtn" HBox.hgrow="SOMETIMES" />
+                              <Button fx:id="previewBtn" mnemonicParsing="false" onAction="#pressPreviewBtn" prefWidth="170.0" text="Preview">
+                                 <styleClass>
+                                    <String fx:value="button" />
+                                    <String fx:value="sec-button" />
+                                 </styleClass></Button>
                            </children>
+                           <VBox.margin>
+                              <Insets />
+                           </VBox.margin>
                         </HBox>
                      </children>
                   </VBox>
@@ -189,7 +183,7 @@
                <children>
                   <VBox alignment="BOTTOM_RIGHT" HBox.hgrow="SOMETIMES">
                      <children>
-                        <HBox alignment="TOP_RIGHT">
+                        <HBox alignment="CENTER_RIGHT">
                            <children>
                               <Label fx:id="loadingLabel" text="Creating...">
                                  <HBox.margin>
@@ -206,10 +200,14 @@
                               <Insets bottom="8.0" />
                            </VBox.margin>
                         </HBox>
-                        <HBox alignment="CENTER_RIGHT">
+                        <HBox alignment="CENTER_LEFT">
                            <children>
-                              <Button fx:id="previewBtn" mnemonicParsing="false" onAction="#pressPreviewBtn" prefWidth="318.0" text="Preview Audio!">
-                              </Button>
+                              <Label text="Name of creation:">
+                                 <HBox.margin>
+                                    <Insets right="11.0" top="4.0" />
+                                 </HBox.margin>
+                              </Label>
+                              <TextField fx:id="creationNameTextField" onAction="#pressCreateBtn" HBox.hgrow="SOMETIMES" />
                            </children>
                            <VBox.margin>
                               <Insets bottom="8.0" />
