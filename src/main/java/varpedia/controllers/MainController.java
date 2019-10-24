@@ -82,6 +82,7 @@ public class MainController extends Controller {
     private void pressPlayButton(ActionEvent event) {
         // store a creation's name and open PlaybackScreen
         sendDataToFile(getSelectedName(), "playback-name.txt");
+        sendDataToFile(creationTableView.getSelectionModel().getSelectedItem().getConfidence() + "", "playback-rating.txt");
         changeScene(event, "/varpedia/PlaybackScreen.fxml");
     }
 
