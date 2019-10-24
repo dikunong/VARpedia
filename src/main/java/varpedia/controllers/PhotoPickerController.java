@@ -92,7 +92,9 @@ public class PhotoPickerController extends Controller {
 
     	// set up choicebox for background music
         List<Audio> musicList = new ArrayList<>();
-    	musicList.add(new Audio(null, "None"));
+        // retain the none option in memory for comparison for binding
+        Audio noneAudio = new Audio(null, "None");
+    	musicList.add(noneAudio);
     	musicList.add(new Audio("/varpedia/music/chinese.mp3", "Mandolin Chinese"));
     	musicList.add(new Audio("/varpedia/music/perspective.mp3", "Another Perspective"));
     	musicList.add(new Audio("/varpedia/music/sirius.mp3", "Sirius Crystal"));
@@ -103,6 +105,9 @@ public class PhotoPickerController extends Controller {
         volSlider.valueProperty().addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
         	volLabel.setText(Math.round(newValue.doubleValue()) + "%");
         });
+
+        // disable background volume slider if no background music is selected
+        volSlider.disableProperty().bind(musicChoiceBox.valueProperty().isEqualTo(noneAudio));
     }
     
     @FXML
