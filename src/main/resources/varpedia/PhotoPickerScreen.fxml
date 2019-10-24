@@ -180,7 +180,12 @@
                         </HBox>
                         <HBox alignment="BOTTOM_RIGHT">
                            <children>
-                              <Button fx:id="createBtn" mnemonicParsing="false" onAction="#pressCreateBtn" prefWidth="180.0" styleClass="main-button" text="Create!">
+                              <Button fx:id="previewBtn" mnemonicParsing="false" onAction="#pressPreviewBtn" prefWidth="120.0" text="Preview!">
+                                 <HBox.margin>
+                                    <Insets right="8.0" />
+                                 </HBox.margin>
+                              </Button>
+                              <Button fx:id="createBtn" mnemonicParsing="false" onAction="#pressCreateBtn" prefWidth="120.0" styleClass="main-button" text="Create!">
                                  <HBox.margin>
                                     <Insets right="8.0" />
                                  </HBox.margin>
