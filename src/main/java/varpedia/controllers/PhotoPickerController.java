@@ -1,6 +1,7 @@
 package varpedia.controllers;
 
 import javafx.beans.binding.Bindings;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -40,6 +41,10 @@ public class PhotoPickerController extends Controller {
     private Button moveDownBtn;
     @FXML
     private ChoiceBox<Audio> musicChoiceBox;
+    @FXML
+    private Label volLabel;
+    @FXML
+    private Slider volSlider;
     @FXML
     private TextField creationNameTextField;
     @FXML
@@ -93,6 +98,11 @@ public class PhotoPickerController extends Controller {
     	musicList.add(new Audio("/varpedia/music/sirius.mp3", "Sirius Crystal"));
     	musicChoiceBox.getItems().addAll(musicList);
         musicChoiceBox.getSelectionModel().selectFirst();
+        volSlider.setValue(100);
+    	
+        volSlider.valueProperty().addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
+        	volLabel.setText(Math.round(newValue.doubleValue() * 100) + "%");
+        });
     }
     
     @FXML
@@ -118,7 +128,7 @@ public class PhotoPickerController extends Controller {
 	            }
 
                 // assemble audio + video using ffmpeg
-                _createTask = new FFMPEGAudioTask(_chunks, bgmusic, 0.5);
+                _createTask = new FFMPEGAudioTask(_chunks, bgmusic, volSlider.getValue() / 100);
                 _createTask.setOnSucceeded(ev2 -> {
                     _createTask = new FFMPEGVideoTask(name, rightPhotoList);
                     _createTask.setOnSucceeded(ev3 -> {
@@ -161,7 +171,7 @@ public class PhotoPickerController extends Controller {
     	if (_createTask == null) {
         	String bgmusic = musicChoiceBox.getSelectionModel().getSelectedItem().getName();
 	        // assemble audio + video using ffmpeg
-            _createTask = new FFMPEGAudioTask(_chunks, bgmusic, 0.5);
+            _createTask = new FFMPEGAudioTask(_chunks, bgmusic, volSlider.getValue() / 100);
             _createTask.setOnSucceeded(ev2 -> {
                 _createTask = new PreviewAudioTask(new File("appfiles/audio.wav"));
                 _createTask.setOnSucceeded(ev3 -> {
