@@ -14,11 +14,27 @@
 
 <VBox prefHeight="500.0" prefWidth="800.0" stylesheets="@styles/main.css" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="varpedia.controllers.TextEditorController">
    <children>
-      <Label styleClass="heading" text="Create audio from Wikipedia search result">
-         <VBox.margin>
+      <HBox alignment="CENTER_LEFT">
+         <children>
+            <Button fx:id="backBtn" mnemonicParsing="false" onAction="#pressBackButton">
+               <HBox.margin>
+                  <Insets />
+               </HBox.margin>
+               <styleClass>
+                  <String fx:value="sec-button" />
+                  <String fx:value="icon-only-button" />
+               </styleClass>
+            </Button>
+            <Label styleClass="heading" text="Create audio from Wikipedia search result">
+               <HBox.margin>
+                  <Insets left="16.0" />
+               </HBox.margin>
+            </Label>
+         </children>
+         <padding>
             <Insets left="8.0" />
-         </VBox.margin>
-      </Label>
+         </padding>
+      </HBox>
       <HBox VBox.vgrow="SOMETIMES">
          <children>
             <VBox HBox.hgrow="ALWAYS">
@@ -52,6 +68,9 @@
                </HBox.margin>
             </VBox>
          </children>
+         <VBox.margin>
+            <Insets top="8.0" />
+         </VBox.margin>
       </HBox>
       <HBox alignment="TOP_RIGHT">
          <children>

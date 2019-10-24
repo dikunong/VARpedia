@@ -37,6 +37,8 @@ public class TextEditorController extends Controller {
     private Button assembleBtn;
     @FXML
     private Button cancelBtn;
+	@FXML
+	private Button backBtn;
     @FXML
     private ChoiceBox<Audio> voiceChoiceBox;
     @FXML
@@ -223,6 +225,12 @@ public class TextEditorController extends Controller {
         }
     }
 
+	@FXML
+	private void pressBackButton(ActionEvent event) {
+		// open WikitSearchScreen
+		changeScene(event, "/varpedia/WikitSearchScreen.fxml");
+	}
+
 	/**
 	 * Helper method that converts a segment of the chunk text into a suitable filename, by stripping invalid
 	 * characters and replacing spaces with underscores.
@@ -254,7 +262,8 @@ public class TextEditorController extends Controller {
 
 	/**
 	 * Helper method that runs a task to populate the chunkList with chunks in the appfiles/audio directory.
-	 * This is only useful if the user decides to come back to this screen from the ChunkAssembler.
+	 * This is only used if the user decides to come back to this screen from the ChunkAssembler,
+	 * or goes back and searches for a different Wikipedia term.
 	 */
 	private void populateList() {
 		Task<List<String>> task = new ListPopulateTask(new File("appfiles/audio"), ".wav");
