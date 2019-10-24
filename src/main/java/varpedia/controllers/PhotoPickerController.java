@@ -98,10 +98,10 @@ public class PhotoPickerController extends Controller {
     	musicList.add(new Audio("/varpedia/music/sirius.mp3", "Sirius Crystal"));
     	musicChoiceBox.getItems().addAll(musicList);
         musicChoiceBox.getSelectionModel().selectFirst();
-        volSlider.setValue(100);
+        volSlider.setValue(50);
     	
         volSlider.valueProperty().addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
-        	volLabel.setText(Math.round(newValue.doubleValue() * 100) + "%");
+        	volLabel.setText(Math.round(newValue.doubleValue()) + "%");
         });
     }
     
@@ -403,7 +403,7 @@ public class PhotoPickerController extends Controller {
         moveUpBtn.disableProperty().bind(Bindings.equal(0,rightPhotoListView.getSelectionModel().selectedIndexProperty()));
 
         createBtn.setText("Create!");
-        previewBtn.setText("Preview!");
+        previewBtn.setText("Preview Audio!");
         moveDownBtn.setDisable(false);
         creationNameTextField.setDisable(false);
         backBtn.setDisable(false);

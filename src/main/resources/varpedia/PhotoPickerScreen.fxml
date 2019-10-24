@@ -137,10 +137,17 @@
                <children>
                   <VBox alignment="BOTTOM_RIGHT" HBox.hgrow="SOMETIMES">
                      <children>
-                        <HBox alignment="CENTER_LEFT">
+                        <HBox alignment="TOP_LEFT">
                            <children>
                               <Label text="Background music:  " />
                               <ChoiceBox fx:id="musicChoiceBox" prefWidth="200.0" />
+                           </children>
+                           <VBox.margin>
+                              <Insets bottom="8.0" />
+                           </VBox.margin>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT">
+                           <children>
                               <ImageView fitHeight="36.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
                                     <Image url="@images/volume_up_black.png" />
@@ -149,7 +156,7 @@
                                     <Insets right="4.0" />
                                  </HBox.margin>
                               </ImageView>
-                              <Slider fx:id="volSlider" maxWidth="80.0">
+                              <Slider fx:id="volSlider" maxWidth="300.0">
                                  <HBox.margin>
                                     <Insets right="8.0" />
                                  </HBox.margin>
@@ -182,7 +189,7 @@
                <children>
                   <VBox alignment="BOTTOM_RIGHT" HBox.hgrow="SOMETIMES">
                      <children>
-                        <HBox alignment="CENTER_RIGHT">
+                        <HBox alignment="TOP_RIGHT">
                            <children>
                               <Label fx:id="loadingLabel" text="Creating...">
                                  <HBox.margin>
@@ -199,14 +206,18 @@
                               <Insets bottom="8.0" />
                            </VBox.margin>
                         </HBox>
+                        <HBox alignment="CENTER_RIGHT">
+                           <children>
+                              <Button fx:id="previewBtn" mnemonicParsing="false" onAction="#pressPreviewBtn" prefWidth="318.0" text="Preview Audio!">
+                              </Button>
+                           </children>
+                           <VBox.margin>
+                              <Insets bottom="8.0" />
+                           </VBox.margin>
+                        </HBox>
                         <HBox alignment="BOTTOM_RIGHT">
                            <children>
-                              <Button fx:id="previewBtn" mnemonicParsing="false" onAction="#pressPreviewBtn" prefWidth="120.0" text="Preview!">
-                                 <HBox.margin>
-                                    <Insets right="8.0" />
-                                 </HBox.margin>
-                              </Button>
-                              <Button fx:id="createBtn" mnemonicParsing="false" onAction="#pressCreateBtn" prefWidth="120.0" styleClass="main-button" text="Create!">
+                              <Button fx:id="createBtn" mnemonicParsing="false" onAction="#pressCreateBtn" prefWidth="180.0" styleClass="main-button" text="Create!">
                                  <HBox.margin>
                                     <Insets right="8.0" />
                                  </HBox.margin>
@@ -215,7 +226,8 @@
                                  <styleClass>
                                     <String fx:value="sec-button" />
                                     <String fx:value="red-button" />
-                                 </styleClass></Button>
+                                 </styleClass>
+                              </Button>
                            </children>
                         </HBox>
                      </children>
