@@ -152,7 +152,8 @@ public class TextEditorController extends Controller {
     			}
 
     			if (playText) {
-    				String filename = getFilename(text, true);
+    				String chunkName = getFilename(text);
+    				String filename = chunkName + ".dir";
 
     				// save selected text audio into .wav "chunk"
     		        _saveTask = new PlayChunkTask(text, filename, voiceChoiceBox.getSelectionModel().getSelectedItem().getName());
@@ -160,7 +161,6 @@ public class TextEditorController extends Controller {
 		                _saveTask = null;
 
 						// create the user-friendly chunk name - trim if selected text is too long
-						String chunkName = getFilename(text, false);
 						String displayText;
 						if (text.length() > 32) {
 							displayText = text.substring(0, 32) + "...";
@@ -235,29 +235,26 @@ public class TextEditorController extends Controller {
 	 * Helper method that converts a segment of the chunk text into a suitable filename, by stripping invalid
 	 * characters and replacing spaces with underscores.
 	 * @param text Text to be converted
-	 * @param getDir if true, returns string with .dir extension (false is for serialization)
 	 * @return Filename-safe text
 	 */
-	private String getFilename(String text, boolean getDir) {
+	private String getFilename(String text) {
 		String clean = text.replaceAll("[^A-Za-z0-9\\-_ ]", "").replace(' ', '_');
 		String name = "appfiles/audio/" + clean.substring(0, Math.min(clean.length(), 32));
 
-		if (getDir) {
-			String str = name + ".dir";
+		// check if the filename is already taken
+		String str = name + ".dir";
 
-			if (new File(str).exists()) {
-				int id = 2;
+		if (new File(str).exists()) {
+			int id = 2;
 
-				do {
-					str = name + "_" + id + ".dir";
-					id++;
-				} while (new File(str).exists());
-			}
-
-			return str;
-		} else {
-			return name;
+			do {
+				str = name + "_" + id + ".dir";
+				id++;
+			} while (new File(str).exists());
 		}
+
+		// remove .dir extension - this is only for duplicate-checking
+		return str.substring(0, str.length() - 4);
 	}
 
 	/**
