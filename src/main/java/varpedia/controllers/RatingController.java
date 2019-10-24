@@ -35,6 +35,8 @@ public class RatingController extends Controller {
 
     private String _creationName;
     
+    private int _confidence;
+    
     @FXML
     private void initialize() {
         // give the ratingSpinner a range of 1-5
@@ -68,6 +70,7 @@ public class RatingController extends Controller {
         });
         
         _creationName = getDataFromFile("playback-name.txt");
+        _confidence = Integer.valueOf(getDataFromFile("playback-rating.txt"));
     }
 
     @FXML
@@ -89,6 +92,12 @@ public class RatingController extends Controller {
                 "Are you sure you want to continue without rating?",
                 ButtonType.YES, ButtonType.CANCEL);
         if (_alertHelper.getResult() == ButtonType.YES) {
+        	try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(new File("creations/" + _creationName + ".dat")))) {
+        		oos.writeObject(new Creation(_creationName, _confidence, Instant.now()));
+        	} catch (IOException e) {
+    			e.printStackTrace();
+    		}
+        	
             closeDialog(event);
         }
     }
