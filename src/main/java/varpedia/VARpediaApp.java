@@ -44,8 +44,14 @@ public class VARpediaApp extends Application {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(this.getClass().getResource("MainScreen.fxml"));
             Parent layout = loader.load();
+
+            // load light theme by default
+            // TODO: save the user's last set theme (in setOnCloseRequest)
+            Scene scene = new Scene(layout);
+            scene.getStylesheets().add(getClass().getResource("/varpedia/styles/theme-light.css").toString());
+
             primaryStage.setTitle("VARpedia");
-            primaryStage.setScene(new Scene(layout));
+            primaryStage.setScene(scene);
             primaryStage.show();
 
             primaryStage.setMinHeight(400);

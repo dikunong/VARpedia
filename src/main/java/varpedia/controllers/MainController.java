@@ -7,6 +7,8 @@ import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableColumn.SortType;
@@ -45,6 +47,10 @@ public class MainController extends Controller {
     private Button createBtn;
     @FXML
     private ChoiceBox<TableColumn<Creation, ?>> sortChoiceBox;
+    @FXML
+    private Label themeLabel;
+    @FXML
+    private ToggleButton themeBtn;
 
     @FXML
     private final ObservableList<Creation> creationList = FXCollections.observableArrayList();
@@ -71,6 +77,21 @@ public class MainController extends Controller {
         // populate table view with saved creations
     	populateTable();
         deleteAppfiles();
+
+        // enable toggling between light and dark themes
+        themeBtn.setOnAction(e -> {
+            if (themeBtn.isSelected()) {
+                themeLabel.setText("Theme: Dark mode");
+                Scene currentScene = ((Node) e.getSource()).getScene();
+                currentScene.getStylesheets().add(getClass().getResource("/varpedia/styles/theme-dark.css").toString());
+                currentScene.getStylesheets().remove(getClass().getResource("/varpedia/styles/theme-light.css").toString());
+            } else {
+                themeLabel.setText("Theme: Light mode");
+                Scene currentScene = ((Node) e.getSource()).getScene();
+                currentScene.getStylesheets().add(getClass().getResource("/varpedia/styles/theme-light.css").toString());
+                currentScene.getStylesheets().remove(getClass().getResource("/varpedia/styles/theme-dark.css").toString());
+            }
+        });
 
         // disable the TableView if there are no creations
         creationTableView.disableProperty().bind(Bindings.size(creationList).isEqualTo(0));

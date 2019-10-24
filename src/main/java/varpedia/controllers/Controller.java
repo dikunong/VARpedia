@@ -44,10 +44,16 @@ public abstract class Controller {
         try {
             Parent root = FXMLLoader.load(getClass().getResource(fxml));
             Stage parentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-
             Stage dialog = new Stage();
+
+            // load in the CSS applied to the parent stage
+            // this is so light/dark mode persists between the main app and the dialog window
+            Scene parentScene = ((Node) event.getSource()).getScene();
+            Scene newScene = new Scene(root);
+            newScene.getStylesheets().addAll(parentScene.getStylesheets());
+
             dialog.setTitle(title);
-            dialog.setScene(new Scene(root));
+            dialog.setScene(newScene);
             dialog.setResizable(false);
 
             dialog.initOwner(parentStage);
