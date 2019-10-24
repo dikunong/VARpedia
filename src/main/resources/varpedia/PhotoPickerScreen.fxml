@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="500.0" prefWidth="800.0" stylesheets="@main.css" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="varpedia.controllers.PhotoPickerController">
+<VBox prefHeight="500.0" prefWidth="800.0" stylesheets="@styles/main.css" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="varpedia.controllers.PhotoPickerController">
    <children>
       <HBox alignment="CENTER_LEFT">
          <children>
@@ -56,11 +56,17 @@
            </rowConstraints>
            <children>
                <ListView fx:id="leftPhotoListView" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1" GridPane.rowSpan="3">
+                   <placeholder>
+                       <Label text="There are no more photos left to add!" wrapText="true" />
+                   </placeholder>
                    <items>
                        <FXCollections fx:id="leftPhotoList" fx:factory="observableArrayList" />
                    </items>
                </ListView>
                <ListView fx:id="rightPhotoListView" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="1" GridPane.rowSpan="3">
+                   <placeholder>
+                       <Label text="Add photos here to put them in your creation!" wrapText="true" />
+                   </placeholder>
                    <items>
                        <FXCollections fx:id="rightPhotoList" fx:factory="observableArrayList" />
                    </items>
@@ -144,7 +150,7 @@
                                     <Insets right="11.0" top="4.0" />
                                  </HBox.margin>
                               </Label>
-                              <TextField fx:id="creationNameTextField" HBox.hgrow="SOMETIMES" />
+                              <TextField fx:id="creationNameTextField" onAction="#pressCreateBtn" HBox.hgrow="SOMETIMES" />
                            </children>
                         </HBox>
                      </children>

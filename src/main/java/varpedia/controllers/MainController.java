@@ -1,5 +1,6 @@
 package varpedia.controllers;
 
+import javafx.beans.binding.Bindings;
 import javafx.beans.value.ObservableValueBase;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -68,6 +69,9 @@ public class MainController extends Controller {
         // populate table view with saved creations
     	populateTable();
         deleteAppfiles();
+
+        // disable the TableView if there are no creations
+        creationTableView.disableProperty().bind(Bindings.size(creationList).isEqualTo(0));
 
         // disable play and delete buttons until a creation is selected
         playBtn.disableProperty().bind(creationTableView.getSelectionModel().selectedItemProperty().isNull());

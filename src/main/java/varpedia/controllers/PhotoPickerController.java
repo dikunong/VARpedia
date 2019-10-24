@@ -1,5 +1,6 @@
 package varpedia.controllers;
 
+import javafx.beans.binding.Bindings;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -75,6 +76,10 @@ public class PhotoPickerController extends Controller {
         _chunks = Arrays.asList(getDataFromFile("selected-chunks.txt").split(Pattern.quote(File.pathSeparator)));
 
         initializePhotos();
+
+        // disable chunk lists if they are empty
+        leftPhotoListView.disableProperty().bind(Bindings.size(leftPhotoList).isEqualTo(0));
+        rightPhotoListView.disableProperty().bind(Bindings.size(rightPhotoList).isEqualTo(0));
 
     	// set up choicebox for background music
         List<Audio> musicList = new ArrayList<>();
@@ -286,6 +291,10 @@ public class PhotoPickerController extends Controller {
      * Helper method to disable most UI elements and show loading indicators while a creation task is in progress.
      */
     private void setLoadingActive() {
+        addToBtn.disableProperty().unbind();
+        removeFromBtn.disableProperty().unbind();
+        moveUpBtn.disableProperty().unbind();
+
         createBtn.setText("Stop");
         addToBtn.setDisable(true);
         removeFromBtn.setDisable(true);
@@ -301,10 +310,12 @@ public class PhotoPickerController extends Controller {
      * Helper method to enable most UI elements and hide loading indicators when a creation task ends.
      */
     private void setLoadingInactive() {
+        // disable add to and remove from buttons until respective chunks are selected
+        addToBtn.disableProperty().bind(leftPhotoListView.getSelectionModel().selectedItemProperty().isNull());
+        removeFromBtn.disableProperty().bind(rightPhotoListView.getSelectionModel().selectedItemProperty().isNull());
+        moveUpBtn.disableProperty().bind(Bindings.equal(0,rightPhotoListView.getSelectionModel().selectedIndexProperty()));
+
         createBtn.setText("Create!");
-        addToBtn.setDisable(false);
-        removeFromBtn.setDisable(false);
-        moveUpBtn.setDisable(false);
         moveDownBtn.setDisable(false);
         creationNameTextField.setDisable(false);
         backBtn.setDisable(false);
