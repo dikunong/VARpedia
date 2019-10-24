@@ -1,7 +1,12 @@
 package varpedia;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.time.Instant;
+
+import javafx.scene.image.Image;
 
 /**
  * Represents the information associated with a creation.
@@ -16,6 +21,8 @@ public class Creation implements Serializable {
 	private final String _creationName;
 	private final int _confidence;
 	private final Instant _lastViewed;
+	private transient Image _image;
+	private transient boolean _initImage;
 
 	/**
 	 * @param name The filename of the creation, without the extension
@@ -48,4 +55,18 @@ public class Creation implements Serializable {
     public Instant getLastViewed() {
         return _lastViewed;
     }
+
+	public Image getImage() {
+		if (!_initImage) {
+			File image = new File("creations/" + _creationName + ".jpg");
+			
+			if (image.exists()) {
+				_image = new Image(image.toURI().toString());
+			}
+			
+			_initImage = true;
+		}
+		
+		return _image;
+	}
 }
