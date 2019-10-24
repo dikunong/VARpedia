@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="500.0" prefWidth="800.0" stylesheets="@main.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="varpedia.controllers.MainController">
+<VBox prefHeight="500.0" prefWidth="800.0" stylesheets="@styles/main.css" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="varpedia.controllers.MainController">
    <children>
       <Label styleClass="heading" text="Existing Creations">
          <VBox.margin>
@@ -39,9 +39,9 @@
            <Label text="Make your first creation by clicking the &quot;Create New...&quot; button!" />
         </placeholder>
         <columns>
-          <TableColumn fx:id="creationNameCol" editable="false" minWidth="110.0" prefWidth="${creationTableView.width * 0.43}" text="Creation name" />
-          <TableColumn fx:id="creationConfCol" editable="false" minWidth="90.0" prefWidth="${creationTableView.width * 0.20}" text="Confidence" />
-          <TableColumn fx:id="creationViewCol" editable="false" minWidth="90.0" prefWidth="${creationTableView.width * 0.34}" text="Last viewed" />
+          <TableColumn fx:id="creationNameCol" editable="false" minWidth="110.0" prefWidth="${creationTableView.width * 0.43}" resizable="false" text="Creation name" />
+          <TableColumn fx:id="creationConfCol" editable="false" minWidth="90.0" prefWidth="${creationTableView.width * 0.20}" resizable="false" text="Confidence" />
+          <TableColumn fx:id="creationViewCol" editable="false" minWidth="90.0" prefWidth="${creationTableView.width * 0.34}" resizable="false" text="Last viewed" />
         </columns>
          <VBox.margin>
             <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />

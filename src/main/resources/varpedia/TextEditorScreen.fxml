@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="500.0" prefWidth="800.0" stylesheets="@main.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="varpedia.controllers.TextEditorController">
+<VBox prefHeight="500.0" prefWidth="800.0" stylesheets="@styles/main.css" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="varpedia.controllers.TextEditorController">
    <children>
       <Label styleClass="heading" text="Create audio from Wikipedia search result">
          <VBox.margin>
@@ -21,14 +21,14 @@
       </Label>
       <HBox VBox.vgrow="SOMETIMES">
          <children>
-            <VBox HBox.hgrow="SOMETIMES">
+            <VBox HBox.hgrow="ALWAYS">
                <children>
                   <Label text="Select text with the mouse and click &quot;Preview&quot; or &quot;Save Chunk&quot;" wrapText="true">
                      <VBox.margin>
                         <Insets bottom="8.0" left="8.0" />
                      </VBox.margin>
                   </Label>
-                  <TextArea fx:id="wikiTextArea" wrapText="true" VBox.vgrow="SOMETIMES" />
+                  <TextArea fx:id="wikiTextArea" maxWidth="1.7976931348623157E308" wrapText="true" VBox.vgrow="SOMETIMES" />
                </children>
             </VBox>
             <VBox HBox.hgrow="SOMETIMES">
@@ -38,7 +38,10 @@
                         <Insets bottom="8.0" right="8.0" />
                      </VBox.margin>
                   </Label>
-                  <ListView fx:id="chunkListView" prefWidth="420.0" VBox.vgrow="SOMETIMES">
+                  <ListView fx:id="chunkListView" disable="true" maxWidth="420.0" prefWidth="420.0" VBox.vgrow="SOMETIMES">
+                     <placeholder>
+                        <Label text="Your saved chunks will appear here" wrapText="true" />
+                     </placeholder>
                      <items>
                         <FXCollections fx:id="chunkList" fx:factory="observableArrayList" />
                      </items>

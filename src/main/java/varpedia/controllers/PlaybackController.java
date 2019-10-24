@@ -157,7 +157,7 @@ public class PlaybackController extends Controller {
 		});
 
 		_player.volumeProperty().addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
-			volLabel.setText("Vol: " + Math.round(player.getVolume() * 100) + "%");
+			volLabel.setText(Math.round(player.getVolume() * 100) + "%");
 		});
 		
 		mediaView.setMediaPlayer(_player);

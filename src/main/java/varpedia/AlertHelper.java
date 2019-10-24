@@ -3,6 +3,7 @@ package varpedia;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.layout.Region;
+import javafx.stage.StageStyle;
 
 /**
  * Singleton class that manages creation and display of alerts, as well as receiving user input in response.
@@ -35,6 +36,7 @@ public final class AlertHelper {
     public void showAlert(Alert.AlertType type, String msg, ButtonType... buttons) {
         Alert alert = new Alert(type, msg, buttons);
         alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+        alert.getDialogPane().getStylesheets().add("/varpedia/styles/dialogs.css");
         alert.showAndWait();
         _result = alert.getResult();
     }
