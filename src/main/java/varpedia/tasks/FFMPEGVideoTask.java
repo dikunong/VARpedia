@@ -1,6 +1,8 @@
 package varpedia.tasks;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -162,6 +164,21 @@ public class FFMPEGVideoTask extends Task<Void> {
 			video.waitFor();
 		}
 
+		if (_images.size() > 0) {
+			try (InputStream input = new FileInputStream(new File("appfiles/image" + _images.get(0) + ".jpg")); FileOutputStream output = new FileOutputStream("creations/" + _creation + ".jpg")) {
+				byte[] transfer = new byte[4096];
+				int count;
+				
+				while ((count = input.read(transfer)) != -1) {
+					if (isCancelled()) {
+						return null;
+					}
+					
+					output.write(transfer, 0, count);
+				}
+			}
+		}
+		
 		return null;
 	}
 }
