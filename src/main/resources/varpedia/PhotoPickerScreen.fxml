@@ -8,7 +8,10 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
@@ -134,10 +137,35 @@
                <children>
                   <VBox alignment="BOTTOM_RIGHT" HBox.hgrow="SOMETIMES">
                      <children>
-                        <HBox alignment="CENTER_LEFT">
+                        <HBox alignment="TOP_LEFT">
                            <children>
                               <Label text="Background music:  " />
                               <ChoiceBox fx:id="musicChoiceBox" prefWidth="200.0" />
+                           </children>
+                           <VBox.margin>
+                              <Insets bottom="8.0" />
+                           </VBox.margin>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT">
+                           <children>
+                              <ImageView fitHeight="36.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@images/volume_up_black.png" />
+                                 </image>
+                                 <HBox.margin>
+                                    <Insets right="4.0" />
+                                 </HBox.margin>
+                              </ImageView>
+                              <Slider fx:id="volSlider" maxWidth="300.0">
+                                 <HBox.margin>
+                                    <Insets right="8.0" />
+                                 </HBox.margin>
+                              </Slider>
+                              <Label fx:id="volLabel" minWidth="40.0" text="50%">
+                                 <HBox.margin>
+                                    <Insets right="8.0" />
+                                 </HBox.margin>
+                              </Label>
                            </children>
                            <VBox.margin>
                               <Insets bottom="8.0" />
@@ -161,7 +189,7 @@
                <children>
                   <VBox alignment="BOTTOM_RIGHT" HBox.hgrow="SOMETIMES">
                      <children>
-                        <HBox alignment="CENTER_RIGHT">
+                        <HBox alignment="TOP_RIGHT">
                            <children>
                               <Label fx:id="loadingLabel" text="Creating...">
                                  <HBox.margin>
@@ -178,6 +206,15 @@
                               <Insets bottom="8.0" />
                            </VBox.margin>
                         </HBox>
+                        <HBox alignment="CENTER_RIGHT">
+                           <children>
+                              <Button fx:id="previewBtn" mnemonicParsing="false" onAction="#pressPreviewBtn" prefWidth="318.0" text="Preview Audio!">
+                              </Button>
+                           </children>
+                           <VBox.margin>
+                              <Insets bottom="8.0" />
+                           </VBox.margin>
+                        </HBox>
                         <HBox alignment="BOTTOM_RIGHT">
                            <children>
                               <Button fx:id="createBtn" mnemonicParsing="false" onAction="#pressCreateBtn" prefWidth="180.0" styleClass="main-button" text="Create!">
@@ -189,7 +226,8 @@
                                  <styleClass>
                                     <String fx:value="sec-button" />
                                     <String fx:value="red-button" />
-                                 </styleClass></Button>
+                                 </styleClass>
+                              </Button>
                            </children>
                         </HBox>
                      </children>

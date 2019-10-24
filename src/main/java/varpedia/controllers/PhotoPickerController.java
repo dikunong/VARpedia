@@ -1,6 +1,7 @@
 package varpedia.controllers;
 
 import javafx.beans.binding.Bindings;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -11,7 +12,9 @@ import javafx.scene.image.ImageView;
 import varpedia.AlertHelper;
 import varpedia.Audio;
 import varpedia.VARpediaApp;
+import varpedia.tasks.FFMPEGAudioTask;
 import varpedia.tasks.FFMPEGVideoTask;
+import varpedia.tasks.PreviewAudioTask;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -39,9 +42,15 @@ public class PhotoPickerController extends Controller {
     @FXML
     private ChoiceBox<Audio> musicChoiceBox;
     @FXML
+    private Label volLabel;
+    @FXML
+    private Slider volSlider;
+    @FXML
     private TextField creationNameTextField;
     @FXML
     private Button createBtn;
+    @FXML
+    private Button previewBtn;
     @FXML
     private Button cancelBtn;
     @FXML
@@ -60,7 +69,7 @@ public class PhotoPickerController extends Controller {
     @FXML
     private ListView<Integer> rightPhotoListView;
 
-    private Task<Void> _createTask;
+    private Task<? extends Object> _createTask;
 
     private ExecutorService pool = VARpediaApp.newTimedCachedThreadPool();
     
@@ -89,6 +98,11 @@ public class PhotoPickerController extends Controller {
     	musicList.add(new Audio("/varpedia/music/sirius.mp3", "Sirius Crystal"));
     	musicChoiceBox.getItems().addAll(musicList);
         musicChoiceBox.getSelectionModel().selectFirst();
+        volSlider.setValue(50);
+    	
+        volSlider.valueProperty().addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
+        	volLabel.setText(Math.round(newValue.doubleValue()) + "%");
+        });
     }
     
     @FXML
@@ -114,12 +128,25 @@ public class PhotoPickerController extends Controller {
 	            }
 
                 // assemble audio + video using ffmpeg
-                _createTask = new FFMPEGVideoTask(name, rightPhotoList, _chunks, bgmusic, 0.5);
+                _createTask = new FFMPEGAudioTask(_chunks, bgmusic, volSlider.getValue() / 100);
                 _createTask.setOnSucceeded(ev2 -> {
-                    _createTask = null;
-                    _alertHelper.showAlert(Alert.AlertType.INFORMATION, "Created creation.");
-                    setLoadingInactive();
-                    changeScene(event, "/varpedia/MainScreen.fxml"); //TODO: Maybe go straight to player
+                    _createTask = new FFMPEGVideoTask(name, rightPhotoList);
+                    _createTask.setOnSucceeded(ev3 -> {
+                        _createTask = null;
+                        _alertHelper.showAlert(Alert.AlertType.INFORMATION, "Created creation.");
+                        setLoadingInactive();
+                        changeScene(event, "/varpedia/MainScreen.fxml"); //TODO: Maybe go straight to player
+                    });
+                    _createTask.setOnCancelled(ev3 -> {
+                        _createTask = null;
+                        setLoadingInactive();
+                    });
+                    _createTask.setOnFailed(ev3 -> {
+                        _alertHelper.showAlert(Alert.AlertType.ERROR, "Failed to create creation.");
+                        _createTask = null;
+                        setLoadingInactive();
+                    });
+                    pool.submit(_createTask);
                 });
                 _createTask.setOnCancelled(ev2 -> {
                     _createTask = null;
@@ -127,7 +154,6 @@ public class PhotoPickerController extends Controller {
                 });
                 _createTask.setOnFailed(ev2 -> {
                     _alertHelper.showAlert(Alert.AlertType.ERROR, "Failed to create creation.");
-                    _createTask.getException().printStackTrace();
                     _createTask = null;
                     setLoadingInactive();
                 });
@@ -140,6 +166,46 @@ public class PhotoPickerController extends Controller {
     	}
     }
 
+    @FXML
+    private void pressPreviewBtn(ActionEvent event) {
+    	if (_createTask == null) {
+        	String bgmusic = musicChoiceBox.getSelectionModel().getSelectedItem().getName();
+	        // assemble audio + video using ffmpeg
+            _createTask = new FFMPEGAudioTask(_chunks, bgmusic, volSlider.getValue() / 100);
+            _createTask.setOnSucceeded(ev2 -> {
+                _createTask = new PreviewAudioTask(new File("appfiles/audio.wav"));
+                _createTask.setOnSucceeded(ev3 -> {
+                    _createTask = null;
+                    setLoadingInactive();
+                });
+                _createTask.setOnCancelled(ev3 -> {
+                    _createTask = null;
+                    setLoadingInactive();
+                });
+                _createTask.setOnFailed(ev3 -> {
+                    _alertHelper.showAlert(Alert.AlertType.ERROR, "Failed to preview creation.");
+                    _createTask = null;
+                    setLoadingInactive();
+                });
+                pool.submit(_createTask);
+            });
+            _createTask.setOnCancelled(ev2 -> {
+                _createTask = null;
+                setLoadingInactive();
+            });
+            _createTask.setOnFailed(ev2 -> {
+                _alertHelper.showAlert(Alert.AlertType.ERROR, "Failed to preview creation.");
+                _createTask = null;
+                setLoadingInactive();
+            });
+            pool.submit(_createTask);
+            setLoadingActivePreview();
+    	} else {
+    		_createTask.cancel(true);
+    		setLoadingInactive();
+    	}
+    }
+    
     @FXML
     private void pressCancelBtn(ActionEvent event) {
         // ask for confirmation first!
@@ -296,6 +362,7 @@ public class PhotoPickerController extends Controller {
         moveUpBtn.disableProperty().unbind();
 
         createBtn.setText("Stop");
+        previewBtn.setDisable(true);
         addToBtn.setDisable(true);
         removeFromBtn.setDisable(true);
         moveUpBtn.setDisable(true);
@@ -307,6 +374,26 @@ public class PhotoPickerController extends Controller {
     }
 
     /**
+     * Helper method to disable most UI elements and show loading indicators while a creation task is in progress.
+     */
+    private void setLoadingActivePreview() {
+        addToBtn.disableProperty().unbind();
+        removeFromBtn.disableProperty().unbind();
+        moveUpBtn.disableProperty().unbind();
+
+        previewBtn.setText("Stop");
+        createBtn.setDisable(true);
+        addToBtn.setDisable(true);
+        removeFromBtn.setDisable(true);
+        moveUpBtn.setDisable(true);
+        moveDownBtn.setDisable(true);
+        creationNameTextField.setDisable(true);
+        backBtn.setDisable(true);
+        loadingBar.setVisible(true);
+        loadingLabel.setVisible(true);
+    }
+    
+    /**
      * Helper method to enable most UI elements and hide loading indicators when a creation task ends.
      */
     private void setLoadingInactive() {
@@ -316,6 +403,7 @@ public class PhotoPickerController extends Controller {
         moveUpBtn.disableProperty().bind(Bindings.equal(0,rightPhotoListView.getSelectionModel().selectedIndexProperty()));
 
         createBtn.setText("Create!");
+        previewBtn.setText("Preview Audio!");
         moveDownBtn.setDisable(false);
         creationNameTextField.setDisable(false);
         backBtn.setDisable(false);
