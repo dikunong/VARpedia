@@ -24,6 +24,16 @@
     -fx-light-text-color: -fx-font-color;
 }
 
+.text-field, .text-area {
+    -fx-highlight-fill: -fx-hover-color;
+    -fx-highlight-text-fill: -fx-font-color;
+}
+
+.text-field:focused, .text-area:focused {
+    -fx-highlight-fill: -fx-primary-color;
+    -fx-highlight-text-fill: -fx-bg-color;
+}
+
 .choice-box > .label {
     -fx-dark-text-color: -fx-font-color;
     -fx-light-text-color: -fx-font-color;
