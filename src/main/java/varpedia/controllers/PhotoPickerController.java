@@ -108,6 +108,7 @@ public class PhotoPickerController extends Controller {
 
         // disable background volume slider if no background music is selected
         volSlider.disableProperty().bind(musicChoiceBox.valueProperty().isEqualTo(noneAudio));
+        createBtn.disableProperty().bind(Bindings.isEmpty(creationNameTextField.textProperty()));
     }
     
     @FXML
@@ -385,7 +386,8 @@ public class PhotoPickerController extends Controller {
         addToBtn.disableProperty().unbind();
         removeFromBtn.disableProperty().unbind();
         moveUpBtn.disableProperty().unbind();
-
+        createBtn.disableProperty().unbind();
+        
         previewBtn.setText("Stop");
         createBtn.setDisable(true);
         addToBtn.setDisable(true);
@@ -406,10 +408,10 @@ public class PhotoPickerController extends Controller {
         addToBtn.disableProperty().bind(leftPhotoListView.getSelectionModel().selectedItemProperty().isNull());
         removeFromBtn.disableProperty().bind(rightPhotoListView.getSelectionModel().selectedItemProperty().isNull());
         moveUpBtn.disableProperty().bind(Bindings.equal(0,rightPhotoListView.getSelectionModel().selectedIndexProperty()));
-
+        createBtn.disableProperty().bind(Bindings.isEmpty(creationNameTextField.textProperty()));
+        
         createBtn.setText("Create!");
         previewBtn.setText("Preview");
-        createBtn.setDisable(false);
         previewBtn.setDisable(false);
         moveDownBtn.setDisable(false);
         creationNameTextField.setDisable(false);

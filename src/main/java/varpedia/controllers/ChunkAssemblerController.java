@@ -81,6 +81,7 @@ public class ChunkAssemblerController extends Controller {
         // disable chunk lists if they are empty
         leftChunkListView.disableProperty().bind(Bindings.size(leftChunkList).isEqualTo(0));
         rightChunkListView.disableProperty().bind(Bindings.size(rightChunkList).isEqualTo(0));
+        selectBtn.disableProperty().bind(Bindings.size(rightChunkList).isEqualTo(0));
     }
 
     @FXML
