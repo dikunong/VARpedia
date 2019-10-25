@@ -17,6 +17,7 @@ import javafx.scene.image.ImageView;
 import javafx.util.StringConverter;
 import varpedia.AlertHelper;
 import varpedia.Creation;
+import varpedia.ThemeHelper;
 import varpedia.VARpediaApp;
 import varpedia.tasks.ClearTask;
 import varpedia.tasks.ListPopulateTask;
@@ -70,6 +71,7 @@ public class MainController extends Controller {
 
     private ExecutorService pool = VARpediaApp.newTimedCachedThreadPool();
     private AlertHelper _alertHelper = AlertHelper.getInstance();
+    private ThemeHelper _themeHelper = ThemeHelper.getInstance();
 
     @FXML
     private void initialize() {
@@ -88,12 +90,16 @@ public class MainController extends Controller {
                 Scene currentScene = ((Node) e.getSource()).getScene();
                 currentScene.getStylesheets().add(getClass().getResource("/varpedia/styles/theme-dark.css").toString());
                 currentScene.getStylesheets().remove(getClass().getResource("/varpedia/styles/theme-light.css").toString());
+                _themeHelper.setDarkModeStatus(true);
             } else {
                 themeLabel.setText("Theme: Light mode");
                 Scene currentScene = ((Node) e.getSource()).getScene();
                 currentScene.getStylesheets().add(getClass().getResource("/varpedia/styles/theme-light.css").toString());
                 currentScene.getStylesheets().remove(getClass().getResource("/varpedia/styles/theme-dark.css").toString());
+                _themeHelper.setDarkModeStatus(false);
             }
+            // update tableview default thumbnails
+            creationTableView.refresh();
         });
 
         // disable the TableView if there are no creations
@@ -178,8 +184,12 @@ public class MainController extends Controller {
                 // get the thumbnail image
                 // if there is no thumbnail, load a default icon
                 if (empty || item == null) {
-                    // TODO: grab correct icon depending on light/dark theme
+                    // get the correct icon based on the current theme
                     String defaultIcon = "/varpedia/images/light-theme-icons/movie_black.png";
+                    if (_themeHelper.getDarkModeStatus()) {
+                        defaultIcon = "/varpedia/images/dark-theme-icons/movie_white.png";
+                    }
+
                     try {
                         defaultIcon = getClass().getResource(defaultIcon).toURI().toString();
                         imageView.setImage(new Image(defaultIcon));
