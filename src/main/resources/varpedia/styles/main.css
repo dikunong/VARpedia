@@ -1,12 +1,3 @@
-* {
-    -fx-primary-color: #1a75eb;
-    -fx-cancel-color: #d32f2f;
-    -fx-font-color: #000000;
-    -fx-edge-color: #757575;
-    -fx-hover-color: #e0e0e0;
-    -fx-bg-color: #ffffff;
-}
-
 .root {
     -fx-font-size: 16px;
     -fx-font-family: Roboto, sans-serif;
@@ -14,13 +5,9 @@
 
     -fx-control-inner-background: -fx-bg-color;
     -fx-control-inner-background-alt: -fx-bg-color;
-    -fx-dark-text-color: -fx-font-color;
-    -fx-mid-text-color: -fx-font-color;
-    -fx-light-text-color: -fx-bg-color;
 
     -fx-accent: -fx-primary-color;
     -fx-focus-color: -fx-primary-color;
-    -fx-faint-focus-color: #1a75eb22;
 
     -fx-color: -fx-bg-color;
 
@@ -89,34 +76,6 @@
     -fx-text-fill: -fx-bg-color;
 }
 
-#playBtn {
-    -fx-background-image: url("../images/play_circle_black.png");
-}
-
-#deleteBtn {
-    -fx-background-image: url("../images/delete_black.png");
-}
-
-#deleteBtn:hover {
-    -fx-background-image: url("../images/delete_white.png");
-}
-
-#createBtn {
-    -fx-background-image: url("../images/add_circle_white.png");
-}
-
-#searchBtn {
-    -fx-background-image: url("../images/search_white.png");
-}
-
-#cancelBtn {
-    -fx-background-image: url("../images/cancel_black.png");
-}
-
-#cancelBtn:hover {
-    -fx-background-image: url("../images/cancel_white.png");
-}
-
 #playPauseBtn {
     -fx-min-height: 48px;
     -fx-min-width: 48px;
@@ -124,55 +83,6 @@
     -fx-background-position: 8px;
     -fx-border-color: transparent;
     -fx-background-radius: 24px;
-    -fx-background-image: url("../images/pause_white.png");
-}
-
-#exitBtn {
-    -fx-background-image: url("../images/cancel_black.png");
-}
-
-#previewBtn {
-    -fx-background-image: url("../images/volume_up_black.png");
-}
-
-#saveBtn {
-    -fx-background-image: url("../images/save_black.png");
-}
-
-#assembleBtn {
-    -fx-background-image: url("../images/subscriptions_white.png");
-}
-
-#backBtn {
-    -fx-background-image: url("../images/arrow_back_black.png");
-}
-
-#addToBtn {
-    -fx-background-image: url("../images/chevron_right_black.png");
-}
-
-#removeFromBtn {
-    -fx-background-image: url("../images/chevron_left_black.png");
-}
-
-#moveUpBtn {
-    -fx-background-image: url("../images/chevron_up_black.png");
-}
-
-#moveDownBtn {
-    -fx-background-image: url("../images/chevron_down_black.png");
-}
-
-#selectBtn {
-    -fx-background-image: url("../images/add_photo_white.png");
-}
-
-#saveRateBtn {
-    -fx-background-image: url("../images/save_white.png");
-}
-
-#dontSaveRateBtn {
-    -fx-background-image: url("../images/cancel_black.png");
 }
 
 /*------------------------------------*\
@@ -203,6 +113,10 @@
 
 .table-column {
   -fx-alignment: CENTER-LEFT;
+}
+
+#creationThumbCol {
+    -fx-alignment: center;
 }
 
 /*------------------------------------*\

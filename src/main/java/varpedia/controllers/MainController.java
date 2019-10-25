@@ -7,6 +7,8 @@ import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableColumn.SortType;
@@ -15,6 +17,7 @@ import javafx.scene.image.ImageView;
 import javafx.util.StringConverter;
 import varpedia.AlertHelper;
 import varpedia.Creation;
+import varpedia.ThemeHelper;
 import varpedia.VARpediaApp;
 import varpedia.tasks.ClearTask;
 import varpedia.tasks.ListPopulateTask;
@@ -23,6 +26,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.net.URISyntaxException;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -47,6 +51,10 @@ public class MainController extends Controller {
     private Button createBtn;
     @FXML
     private ChoiceBox<TableColumn<Creation, ?>> sortChoiceBox;
+    @FXML
+    private Label themeLabel;
+    @FXML
+    private ToggleButton themeBtn;
 
     @FXML
     private final ObservableList<Creation> creationList = FXCollections.observableArrayList();
@@ -63,6 +71,7 @@ public class MainController extends Controller {
 
     private ExecutorService pool = VARpediaApp.newTimedCachedThreadPool();
     private AlertHelper _alertHelper = AlertHelper.getInstance();
+    private ThemeHelper _themeHelper = ThemeHelper.getInstance();
 
     @FXML
     private void initialize() {
@@ -73,6 +82,25 @@ public class MainController extends Controller {
         // populate table view with saved creations
     	populateTable();
         deleteAppfiles();
+
+        // enable toggling between light and dark themes
+        themeBtn.setOnAction(e -> {
+            if (themeBtn.isSelected()) {
+                themeLabel.setText("Theme: Dark mode");
+                Scene currentScene = ((Node) e.getSource()).getScene();
+                currentScene.getStylesheets().add(getClass().getResource("/varpedia/styles/theme-dark.css").toString());
+                currentScene.getStylesheets().remove(getClass().getResource("/varpedia/styles/theme-light.css").toString());
+                _themeHelper.setDarkModeStatus(true);
+            } else {
+                themeLabel.setText("Theme: Light mode");
+                Scene currentScene = ((Node) e.getSource()).getScene();
+                currentScene.getStylesheets().add(getClass().getResource("/varpedia/styles/theme-light.css").toString());
+                currentScene.getStylesheets().remove(getClass().getResource("/varpedia/styles/theme-dark.css").toString());
+                _themeHelper.setDarkModeStatus(false);
+            }
+            // update tableview default thumbnails
+            creationTableView.refresh();
+        });
 
         // disable the TableView if there are no creations
         creationTableView.disableProperty().bind(Bindings.size(creationList).isEqualTo(0));
@@ -153,18 +181,32 @@ public class MainController extends Controller {
             public void updateItem(Image item, boolean empty) {
                 super.updateItem(item, empty);
 
+                // get the thumbnail image
+                // if there is no thumbnail, load a default icon
                 if (empty || item == null) {
-                    setText(null);
-                    setGraphic(null);
+                    // get the correct icon based on the current theme
+                    String defaultIcon = "/varpedia/images/light-theme-icons/movie_black.png";
+                    if (_themeHelper.getDarkModeStatus()) {
+                        defaultIcon = "/varpedia/images/dark-theme-icons/movie_white.png";
+                    }
+
+                    try {
+                        defaultIcon = getClass().getResource(defaultIcon).toURI().toString();
+                        imageView.setImage(new Image(defaultIcon));
+                    } catch (URISyntaxException e) {        // this should never happen
+                        setText(null);
+                        setGraphic(null);
+                        return;
+                    }
                 } else {
-                    // set the image to be no taller than 100 pixels but as wide
-                    // as possible while preserving aspect ratio
                 	imageView.setImage(item);
-                    imageView.setPreserveRatio(true);
-                    imageView.setFitHeight(100);
-                    setText(null);
-                    setGraphic(imageView);
                 }
+
+                imageView.setPreserveRatio(true);
+                imageView.setFitHeight(70);
+                imageView.fitWidthProperty().bind(creationThumbCol.widthProperty().subtract(16));
+                setText(null);
+                setGraphic(imageView);
             }	
         });
     	

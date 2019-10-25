@@ -40,9 +40,9 @@
                   <Insets right="16.0" />
                </HBox.margin>
             </Label>
-            <ImageView fitHeight="36.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="volIconView" fitHeight="36.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@images/volume_up_black.png" />
+                  <Image url="@images/light-theme-icons/volume_up_black.png" />
                </image>
                <HBox.margin>
                   <Insets right="4.0" />

@@ -1,0 +1,133 @@
+/*------------------------------------*\
+    #COLOURS
+\*------------------------------------*/
+
+* {
+    -fx-primary-color: #8bb3f8;
+    -fx-cancel-color: #cf6679;
+    -fx-font-color: #ffffff;
+    -fx-edge-color: #e0e0e0;
+    -fx-hover-color: #757575;
+    -fx-bg-color: #121212;
+}
+
+.root {
+    -fx-dark-text-color: -fx-font-color;
+    -fx-mid-text-color: -fx-font-color;
+    -fx-light-text-color: -fx-bg-color;
+
+    -fx-faint-focus-color: #8bb3f822;
+}
+
+.text-field, .text-area, .list-view {
+    -fx-mid-text-color: -fx-bg-color;
+    -fx-light-text-color: -fx-font-color;
+}
+
+.text-field, .text-area {
+    -fx-highlight-fill: -fx-hover-color;
+    -fx-highlight-text-fill: -fx-font-color;
+}
+
+.text-field:focused, .text-area:focused {
+    -fx-highlight-fill: -fx-primary-color;
+    -fx-highlight-text-fill: -fx-bg-color;
+}
+
+.choice-box > .label {
+    -fx-dark-text-color: -fx-font-color;
+    -fx-light-text-color: -fx-font-color;
+}
+
+.table-row-cell {
+    -fx-mid-text-color: -fx-bg-color;
+    -fx-light-text-color: -fx-font-color;
+}
+
+/*------------------------------------*\
+    #ICONS
+\*------------------------------------*/
+
+#themeBtn {
+    -fx-background-image: url("../images/theme_dark.png");
+}
+
+#playBtn {
+    -fx-background-image: url("../images/dark-theme-icons/play_circle_white.png");
+}
+
+#deleteBtn {
+    -fx-background-image: url("../images/delete_white.png");
+}
+
+#deleteBtn:hover {
+    -fx-background-image: url("../images/delete_black.png");
+}
+
+#createBtn {
+    -fx-background-image: url("../images/dark-theme-icons/add_circle_black.png");
+}
+
+#searchBtn {
+    -fx-background-image: url("../images/dark-theme-icons/search_black.png");
+}
+
+#cancelBtn {
+    -fx-background-image: url("../images/cancel_white.png");
+}
+
+#cancelBtn:hover {
+    -fx-background-image: url("../images/cancel_black.png");
+}
+
+#playPauseBtn {
+    -fx-background-image: url("../images/dark-theme-icons/pause_black.png");
+}
+
+#exitBtn {
+    -fx-background-image: url("../images/cancel_white.png");
+}
+
+#previewBtn {
+    -fx-background-image: url("../images/dark-theme-icons/volume_up_white.png");
+}
+
+#saveBtn {
+    -fx-background-image: url("../images/save_white.png");
+}
+
+#assembleBtn {
+    -fx-background-image: url("../images/dark-theme-icons/subscriptions_black.png");
+}
+
+#backBtn {
+    -fx-background-image: url("../images/dark-theme-icons/arrow_back_white.png");
+}
+
+#addToBtn {
+    -fx-background-image: url("../images/dark-theme-icons/chevron_right_white.png");
+}
+
+#removeFromBtn {
+    -fx-background-image: url("../images/dark-theme-icons/chevron_left_white.png");
+}
+
+#moveUpBtn {
+    -fx-background-image: url("../images/dark-theme-icons/chevron_up_white.png");
+}
+
+#moveDownBtn {
+    -fx-background-image: url("../images/dark-theme-icons/chevron_down_white.png");
+}
+
+#selectBtn {
+    -fx-background-image: url("../images/dark-theme-icons/add_photo_black.png");
+}
+
+#saveRateBtn {
+    -fx-background-image: url("../images/save_black.png");
+}
+
+#dontSaveRateBtn {
+    -fx-background-image: url("../images/cancel_white.png");
+}

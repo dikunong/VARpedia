@@ -11,13 +11,17 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.scene.media.MediaPlayer.Status;
 import javafx.util.Duration;
+import varpedia.ThemeHelper;
 
 import java.io.File;
+import java.net.URISyntaxException;
 
 /**
  * Controller for the PlaybackScreen, which plays creations.
@@ -37,6 +41,8 @@ public class PlaybackController extends Controller {
     @FXML
     private Label timeLabel;
     @FXML
+	private ImageView volIconView;
+    @FXML
     private Label volLabel;
     @FXML
     private Slider volSlider;
@@ -46,6 +52,8 @@ public class PlaybackController extends Controller {
     private MediaPlayer _player;
     private Duration _duration;
 	private boolean _actualPaused;
+
+	private ThemeHelper _themeHelper = ThemeHelper.getInstance();
     
 	private ChangeListener<Number> _timeListener = (ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
 		_player.seek(_duration.multiply(newValue.doubleValue() / 100));
@@ -82,6 +90,15 @@ public class PlaybackController extends Controller {
 		volSlider.valueProperty().addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
 			_player.setVolume(newValue.doubleValue() / 100);
 		});
+
+
+		try {
+			if (_themeHelper.getDarkModeStatus()) {
+				volIconView.setImage(new Image(getClass().getResource("/varpedia/images/dark-theme-icons/volume_up_white.png").toURI().toString()));
+			}
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
 		
 		//Play the selected media
 		playMedia(new File("creations/" + getDataFromFile("playback-name.txt") + ".mp4"));
@@ -91,11 +108,19 @@ public class PlaybackController extends Controller {
     private void pressPlayPauseButton(ActionEvent event) {
 		if (_player.getStatus() == Status.PLAYING) {
 			_player.pause();
-			playPauseBtn.setStyle("-fx-background-image: url(\"/varpedia/images/play_arrow_white.png\")");
+			if (_themeHelper.getDarkModeStatus()) {
+				playPauseBtn.setStyle("-fx-background-image: url(\"/varpedia/images/dark-theme-icons/play_arrow_black.png\")");
+			} else {
+				playPauseBtn.setStyle("-fx-background-image: url(\"/varpedia/images/light-theme-icons/play_arrow_white.png\")");
+			}
 			_actualPaused = true;
 		} else {
 			_player.play();
-			playPauseBtn.setStyle("-fx-background-image: url(\"/varpedia/images/pause_white.png\")");
+			if (_themeHelper.getDarkModeStatus()) {
+				playPauseBtn.setStyle("-fx-background-image: url(\"/varpedia/images/dark-theme-icons/pause_black.png\")");
+			} else {
+				playPauseBtn.setStyle("-fx-background-image: url(\"/varpedia/images/light-theme-icons/pause_white.png\")");
+			}
 			_actualPaused = false;
 		}
     }

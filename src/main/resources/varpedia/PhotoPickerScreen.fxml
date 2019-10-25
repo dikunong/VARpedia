@@ -8,7 +8,10 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
@@ -132,7 +135,7 @@
          <children>
             <HBox HBox.hgrow="ALWAYS">
                <children>
-                  <VBox alignment="BOTTOM_RIGHT" HBox.hgrow="SOMETIMES">
+                  <VBox alignment="BOTTOM_RIGHT" HBox.hgrow="ALWAYS">
                      <children>
                         <HBox alignment="CENTER_LEFT">
                            <children>
@@ -143,15 +146,34 @@
                               <Insets bottom="8.0" />
                            </VBox.margin>
                         </HBox>
-                        <HBox>
+                        <HBox alignment="CENTER_LEFT">
                            <children>
-                              <Label text="Name of creation:">
+                              <Label text="Background volume:  " />
+                              <Slider fx:id="volSlider" maxWidth="300.0">
                                  <HBox.margin>
-                                    <Insets right="11.0" top="4.0" />
+                                    <Insets right="8.0" />
                                  </HBox.margin>
-                              </Label>
-                              <TextField fx:id="creationNameTextField" onAction="#pressCreateBtn" HBox.hgrow="SOMETIMES" />
+                              </Slider>
+                              <Label fx:id="volLabel" minWidth="40.0" text="50%" />
                            </children>
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                           <VBox.margin>
+                              <Insets bottom="8.0" />
+                           </VBox.margin>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT">
+                           <children>
+                              <Button fx:id="previewBtn" mnemonicParsing="false" onAction="#pressPreviewBtn" prefWidth="170.0" text="Preview">
+                                 <styleClass>
+                                    <String fx:value="button" />
+                                    <String fx:value="sec-button" />
+                                 </styleClass></Button>
+                           </children>
+                           <VBox.margin>
+                              <Insets />
+                           </VBox.margin>
                         </HBox>
                      </children>
                   </VBox>
@@ -178,6 +200,19 @@
                               <Insets bottom="8.0" />
                            </VBox.margin>
                         </HBox>
+                        <HBox alignment="CENTER_LEFT">
+                           <children>
+                              <Label text="Name of creation:">
+                                 <HBox.margin>
+                                    <Insets right="11.0" top="4.0" />
+                                 </HBox.margin>
+                              </Label>
+                              <TextField fx:id="creationNameTextField" onAction="#pressCreateBtn" HBox.hgrow="SOMETIMES" />
+                           </children>
+                           <VBox.margin>
+                              <Insets bottom="8.0" />
+                           </VBox.margin>
+                        </HBox>
                         <HBox alignment="BOTTOM_RIGHT">
                            <children>
                               <Button fx:id="createBtn" mnemonicParsing="false" onAction="#pressCreateBtn" prefWidth="180.0" styleClass="main-button" text="Create!">
@@ -189,7 +224,8 @@
                                  <styleClass>
                                     <String fx:value="sec-button" />
                                     <String fx:value="red-button" />
-                                 </styleClass></Button>
+                                 </styleClass>
+                              </Button>
                            </children>
                         </HBox>
                      </children>
