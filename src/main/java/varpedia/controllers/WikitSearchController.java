@@ -63,7 +63,7 @@ public class WikitSearchController extends Controller {
                     changeScene(event, "/varpedia/TextEditorScreen.fxml");
                 } else {
                     setLoadingInactive();
-                    _alertHelper.showAlert(Alert.AlertType.ERROR, "No valid Wikipedia articles found.");
+                    _alertHelper.showAlert(Alert.AlertType.ERROR, "No valid Wikipedia articles found, or there might be a network issue.");
                 }
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
@@ -74,7 +74,7 @@ public class WikitSearchController extends Controller {
         // and so can't be handled with regular logic
         _wikitTask.setOnFailed(event2 -> {
         	setLoadingInactive();
-            _alertHelper.showAlert(Alert.AlertType.ERROR, "Search timed out - search term may be too ambiguous.");
+            _alertHelper.showAlert(Alert.AlertType.ERROR, "Search timed out - search term may be too ambiguous or there might be a network issue.");
         });
 
         pool.submit(_wikitTask);

@@ -132,6 +132,15 @@ public class PhotoPickerController extends Controller {
 	                    return;
 	                }
 	            }
+			    
+			    if (rightPhotoList.isEmpty()) {
+			    	_alertHelper.showAlert(Alert.AlertType.WARNING,
+                            "Creation will have no images. Continue?",
+                            ButtonType.YES, ButtonType.CANCEL);
+	                if (_alertHelper.getResult() == ButtonType.CANCEL) {
+	                    return;
+	                }
+			    }
 
                 // assemble audio + video using ffmpeg
                 _createTask = new FFMPEGAudioTask(_chunks, bgmusic, volSlider.getValue() / 100);
