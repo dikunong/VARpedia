@@ -32,7 +32,6 @@ public class FFMPEGCommand {
 	private boolean _pipeMethod;
 	private boolean _altMethod;
 	
-	//This implements a commandline ffmpeg -y -f concat (-protocol_whitelist file,pipe) -i - [extra args] <output>
 	/**
 	 * This implements the "ffmpeg -y -f concat (-protocol_whitelist file,pipe) -i - [extra args] &ltoutput&gt" command,
 	 * or "ffmpeg -y -f image2pipe -framerate (durationPerFile) -i - [extra args] -max_muxing_queue_size (frames) &ltoutput&gt"

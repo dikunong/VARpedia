@@ -88,10 +88,11 @@ public class RatingController extends Controller {
     @FXML
     private void pressDontSaveBtn(ActionEvent event) {
         // ask for confirmation first
-        _alertHelper.showAlert(Alert.AlertType.CONFIRMATION,
+        _alertHelper.showAlert(Alert.AlertType.CONFIRMATION, "Confirm don't save",
                 "Are you sure you want to continue without rating?",
                 ButtonType.YES, ButtonType.CANCEL);
         if (_alertHelper.getResult() == ButtonType.YES) {
+        	// save last viewed time with previous rating
         	try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(new File("creations/" + _creationName + ".dat")))) {
         		oos.writeObject(new Creation(_creationName, _confidence, Instant.now()));
         	} catch (IOException e) {

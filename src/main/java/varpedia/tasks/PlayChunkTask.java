@@ -73,6 +73,9 @@ public class PlayChunkTask extends Task<Void> {
 		boolean play = false;
 		
 		if (origFilename == null) {
+			//On Linux the sound from the festival process keeps playing after the festival process is killed.
+			//So we'll make a fake audio chunk at a special location.
+			//The name means "Festival Usability on Linux".
 			origFilename = "appfiles/audio-fulinux.dir";
 			new File(origFilename).mkdirs();
 			play = true;
@@ -103,49 +106,48 @@ public class PlayChunkTask extends Task<Void> {
 			return null;
 		}
 		
-		if (origFilename != null) {
-			String filename = origFilename;
-			
-			if (filename.contains(".")) {
-	            filename = filename.substring(0, filename.lastIndexOf('.'));
-	        }
+		String filename = origFilename;
+		
+		if (filename.contains(".")) {
+            filename = filename.substring(0, filename.lastIndexOf('.'));
+        }
 
-			//Now merge the chunks together
-			List<String> files = Arrays.asList(new File(origFilename).list());
-			
-			//Sort them numerically
-			files.sort((String a, String b) -> {
-				int aInt = Integer.parseInt(a.substring(0, a.lastIndexOf('.')));
-				int bInt = Integer.parseInt(b.substring(0, b.lastIndexOf('.')));
-				return Integer.compare(aInt, bInt);
-			});
-			
-			final String reallyJavaFilename = origFilename;
-			String[] fullFiles = files.stream().map((String a) -> reallyJavaFilename + "/" + a).toArray(String[]::new);
-			
-			//Concatenate the subchunks (similar to how FFMPEGVideoTask makes audio
-			FFMPEGCommand audio = new FFMPEGCommand(fullFiles, -1, false, filename + ".wav");
+		//Now merge the chunks together
+		List<String> files = Arrays.asList(new File(origFilename).list());
+		
+		//Sort them numerically
+		files.sort((String a, String b) -> {
+			int aInt = Integer.parseInt(a.substring(0, a.lastIndexOf('.')));
+			int bInt = Integer.parseInt(b.substring(0, b.lastIndexOf('.')));
+			return Integer.compare(aInt, bInt);
+		});
+		
+		final String reallyJavaFilename = origFilename;
+		String[] fullFiles = files.stream().map((String a) -> reallyJavaFilename + "/" + a).toArray(String[]::new);
+		
+		//Concatenate the subchunks (similar to how FFMPEGVideoTask makes audio
+		FFMPEGCommand audio = new FFMPEGCommand(fullFiles, -1, false, filename + ".wav");
+
+		if (!audio.pipeFilesIn(() -> isCancelled())) {
+			return null;
+		}
+
+		try {
+			audio.waitFor();
+		} catch (Exception e) {
+			//Try again with the old method
+			audio.useOldCommand();
 
 			if (!audio.pipeFilesIn(() -> isCancelled())) {
-				return null;
+				audio.pipeFilesIn(() -> isCancelled());
 			}
 
-			try {
-				audio.waitFor();
-			} catch (Exception e) {
-				//Try again with the old method
-				audio.useOldCommand();
-
-				if (!audio.pipeFilesIn(() -> isCancelled())) {
-					audio.pipeFilesIn(() -> isCancelled());
-				}
-
-				audio.waitFor();
-			}
-		
-			if (play) {
-				new PreviewAudioTask(new File(filename + ".wav")).run();
-			}
+			audio.waitFor();
+		}
+	
+		//Play the audio-fulinux creation if the task was meant to play audio
+		if (play) {
+			new PreviewAudioTask(new File(filename + ".wav")).run();
 		}
 		
 		return null;

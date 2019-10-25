@@ -13,8 +13,8 @@ import javafx.concurrent.Task;
 import varpedia.FFMPEGCommand;
 
 /**
- * Background task that handles all FFMPEG commands for creation creation - including concatenation of audio chunks,
- * and merging of audio with Flickr images to produce the final creation video.
+ * Background task that handles all FFMPEG commands for creation video creation.
+ * This involves merging of audio with Flickr images to produce the final creation video.
  *
  * @author Tudor Zagreanu
  */
@@ -86,7 +86,7 @@ public class FFMPEGVideoTask extends Task<Void> {
 			video.waitFor();
 		}
 
-		// generate thumbnail image
+		// generate thumbnail image from first image
 		if (_images.size() > 0) {
 			try (InputStream input = new FileInputStream(new File("appfiles/image" + _images.get(0) + ".jpg")); FileOutputStream output = new FileOutputStream("creations/" + _creation + ".jpg")) {
 				byte[] transfer = new byte[4096];

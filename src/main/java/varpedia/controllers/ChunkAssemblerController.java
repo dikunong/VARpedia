@@ -11,7 +11,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.regex.Pattern;
 
 import javafx.beans.binding.Bindings;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -76,11 +75,11 @@ public class ChunkAssemblerController extends Controller {
         	populateList(null);
         }
         
-        
-
         // disable chunk lists if they are empty
         leftChunkListView.disableProperty().bind(Bindings.size(leftChunkList).isEqualTo(0));
         rightChunkListView.disableProperty().bind(Bindings.size(rightChunkList).isEqualTo(0));
+        
+        // disable select photos button if there are no chunks selected
         selectBtn.disableProperty().bind(Bindings.size(rightChunkList).isEqualTo(0));
     }
 
@@ -90,7 +89,7 @@ public class ChunkAssemblerController extends Controller {
     		int imageCount = 10;
     		
     		if (rightChunkListView.getItems().isEmpty()) {
-                _alertHelper.showAlert(Alert.AlertType.ERROR, "Please add chunks to assemble.");
+                _alertHelper.showAlert(Alert.AlertType.ERROR, "No chunks selected", "Please add chunks to assemble.");
     		} else {
     			// get Flickr images
     			_photoTask = new FlickrTask(imageCount);
@@ -119,7 +118,7 @@ public class ChunkAssemblerController extends Controller {
                     setLoadingInactive();
                 });
                 _photoTask.setOnFailed(ev -> {
-                    _alertHelper.showAlert(Alert.AlertType.ERROR, "Failed to download images.");
+                    _alertHelper.showAlert(Alert.AlertType.ERROR, "Error", "Failed to download images.");
                     _photoTask = null;
                     setLoadingInactive();
                 });
@@ -135,7 +134,7 @@ public class ChunkAssemblerController extends Controller {
     @FXML
     private void pressCancelBtn(ActionEvent event) {
         // ask for confirmation first!
-        _alertHelper.showAlert(Alert.AlertType.CONFIRMATION,
+        _alertHelper.showAlert(Alert.AlertType.CONFIRMATION, "Confirm cancel", 
                 "Are you sure you want to cancel making the current creation?",
                 ButtonType.YES, ButtonType.CANCEL);
 

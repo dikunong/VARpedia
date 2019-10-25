@@ -17,6 +17,7 @@ import javafx.scene.image.ImageView;
 import javafx.util.StringConverter;
 import varpedia.AlertHelper;
 import varpedia.Creation;
+import varpedia.SafeExitHelper;
 import varpedia.ThemeHelper;
 import varpedia.VARpediaApp;
 import varpedia.tasks.ClearTask;
@@ -72,6 +73,7 @@ public class MainController extends Controller {
     private ExecutorService pool = VARpediaApp.newTimedCachedThreadPool();
     private AlertHelper _alertHelper = AlertHelper.getInstance();
     private ThemeHelper _themeHelper = ThemeHelper.getInstance();
+    private SafeExitHelper _safeExitHelper = SafeExitHelper.getInstance();
 
     @FXML
     private void initialize() {
@@ -102,10 +104,14 @@ public class MainController extends Controller {
             creationTableView.refresh();
         });
         
+        // set the dark mode status
         if (_themeHelper.getDarkModeStatus()) {
         	themeLabel.setText("Theme: Dark mode");
             themeBtn.setSelected(true);
         }
+        
+        // when entering the MainController it is safe to exit (all the unsaved progress is deleted anyway)
+        _safeExitHelper.setSafeToExit(true);
 
         // disable the TableView if there are no creations
         creationTableView.disableProperty().bind(Bindings.size(creationList).isEqualTo(0));
@@ -117,7 +123,7 @@ public class MainController extends Controller {
 
     @FXML
     private void pressPlayButton(ActionEvent event) {
-        // store a creation's name and open PlaybackScreen
+        // store a creation's name and rating and open PlaybackScreen
         sendDataToFile(getSelectedName(), "playback-name.txt");
         sendDataToFile(creationTableView.getSelectionModel().getSelectedItem().getConfidence() + "", "playback-rating.txt");
         changeScene(event, "/varpedia/PlaybackScreen.fxml");
@@ -126,12 +132,12 @@ public class MainController extends Controller {
     @FXML
     private void pressDeleteButton(ActionEvent event) {
         // ask for confirmation
-        _alertHelper.showAlert(Alert.AlertType.WARNING,
+        _alertHelper.showAlert(Alert.AlertType.WARNING, "Confirm delete",
                 "Are you sure you want to delete the " + getSelectedName() + " creation?",
                 ButtonType.YES, ButtonType.CANCEL);
 
         if (_alertHelper.getResult() == ButtonType.YES) {
-            // delete creation file
+            // delete creation files
             File file = new File("creations/" + getSelectedName() + ".mp4");
             File file2 = new File("creations/" + getSelectedName() + ".dat");
             File file3 = new File("creations/" + getSelectedName() + ".jpg");
@@ -139,13 +145,15 @@ public class MainController extends Controller {
                 // update table view
                 creationList.remove(creationTableView.getSelectionModel().getSelectedItem());
             } else {
-                _alertHelper.showAlert(Alert.AlertType.ERROR, "Could not delete creation.");
+                _alertHelper.showAlert(Alert.AlertType.ERROR, "Error", "Could not delete creation.");
             }
         }
     }
 
     @FXML
     private void pressCreateButton(ActionEvent event) {
+        // it is unsafe to exit when creating a creation
+    	_safeExitHelper.setSafeToExit(false);
         // open WikitSearchScreen
         changeScene(event, "/varpedia/WikitSearchScreen.fxml");
     }
@@ -187,12 +195,13 @@ public class MainController extends Controller {
                 super.updateItem(item, empty);
 
                 // get the thumbnail image
-                // if there is no thumbnail, load a default icon
                 if (empty) {
+                	// don't set any image
                     setText(null);
                     setGraphic(null);
                     return;
                 } else if (item == null) {
+                    // if there is no thumbnail, load a default icon
                     // get the correct icon based on the current theme
                     String defaultIcon = "/varpedia/images/light-theme-icons/movie_black.png";
                     if (_themeHelper.getDarkModeStatus()) {

@@ -38,6 +38,7 @@ public class WikitSearchController extends Controller {
 
     @FXML
     private void initialize() {
+    	// load the term that was in the box when pressing the back button
     	if (new File("appfiles/search-term.txt").exists()) {
     		searchTextField.setText(getDataFromFile("search-term.txt"));
     	}
@@ -63,7 +64,7 @@ public class WikitSearchController extends Controller {
                     changeScene(event, "/varpedia/TextEditorScreen.fxml");
                 } else {
                     setLoadingInactive();
-                    _alertHelper.showAlert(Alert.AlertType.ERROR, "No valid Wikipedia articles found, or there might be a network issue.");
+                    _alertHelper.showAlert(Alert.AlertType.ERROR, "Error", "No valid Wikipedia articles found, or there might be a network issue.");
                 }
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
@@ -74,7 +75,7 @@ public class WikitSearchController extends Controller {
         // and so can't be handled with regular logic
         _wikitTask.setOnFailed(event2 -> {
         	setLoadingInactive();
-            _alertHelper.showAlert(Alert.AlertType.ERROR, "Search timed out - search term may be too ambiguous or there might be a network issue.");
+            _alertHelper.showAlert(Alert.AlertType.ERROR, "Error", "Search timed out - search term may be too ambiguous or there might be a network issue.");
         });
 
         pool.submit(_wikitTask);
