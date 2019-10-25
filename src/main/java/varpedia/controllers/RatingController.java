@@ -88,7 +88,7 @@ public class RatingController extends Controller {
     @FXML
     private void pressDontSaveBtn(ActionEvent event) {
         // ask for confirmation first
-        _alertHelper.showAlert(Alert.AlertType.CONFIRMATION,
+        _alertHelper.showAlert(Alert.AlertType.CONFIRMATION, "Confirm don't save",
                 "Are you sure you want to continue without rating?",
                 ButtonType.YES, ButtonType.CANCEL);
         if (_alertHelper.getResult() == ButtonType.YES) {

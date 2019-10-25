@@ -60,7 +60,7 @@ public class VARpediaApp extends Application {
             // if the application is abruptly closed, prompt before exiting
             // if the user chooses to exit, delete appfiles first
             primaryStage.setOnCloseRequest(e -> {
-                AlertHelper.getInstance().showAlert(Alert.AlertType.WARNING,
+                AlertHelper.getInstance().showAlert(Alert.AlertType.WARNING, "Confirm exit",
                         "Do you want to exit? Any unsaved creation progress will be lost.",
                         ButtonType.YES, ButtonType.CANCEL);
 

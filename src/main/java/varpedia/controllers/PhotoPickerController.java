@@ -118,14 +118,14 @@ public class PhotoPickerController extends Controller {
         	String bgmusic = musicChoiceBox.getSelectionModel().getSelectedItem().getName();
 		
 	    	if (name == null || name.isEmpty()) {
-			    _alertHelper.showAlert(Alert.AlertType.ERROR, "Please enter a creation name.");
+			    _alertHelper.showAlert(Alert.AlertType.ERROR, "No creation name", "Please enter a creation name.");
 			} else if (!name.matches("[-_. A-Za-z0-9]+")) {
-	            _alertHelper.showAlert(Alert.AlertType.ERROR, "Please enter a valid creation name (only letters, numbers, spaces, -, _).");
+	            _alertHelper.showAlert(Alert.AlertType.ERROR, "Invalid creation name", "Please enter a valid creation name (only letters, numbers, spaces, -, _).");
 	        } else {
 	        	// check if creation already exists and offer option to overwrite
 	            // this must go here in order to allow application flow to continue if user chooses to overwrite
 			    if (checkDuplicate(name)) {
-			        _alertHelper.showAlert(Alert.AlertType.WARNING,
+			        _alertHelper.showAlert(Alert.AlertType.WARNING, "Confirm overwrite",
                             "Creation already exists. Overwrite?",
                             ButtonType.YES, ButtonType.CANCEL);
 	                if (_alertHelper.getResult() == ButtonType.CANCEL) {
@@ -134,7 +134,7 @@ public class PhotoPickerController extends Controller {
 	            }
 			    
 			    if (rightPhotoList.isEmpty()) {
-			    	_alertHelper.showAlert(Alert.AlertType.WARNING,
+			    	_alertHelper.showAlert(Alert.AlertType.WARNING, "Confirm no images",
                             "Creation will have no images. Continue?",
                             ButtonType.YES, ButtonType.CANCEL);
 	                if (_alertHelper.getResult() == ButtonType.CANCEL) {
@@ -148,7 +148,7 @@ public class PhotoPickerController extends Controller {
                     _createTask = new FFMPEGVideoTask(name, rightPhotoList);
                     _createTask.setOnSucceeded(ev3 -> {
                         _createTask = null;
-                        _alertHelper.showAlert(Alert.AlertType.INFORMATION, "Created creation.");
+                        _alertHelper.showAlert(Alert.AlertType.INFORMATION, "Success", "Created creation.");
                         setLoadingInactive();
                         changeScene(event, "/varpedia/MainScreen.fxml"); //TODO: Maybe go straight to player
                     });
@@ -157,7 +157,7 @@ public class PhotoPickerController extends Controller {
                         setLoadingInactive();
                     });
                     _createTask.setOnFailed(ev3 -> {
-                        _alertHelper.showAlert(Alert.AlertType.ERROR, "Failed to create creation.");
+                        _alertHelper.showAlert(Alert.AlertType.ERROR, "Error", "Failed to create creation.");
                         _createTask = null;
                         setLoadingInactive();
                     });
@@ -168,7 +168,7 @@ public class PhotoPickerController extends Controller {
                     setLoadingInactive();
                 });
                 _createTask.setOnFailed(ev2 -> {
-                    _alertHelper.showAlert(Alert.AlertType.ERROR, "Failed to create creation.");
+                    _alertHelper.showAlert(Alert.AlertType.ERROR, "Error", "Failed to create creation.");
                     _createTask = null;
                     setLoadingInactive();
                 });
@@ -198,7 +198,7 @@ public class PhotoPickerController extends Controller {
                     setLoadingInactive();
                 });
                 _createTask.setOnFailed(ev3 -> {
-                    _alertHelper.showAlert(Alert.AlertType.ERROR, "Failed to preview creation.");
+                    _alertHelper.showAlert(Alert.AlertType.ERROR, "Error", "Failed to preview creation.");
                     _createTask = null;
                     setLoadingInactive();
                 });
@@ -209,7 +209,7 @@ public class PhotoPickerController extends Controller {
                 setLoadingInactive();
             });
             _createTask.setOnFailed(ev2 -> {
-                _alertHelper.showAlert(Alert.AlertType.ERROR, "Failed to preview creation.");
+                _alertHelper.showAlert(Alert.AlertType.ERROR, "Error", "Failed to preview creation.");
                 _createTask = null;
                 setLoadingInactive();
             });
@@ -224,7 +224,7 @@ public class PhotoPickerController extends Controller {
     @FXML
     private void pressCancelBtn(ActionEvent event) {
         // ask for confirmation first!
-        _alertHelper.showAlert(Alert.AlertType.CONFIRMATION,
+        _alertHelper.showAlert(Alert.AlertType.CONFIRMATION, "Confirm cancel",
                 "Are you sure you want to cancel making the current creation?",
                 ButtonType.YES, ButtonType.CANCEL);
         if (_alertHelper.getResult() == ButtonType.YES) {

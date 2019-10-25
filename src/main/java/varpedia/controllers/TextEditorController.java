@@ -93,12 +93,12 @@ public class TextEditorController extends Controller {
             String text = wikiTextArea.getSelectedText();
 
     		if (text == null || text.isEmpty()) {
-    			_alertHelper.showAlert(Alert.AlertType.ERROR, "Please select some text first.");
+    			_alertHelper.showAlert(Alert.AlertType.ERROR, "No text", "Please select some text first.");
     		} else {
     			boolean playText;
 
     			if (text.split(" ").length > 30) {
-    				_alertHelper.showAlert(Alert.AlertType.WARNING,
+    				_alertHelper.showAlert(Alert.AlertType.WARNING, "Long text warning",
 							"Selected text is very long (>30 words). Do you wish to continue anyway?",
 							ButtonType.YES, ButtonType.CANCEL);
 
@@ -117,7 +117,7 @@ public class TextEditorController extends Controller {
 		                finPlay();
 			        });
 		            _playTask.setOnFailed(ev -> {
-		            	_alertHelper.showAlert(Alert.AlertType.ERROR, "Error playing audio chunk. Try selecting other text or using a different voice.");
+		            	_alertHelper.showAlert(Alert.AlertType.ERROR, "Error", "Error playing audio chunk. Try selecting other text or using a different voice.");
 		            	finPlay();
 			        });
 		            pool.submit(_playTask);
@@ -137,12 +137,12 @@ public class TextEditorController extends Controller {
             String text = wikiTextArea.getSelectedText();
 
     		if (text == null || text.isEmpty()) {
-				_alertHelper.showAlert(Alert.AlertType.ERROR, "Please select some text first.");
+				_alertHelper.showAlert(Alert.AlertType.ERROR, "No text error", "Please select some text first.");
     		} else {
     			boolean playText;
 
     			if (text.split(" ").length > 30) {
-    				_alertHelper.showAlert(Alert.AlertType.WARNING,
+    				_alertHelper.showAlert(Alert.AlertType.WARNING, "Long text warning", 
 							"Selected text is very long (>30 words). Do you wish to continue anyway?",
 							ButtonType.YES, ButtonType.CANCEL);
 
@@ -186,7 +186,7 @@ public class TextEditorController extends Controller {
 		                finSave();
 					});
 		            _saveTask.setOnFailed(ev -> {
-						_alertHelper.showAlert(Alert.AlertType.ERROR, "Error saving audio chunk. Try selecting other text or using a different voice.");
+						_alertHelper.showAlert(Alert.AlertType.ERROR, "Error", "Error saving audio chunk. Try selecting other text or using a different voice.");
 						finSave();
 					});
 		            pool.submit(_saveTask);
@@ -209,7 +209,7 @@ public class TextEditorController extends Controller {
     @FXML
     private void pressCancelButton(ActionEvent event) {
         // ask for confirmation first!
-		_alertHelper.showAlert(Alert.AlertType.CONFIRMATION,
+		_alertHelper.showAlert(Alert.AlertType.CONFIRMATION, "Confirm cancel", 
 				"Are you sure you want to cancel making the current creation?",
 				ButtonType.YES, ButtonType.CANCEL);
 

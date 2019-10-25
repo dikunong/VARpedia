@@ -90,7 +90,7 @@ public class ChunkAssemblerController extends Controller {
     		int imageCount = 10;
     		
     		if (rightChunkListView.getItems().isEmpty()) {
-                _alertHelper.showAlert(Alert.AlertType.ERROR, "Please add chunks to assemble.");
+                _alertHelper.showAlert(Alert.AlertType.ERROR, "No chunks selected", "Please add chunks to assemble.");
     		} else {
     			// get Flickr images
     			_photoTask = new FlickrTask(imageCount);
@@ -119,7 +119,7 @@ public class ChunkAssemblerController extends Controller {
                     setLoadingInactive();
                 });
                 _photoTask.setOnFailed(ev -> {
-                    _alertHelper.showAlert(Alert.AlertType.ERROR, "Failed to download images.");
+                    _alertHelper.showAlert(Alert.AlertType.ERROR, "Error", "Failed to download images.");
                     _photoTask = null;
                     setLoadingInactive();
                 });
@@ -135,7 +135,7 @@ public class ChunkAssemblerController extends Controller {
     @FXML
     private void pressCancelBtn(ActionEvent event) {
         // ask for confirmation first!
-        _alertHelper.showAlert(Alert.AlertType.CONFIRMATION,
+        _alertHelper.showAlert(Alert.AlertType.CONFIRMATION, "Confirm cancel", 
                 "Are you sure you want to cancel making the current creation?",
                 ButtonType.YES, ButtonType.CANCEL);
 

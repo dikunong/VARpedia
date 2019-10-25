@@ -126,7 +126,7 @@ public class MainController extends Controller {
     @FXML
     private void pressDeleteButton(ActionEvent event) {
         // ask for confirmation
-        _alertHelper.showAlert(Alert.AlertType.WARNING,
+        _alertHelper.showAlert(Alert.AlertType.WARNING, "Confirm delete",
                 "Are you sure you want to delete the " + getSelectedName() + " creation?",
                 ButtonType.YES, ButtonType.CANCEL);
 
@@ -139,7 +139,7 @@ public class MainController extends Controller {
                 // update table view
                 creationList.remove(creationTableView.getSelectionModel().getSelectedItem());
             } else {
-                _alertHelper.showAlert(Alert.AlertType.ERROR, "Could not delete creation.");
+                _alertHelper.showAlert(Alert.AlertType.ERROR, "Error", "Could not delete creation.");
             }
         }
     }
