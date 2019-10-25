@@ -101,6 +101,11 @@ public class MainController extends Controller {
             // update tableview default thumbnails
             creationTableView.refresh();
         });
+        
+        if (_themeHelper.getDarkModeStatus()) {
+        	themeLabel.setText("Theme: Dark mode");
+            themeBtn.setSelected(true);
+        }
 
         // disable the TableView if there are no creations
         creationTableView.disableProperty().bind(Bindings.size(creationList).isEqualTo(0));
