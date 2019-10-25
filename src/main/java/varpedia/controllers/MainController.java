@@ -183,7 +183,11 @@ public class MainController extends Controller {
 
                 // get the thumbnail image
                 // if there is no thumbnail, load a default icon
-                if (empty || item == null) {
+                if (empty) {
+                    setText(null);
+                    setGraphic(null);
+                    return;
+                } else if (item == null) {
                     // get the correct icon based on the current theme
                     String defaultIcon = "/varpedia/images/light-theme-icons/movie_black.png";
                     if (_themeHelper.getDarkModeStatus()) {
