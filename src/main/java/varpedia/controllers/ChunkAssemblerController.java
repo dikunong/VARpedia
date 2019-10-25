@@ -11,7 +11,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.regex.Pattern;
 
 import javafx.beans.binding.Bindings;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -76,11 +75,11 @@ public class ChunkAssemblerController extends Controller {
         	populateList(null);
         }
         
-        
-
         // disable chunk lists if they are empty
         leftChunkListView.disableProperty().bind(Bindings.size(leftChunkList).isEqualTo(0));
         rightChunkListView.disableProperty().bind(Bindings.size(rightChunkList).isEqualTo(0));
+        
+        // disable select photos button if there are no chunks selected
         selectBtn.disableProperty().bind(Bindings.size(rightChunkList).isEqualTo(0));
     }
 

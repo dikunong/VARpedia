@@ -11,6 +11,11 @@ import javax.sound.sampled.LineEvent.Type;
 
 import javafx.concurrent.Task;
 
+/**
+ * Plays an audio file using the Java AudioSystem.
+ * 
+ * @author PisuCat
+ */
 public class PreviewAudioTask extends Task<Object> {
 	private File _audio;
 	
@@ -27,7 +32,8 @@ public class PreviewAudioTask extends Task<Object> {
 		AudioListener listener = new AudioListener();
 		
 		try (Clip clip = AudioSystem.getClip()) {
-		    clip.addLineListener(listener);
+		    //Add the listener to see when it is done
+			clip.addLineListener(listener);
 		    
 		    //Open the file in the clip
 		    try (AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(_audio)) {
@@ -49,6 +55,10 @@ public class PreviewAudioTask extends Task<Object> {
 		return null;
 	}
 	
+	/**
+	 * 
+	 * @author PisuCat
+	 */
 	public static class AudioListener implements LineListener {
 		public volatile boolean done = false;
 		

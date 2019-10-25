@@ -100,6 +100,8 @@ public class PhotoPickerController extends Controller {
     	musicList.add(new Audio("/varpedia/music/sirius.mp3", "Sirius Crystal"));
     	musicChoiceBox.getItems().addAll(musicList);
         musicChoiceBox.getSelectionModel().selectFirst();
+        
+        // add the volume slider and set the default to 50% (the original value)
         volSlider.setValue(50);
     	
         volSlider.valueProperty().addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
@@ -108,6 +110,8 @@ public class PhotoPickerController extends Controller {
 
         // disable background volume slider if no background music is selected
         volSlider.disableProperty().bind(musicChoiceBox.valueProperty().isEqualTo(noneAudio));
+        
+        // disable create button if there is no creation name
         createBtn.disableProperty().bind(Bindings.isEmpty(creationNameTextField.textProperty()));
     }
     
@@ -133,6 +137,7 @@ public class PhotoPickerController extends Controller {
 	                }
 	            }
 			    
+			    // confirm if there should be no images (it's not an error, but could be confusing if it just made it)
 			    if (rightPhotoList.isEmpty()) {
 			    	_alertHelper.showAlert(Alert.AlertType.WARNING, "Confirm no images",
                             "Creation will have no images. Continue?",
@@ -185,10 +190,11 @@ public class PhotoPickerController extends Controller {
     private void pressPreviewBtn(ActionEvent event) {
     	if (_createTask == null) {
         	String bgmusic = musicChoiceBox.getSelectionModel().getSelectedItem().getName();
-	        // assemble audio + video using ffmpeg
+	        // assemble audio using ffmpeg
             _createTask = new FFMPEGAudioTask(_chunks, bgmusic, volSlider.getValue() / 100);
             _createTask.setOnSucceeded(ev2 -> {
-                _createTask = new PreviewAudioTask(new File("appfiles/audio.wav"));
+                // play the assembled audio
+            	_createTask = new PreviewAudioTask(new File("appfiles/audio.wav"));
                 _createTask.setOnSucceeded(ev3 -> {
                     _createTask = null;
                     setLoadingInactive();
@@ -389,7 +395,7 @@ public class PhotoPickerController extends Controller {
     }
 
     /**
-     * Helper method to disable most UI elements and show loading indicators while a creation task is in progress.
+     * Helper method to disable most UI elements and show loading indicators while a preview task is in progress.
      */
     private void setLoadingActivePreview() {
         addToBtn.disableProperty().unbind();
@@ -410,13 +416,15 @@ public class PhotoPickerController extends Controller {
     }
     
     /**
-     * Helper method to enable most UI elements and hide loading indicators when a creation task ends.
+     * Helper method to enable most UI elements and hide loading indicators when a creation/creation task ends.
      */
     private void setLoadingInactive() {
         // disable add to and remove from buttons until respective chunks are selected
-        addToBtn.disableProperty().bind(leftPhotoListView.getSelectionModel().selectedItemProperty().isNull());
+    	addToBtn.disableProperty().bind(leftPhotoListView.getSelectionModel().selectedItemProperty().isNull());
         removeFromBtn.disableProperty().bind(rightPhotoListView.getSelectionModel().selectedItemProperty().isNull());
         moveUpBtn.disableProperty().bind(Bindings.equal(0,rightPhotoListView.getSelectionModel().selectedIndexProperty()));
+        
+        // disable create button until there is a name
         createBtn.disableProperty().bind(Bindings.isEmpty(creationNameTextField.textProperty()));
         
         createBtn.setText("Create!");

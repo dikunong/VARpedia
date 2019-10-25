@@ -201,9 +201,11 @@ public class TextEditorController extends Controller {
 
     @FXML
     private void pressAssembleButton(ActionEvent event) {
-        // open ChunkAssemblerScreen
+        // save the text in the text area to reload when pressing the back button
     	sendDataToFile(wikiTextArea.getText(), "search-output.txt");
-        changeScene(event, "/varpedia/ChunkAssemblerScreen.fxml");
+        
+        // open ChunkAssemblerScreen
+    	changeScene(event, "/varpedia/ChunkAssemblerScreen.fxml");
     }
 
     @FXML

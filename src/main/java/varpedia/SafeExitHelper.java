@@ -20,10 +20,16 @@ public final class SafeExitHelper {
         return _safeExitHelper;
     }
 
+    /**
+     * @return true if no warning needs to be shown on exit.
+     */
     public boolean isSafeToExit() {
         return _safeToExit;
     }
 
+    /**
+     * @param status Set to true if no warning needs to be shown on exit.
+     */
     public void setSafeToExit(boolean status) {
     	_safeToExit = status;
     }

@@ -38,6 +38,7 @@ public class WikitSearchController extends Controller {
 
     @FXML
     private void initialize() {
+    	// load the term that was in the box when pressing the back button
     	if (new File("appfiles/search-term.txt").exists()) {
     		searchTextField.setText(getDataFromFile("search-term.txt"));
     	}

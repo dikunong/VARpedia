@@ -104,11 +104,13 @@ public class MainController extends Controller {
             creationTableView.refresh();
         });
         
+        // set the dark mode status
         if (_themeHelper.getDarkModeStatus()) {
         	themeLabel.setText("Theme: Dark mode");
             themeBtn.setSelected(true);
         }
         
+        // when entering the MainController it is safe to exit (all the unsaved progress is deleted anyway)
         _safeExitHelper.setSafeToExit(true);
 
         // disable the TableView if there are no creations
@@ -121,7 +123,7 @@ public class MainController extends Controller {
 
     @FXML
     private void pressPlayButton(ActionEvent event) {
-        // store a creation's name and open PlaybackScreen
+        // store a creation's name and rating and open PlaybackScreen
         sendDataToFile(getSelectedName(), "playback-name.txt");
         sendDataToFile(creationTableView.getSelectionModel().getSelectedItem().getConfidence() + "", "playback-rating.txt");
         changeScene(event, "/varpedia/PlaybackScreen.fxml");
@@ -135,7 +137,7 @@ public class MainController extends Controller {
                 ButtonType.YES, ButtonType.CANCEL);
 
         if (_alertHelper.getResult() == ButtonType.YES) {
-            // delete creation file
+            // delete creation files
             File file = new File("creations/" + getSelectedName() + ".mp4");
             File file2 = new File("creations/" + getSelectedName() + ".dat");
             File file3 = new File("creations/" + getSelectedName() + ".jpg");
@@ -150,8 +152,9 @@ public class MainController extends Controller {
 
     @FXML
     private void pressCreateButton(ActionEvent event) {
+        // it is unsafe to exit when creating a creation
+    	_safeExitHelper.setSafeToExit(false);
         // open WikitSearchScreen
-        _safeExitHelper.setSafeToExit(false);
         changeScene(event, "/varpedia/WikitSearchScreen.fxml");
     }
 
@@ -192,12 +195,13 @@ public class MainController extends Controller {
                 super.updateItem(item, empty);
 
                 // get the thumbnail image
-                // if there is no thumbnail, load a default icon
                 if (empty) {
+                	// don't set any image
                     setText(null);
                     setGraphic(null);
                     return;
                 } else if (item == null) {
+                    // if there is no thumbnail, load a default icon
                     // get the correct icon based on the current theme
                     String defaultIcon = "/varpedia/images/light-theme-icons/movie_black.png";
                     if (_themeHelper.getDarkModeStatus()) {
