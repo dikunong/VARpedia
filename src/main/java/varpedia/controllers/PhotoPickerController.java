@@ -409,6 +409,8 @@ public class PhotoPickerController extends Controller {
 
         createBtn.setText("Create!");
         previewBtn.setText("Preview");
+        createBtn.setDisable(false);
+        previewBtn.setDisable(false);
         moveDownBtn.setDisable(false);
         creationNameTextField.setDisable(false);
         backBtn.setDisable(false);
