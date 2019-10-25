@@ -13,8 +13,8 @@ import javafx.stage.StageStyle;
 public final class AlertHelper {
 
     private static AlertHelper _alertHelper;
-
     private ButtonType _result;
+    private ThemeHelper _themeHelper = ThemeHelper.getInstance();
 
     private AlertHelper() {}
 
@@ -36,6 +36,13 @@ public final class AlertHelper {
     public void showAlert(Alert.AlertType type, String msg, ButtonType... buttons) {
         Alert alert = new Alert(type, msg, buttons);
         alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+        String themeCSS;
+        if (_themeHelper.getDarkModeStatus()) {
+            themeCSS = "/varpedia/styles/theme-dark.css";
+        } else {
+            themeCSS = "/varpedia/styles/theme-light.css";
+        }
+        alert.getDialogPane().getStylesheets().add(themeCSS);
         alert.getDialogPane().getStylesheets().add("/varpedia/styles/dialogs.css");
         alert.showAndWait();
         _result = alert.getResult();
