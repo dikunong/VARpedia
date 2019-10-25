@@ -108,6 +108,7 @@ public class PhotoPickerController extends Controller {
 
         // disable background volume slider if no background music is selected
         volSlider.disableProperty().bind(musicChoiceBox.valueProperty().isEqualTo(noneAudio));
+        createBtn.disableProperty().bind(Bindings.isEmpty(creationNameTextField.textProperty()));
     }
     
     @FXML
@@ -131,6 +132,15 @@ public class PhotoPickerController extends Controller {
 	                    return;
 	                }
 	            }
+			    
+			    if (rightPhotoList.isEmpty()) {
+			    	_alertHelper.showAlert(Alert.AlertType.WARNING,
+                            "Creation will have no images. Continue?",
+                            ButtonType.YES, ButtonType.CANCEL);
+	                if (_alertHelper.getResult() == ButtonType.CANCEL) {
+	                    return;
+	                }
+			    }
 
                 // assemble audio + video using ffmpeg
                 _createTask = new FFMPEGAudioTask(_chunks, bgmusic, volSlider.getValue() / 100);
@@ -385,7 +395,8 @@ public class PhotoPickerController extends Controller {
         addToBtn.disableProperty().unbind();
         removeFromBtn.disableProperty().unbind();
         moveUpBtn.disableProperty().unbind();
-
+        createBtn.disableProperty().unbind();
+        
         previewBtn.setText("Stop");
         createBtn.setDisable(true);
         addToBtn.setDisable(true);
@@ -406,9 +417,11 @@ public class PhotoPickerController extends Controller {
         addToBtn.disableProperty().bind(leftPhotoListView.getSelectionModel().selectedItemProperty().isNull());
         removeFromBtn.disableProperty().bind(rightPhotoListView.getSelectionModel().selectedItemProperty().isNull());
         moveUpBtn.disableProperty().bind(Bindings.equal(0,rightPhotoListView.getSelectionModel().selectedIndexProperty()));
-
+        createBtn.disableProperty().bind(Bindings.isEmpty(creationNameTextField.textProperty()));
+        
         createBtn.setText("Create!");
         previewBtn.setText("Preview");
+        previewBtn.setDisable(false);
         moveDownBtn.setDisable(false);
         creationNameTextField.setDisable(false);
         backBtn.setDisable(false);

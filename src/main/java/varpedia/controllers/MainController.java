@@ -101,6 +101,11 @@ public class MainController extends Controller {
             // update tableview default thumbnails
             creationTableView.refresh();
         });
+        
+        if (_themeHelper.getDarkModeStatus()) {
+        	themeLabel.setText("Theme: Dark mode");
+            themeBtn.setSelected(true);
+        }
 
         // disable the TableView if there are no creations
         creationTableView.disableProperty().bind(Bindings.size(creationList).isEqualTo(0));
@@ -183,7 +188,11 @@ public class MainController extends Controller {
 
                 // get the thumbnail image
                 // if there is no thumbnail, load a default icon
-                if (empty || item == null) {
+                if (empty) {
+                    setText(null);
+                    setGraphic(null);
+                    return;
+                } else if (item == null) {
                     // get the correct icon based on the current theme
                     String defaultIcon = "/varpedia/images/light-theme-icons/movie_black.png";
                     if (_themeHelper.getDarkModeStatus()) {
