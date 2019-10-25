@@ -17,6 +17,7 @@ import javafx.scene.image.ImageView;
 import javafx.util.StringConverter;
 import varpedia.AlertHelper;
 import varpedia.Creation;
+import varpedia.SafeExitHelper;
 import varpedia.ThemeHelper;
 import varpedia.VARpediaApp;
 import varpedia.tasks.ClearTask;
@@ -72,6 +73,7 @@ public class MainController extends Controller {
     private ExecutorService pool = VARpediaApp.newTimedCachedThreadPool();
     private AlertHelper _alertHelper = AlertHelper.getInstance();
     private ThemeHelper _themeHelper = ThemeHelper.getInstance();
+    private SafeExitHelper _safeExitHelper = SafeExitHelper.getInstance();
 
     @FXML
     private void initialize() {
@@ -106,6 +108,8 @@ public class MainController extends Controller {
         	themeLabel.setText("Theme: Dark mode");
             themeBtn.setSelected(true);
         }
+        
+        _safeExitHelper.setSafeToExit(true);
 
         // disable the TableView if there are no creations
         creationTableView.disableProperty().bind(Bindings.size(creationList).isEqualTo(0));
@@ -147,6 +151,7 @@ public class MainController extends Controller {
     @FXML
     private void pressCreateButton(ActionEvent event) {
         // open WikitSearchScreen
+        _safeExitHelper.setSafeToExit(false);
         changeScene(event, "/varpedia/WikitSearchScreen.fxml");
     }
 

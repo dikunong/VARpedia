@@ -60,18 +60,21 @@ public class VARpediaApp extends Application {
             // if the application is abruptly closed, prompt before exiting
             // if the user chooses to exit, delete appfiles first
             primaryStage.setOnCloseRequest(e -> {
-                AlertHelper.getInstance().showAlert(Alert.AlertType.WARNING, "Confirm exit",
-                        "Do you want to exit? Any unsaved creation progress will be lost.",
-                        ButtonType.YES, ButtonType.CANCEL);
+            	if (!SafeExitHelper.getInstance().isSafeToExit()) {
+                    AlertHelper.getInstance().showAlert(Alert.AlertType.WARNING, "Confirm exit",
+                            "Do you want to exit? Any unsaved creation progress will be lost.",
+                            ButtonType.YES, ButtonType.CANCEL);
 
-                if (AlertHelper.getInstance().getResult() == ButtonType.YES) {
-                    Task<Void> task = new ClearTask(new File("appfiles"));
-                    task.run();
-                    Platform.exit();
-                    System.exit(0);
-                } else {
-                    e.consume();
+                    if (AlertHelper.getInstance().getResult() != ButtonType.YES) {
+                        e.consume();
+                        return;
+                    }
                 }
+
+            	Task<Void> task = new ClearTask(new File("appfiles"));
+                task.run();
+                Platform.exit();
+                System.exit(0);
             });
         } catch (IOException e) {
             e.printStackTrace();
