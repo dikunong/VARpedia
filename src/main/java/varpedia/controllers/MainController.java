@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.net.URISyntaxException;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -174,18 +175,28 @@ public class MainController extends Controller {
             public void updateItem(Image item, boolean empty) {
                 super.updateItem(item, empty);
 
+                // get the thumbnail image
+                // if there is no thumbnail, load a default icon
                 if (empty || item == null) {
-                    setText(null);
-                    setGraphic(null);
+                    // TODO: grab correct icon depending on light/dark theme
+                    String defaultIcon = "/varpedia/images/light-theme-icons/movie_black.png";
+                    try {
+                        defaultIcon = getClass().getResource(defaultIcon).toURI().toString();
+                        imageView.setImage(new Image(defaultIcon));
+                    } catch (URISyntaxException e) {        // this should never happen
+                        setText(null);
+                        setGraphic(null);
+                        return;
+                    }
                 } else {
-                    // set the image to be no taller than 100 pixels but as wide
-                    // as possible while preserving aspect ratio
                 	imageView.setImage(item);
-                    imageView.setPreserveRatio(true);
-                    imageView.setFitHeight(100);
-                    setText(null);
-                    setGraphic(imageView);
                 }
+
+                imageView.setPreserveRatio(true);
+                imageView.setFitHeight(70);
+                imageView.fitWidthProperty().bind(creationThumbCol.widthProperty().subtract(16));
+                setText(null);
+                setGraphic(imageView);
             }	
         });
     	

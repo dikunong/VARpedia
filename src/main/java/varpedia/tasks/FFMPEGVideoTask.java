@@ -1,6 +1,9 @@
 package varpedia.tasks;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.List;
 
 import javax.sound.sampled.AudioFileFormat;
@@ -76,10 +79,27 @@ public class FFMPEGVideoTask extends Task<Void> {
 			}
 
 			video.waitFor();
+
 		} else {
 			//Method for no images. Just renders a white background
 			FFMPEGCommand video = new FFMPEGCommand(length, "creations/" + _creation + ".mp4", "-i", "appfiles/audio.wav", "-vf", "scale=w=min(iw*540/ih\\,960):h=min(540\\,ih*960/iw),pad=w=960:h=540:x=(960-iw)/2:y=(540-ih)/2,drawtext=textfile=appfiles/search-term.txt:x=(w-text_w)/2:y=(h*3/4-text_h/2):fontsize=72:borderw=2:bordercolor=white:expansion=none", "-pix_fmt", "yuv420p", "-r", "25");
 			video.waitFor();
+		}
+
+		// generate thumbnail image
+		if (_images.size() > 0) {
+			try (InputStream input = new FileInputStream(new File("appfiles/image" + _images.get(0) + ".jpg")); FileOutputStream output = new FileOutputStream("creations/" + _creation + ".jpg")) {
+				byte[] transfer = new byte[4096];
+				int count;
+
+				while ((count = input.read(transfer)) != -1) {
+					if (isCancelled()) {
+						return null;
+					}
+
+					output.write(transfer, 0, count);
+				}
+			}
 		}
 
 		return null;

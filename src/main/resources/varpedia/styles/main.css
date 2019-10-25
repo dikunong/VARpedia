@@ -115,6 +115,10 @@
   -fx-alignment: CENTER-LEFT;
 }
 
+#creationThumbCol {
+    -fx-alignment: center;
+}
+
 /*------------------------------------*\
     #LISTVIEW
 \*------------------------------------*/
