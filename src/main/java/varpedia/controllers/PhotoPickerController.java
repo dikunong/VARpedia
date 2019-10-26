@@ -122,8 +122,9 @@ public class PhotoPickerController extends Controller {
         	String bgmusic = musicChoiceBox.getSelectionModel().getSelectedItem().getName();
 		
 	    	if (name == null || name.isEmpty()) {
-			    _alertHelper.showAlert(Alert.AlertType.ERROR, "No creation name", "Please enter a creation name.");
-			} else if (!name.matches("[-_. A-Za-z0-9]+")) {
+	    	    // nothing happens if the text box is empty and the user presses Enter
+                return;
+            } else if (!name.matches("[-_. A-Za-z0-9]+")) {
 	            _alertHelper.showAlert(Alert.AlertType.ERROR, "Invalid creation name", "Please enter a valid creation name (only letters, numbers, spaces, -, _).");
 	        } else {
 	        	// check if creation already exists and offer option to overwrite

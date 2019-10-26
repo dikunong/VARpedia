@@ -50,6 +50,11 @@ public class WikitSearchController extends Controller {
     private void pressSearchButton(ActionEvent event) {
         String searchTerm = searchTextField.getText();
 
+        // nothing happens if the text box is empty and the user presses Enter
+        if (searchTerm.isEmpty()) {
+            return;
+        }
+
         // save search term into txt file for use later
         sendDataToFile(searchTerm, "search-term.txt");
 
