@@ -16,7 +16,7 @@ import varpedia.models.FFMPEGCommand;
 /**
  * Background task that handles the previewing/saving of audio chunks, using the festival voice synthesizer.
  *
- * Author: Tudor Zagreanu
+ * @author Tudor Zagreanu
  */
 public class PlayChunkTask extends Task<Void> {
 	private String _inputText;
@@ -40,7 +40,7 @@ public class PlayChunkTask extends Task<Void> {
 			new File(_filename).mkdirs();
 		}
 		
-		//Put the scheme file in appfiles because festival won't go inside a jar.
+		// put the scheme file in appfiles because festival won't go inside a jar
 		try (FileOutputStream dest = new FileOutputStream(new File("appfiles/varpedia.scm")); InputStream in = PlayChunkTask.class.getResourceAsStream("/varpedia/varpedia.scm")) {
 			byte[] transfer = new byte[4096];
 			int count;
@@ -54,7 +54,7 @@ public class PlayChunkTask extends Task<Void> {
 			}
 		}
 		
-		//Remove accents
+		// remove accents
 		String input = Normalizer.normalize(_inputText, Normalizer.Form.NFKD);
 		input = input.replaceAll("[^\\p{ASCII}]", "");
 
@@ -73,9 +73,9 @@ public class PlayChunkTask extends Task<Void> {
 		boolean play = false;
 		
 		if (origFilename == null) {
-			//On Linux the sound from the festival process keeps playing after the festival process is killed.
-			//So we'll make a fake audio chunk at a special location.
-			//The name means "Festival Usability on Linux".
+			// on Linux the sound from the festival process keeps playing after the festival process is killed
+			// so we'll make a fake audio chunk at a special location
+			// the name means "Festival Usability on Linux"
 			origFilename = "appfiles/audio-fulinux.dir";
 			new File(origFilename).mkdirs();
 			play = true;
@@ -89,13 +89,13 @@ public class PlayChunkTask extends Task<Void> {
 		cmd.getProcess().getOutputStream().write(input.getBytes(StandardCharsets.UTF_8));
 		cmd.getProcess().getOutputStream().close();
 		
-		//Wait for festival to finish
+		// wait for festival to finish
 		try {
 			if (cmd.getProcess().waitFor() != 0) {
 				throw new Exception("Failed to create audio " + cmd.getProcess().exitValue());
 			}
 			
-			//Festival might error in this manner (return 0, with stderr output) when a voice is made to say something it doesn't want to say.
+			// festival might error in this manner (return 0, with stderr output) when a voice is made to say something it doesn't want to say.
 			String err = cmd.getError();
 			
 			if (err.contains("ERROR")) {
@@ -112,10 +112,10 @@ public class PlayChunkTask extends Task<Void> {
             filename = filename.substring(0, filename.lastIndexOf('.'));
         }
 
-		//Now merge the chunks together
+		// now merge the chunks together
 		List<String> files = Arrays.asList(new File(origFilename).list());
 		
-		//Sort them numerically
+		// sort them numerically
 		files.sort((String a, String b) -> {
 			int aInt = Integer.parseInt(a.substring(0, a.lastIndexOf('.')));
 			int bInt = Integer.parseInt(b.substring(0, b.lastIndexOf('.')));
@@ -125,7 +125,7 @@ public class PlayChunkTask extends Task<Void> {
 		final String reallyJavaFilename = origFilename;
 		String[] fullFiles = files.stream().map((String a) -> reallyJavaFilename + "/" + a).toArray(String[]::new);
 		
-		//Concatenate the subchunks (similar to how FFMPEGVideoTask makes audio
+		// concatenate the subchunks (similar to how FFMPEGVideoTask makes audio
 		FFMPEGCommand audio = new FFMPEGCommand(fullFiles, -1, false, filename + ".wav");
 
 		if (!audio.pipeFilesIn(() -> isCancelled())) {
@@ -135,7 +135,7 @@ public class PlayChunkTask extends Task<Void> {
 		try {
 			audio.waitFor();
 		} catch (Exception e) {
-			//Try again with the old method
+			// try again with the old method
 			audio.useOldCommand();
 
 			if (!audio.pipeFilesIn(() -> isCancelled())) {
@@ -145,7 +145,7 @@ public class PlayChunkTask extends Task<Void> {
 			audio.waitFor();
 		}
 	
-		//Play the audio-fulinux creation if the task was meant to play audio
+		// play the audio-fulinux creation if the task was meant to play audio
 		if (play) {
 			new PreviewAudioTask(new File(filename + ".wav")).run();
 		}

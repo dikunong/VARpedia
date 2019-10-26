@@ -32,7 +32,7 @@ public class FFMPEGAudioTask extends Task<Void> {
 	
 	@Override
 	protected Void call() throws Exception {
-		//Concatenate audio files into a single audio file at appfiles/preaudio.wav or appfiles/audio.wav
+		// concatenate audio files into a single audio file at appfiles/preaudio.wav or appfiles/audio.wav
 		FFMPEGCommand audio = new FFMPEGCommand(_chunks.stream().map(s -> "appfiles/audio/" + s + ".wav").toArray(String[]::new), -1, false, _background == null ? "appfiles/audio.wav" : "appfiles/preaudio.wav");
 		
 		if (!audio.pipeFilesIn(() -> isCancelled())) {
@@ -42,7 +42,7 @@ public class FFMPEGAudioTask extends Task<Void> {
 		try {
 			audio.waitFor();
 		} catch (Exception e) {
-			//Try again with the old method
+			// try again with the old method
 			audio.useOldCommand();
 
 			if (!audio.pipeFilesIn(() -> isCancelled())) {
@@ -52,18 +52,18 @@ public class FFMPEGAudioTask extends Task<Void> {
 			audio.waitFor();
 		}
 		
-		//Now mix it with the music into appfiles/audio.wav
+		// now mix it with the music into appfiles/audio.wav
 		if (_background != null) {
-			//This command merges the preaudio.wav with the background music
+			// this command merges the preaudio.wav with the background music
 			Command mixer = new Command("ffmpeg", "-y", "-i", "appfiles/preaudio.wav", "-i", "-", "-filter_complex", "[1]volume=volume=" + _volume + "[a];[0][a]amix=inputs=2:duration=first", "appfiles/audio.wav");
 			mixer.run();
 			
-			//Pipe the audio in
+			// pipe the audio in
 			try (InputStream in = PlayChunkTask.class.getResourceAsStream(_background)) {
 				byte[] transfer = new byte[4096];
 				int count;
 				
-				//Copy the mp3 into the pipe
+				// copy the mp3 into the pipe
 				while ((count = in.read(transfer)) != -1) {
 					if (isCancelled()) {
 						return null;
@@ -72,10 +72,7 @@ public class FFMPEGAudioTask extends Task<Void> {
 					try {
 						mixer.getProcess().getOutputStream().write(transfer, 0, count);
 					} catch (IOException e) {
-						//Very ugly hack. Basically FFmpeg doesn't bother reading the whole pipe, and will close the pipe ("thanks")
-						//There is no easy way to detect this in Java, basically you have to catch an IOException and hope you get the right one.
-						//On Windows the message is "The pipe has been ended", but I don't know the Linux one and I cannot be bothered to find out.
-						//So just exit the loop.
+						// ffmpeg doesn't bother reading the whole pipe, and will close the pipe, so just exit the loop
 						break;
 					}
 				}
@@ -84,12 +81,12 @@ public class FFMPEGAudioTask extends Task<Void> {
 			try {
 				mixer.getProcess().getOutputStream().close();
 			} catch (IOException e) {
-				; //As a result of ugly hack #1, ugly hack #2 is needed because otherwise, "The pipe is being closed"
+				// this need to prevent "The pipe is being closed"
 			}
 				
-			new Thread(() -> {mixer.getError();}).start(); //FFmpeg needs its stderr to be emptied
+			new Thread(() -> {mixer.getError();}).start(); // ffmpeg needs its stderr to be emptied
 			
-			//Wait for it to be done
+			// wait for it to be done
 			try {
 				if (mixer.getProcess().waitFor() != 0) {
 					throw new Exception("Failed to mix audio " + mixer.getProcess().exitValue());

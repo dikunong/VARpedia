@@ -78,7 +78,9 @@ public class FFMPEGCommand {
 		_currentCommand.run();
 	}
 	
-	//Pipe in a file using concat (pipe file '<filename>', optionally followed by duration <duration>
+	/**
+	 * Pipe in a file using concat (pipe file '<filename>', optionally followed by duration <duration>
+	 */
 	private boolean pipeConcat(String name, float duration, Callable<Boolean> isCancelled) throws Exception {
 		if (isCancelled.call()) {
 			_currentCommand.end();
@@ -94,7 +96,9 @@ public class FFMPEGCommand {
 		return true;
 	}
 	
-	//Pipe in a file using image2pipe (copy from file to pipe)
+	/**
+	 * Pipe in a file using image2pipe (copy from file to pipe).
+	 */
 	private boolean pipeFile(String name, Callable<Boolean> isCancelled) throws Exception {
 		try (InputStream in = new FileInputStream(name)) {
 			byte[] transfer = new byte[4096];
@@ -141,13 +145,13 @@ public class FFMPEGCommand {
 	}
 	
 	/**
-	 * Waits for the command to complete
+	 * Waits for the command to complete.
 	 */
 	public void waitFor() throws Exception {
 		_currentCommand.getProcess().getOutputStream().close();
-		new Thread(() -> {_currentCommand.getError();}).start(); //FFmpeg needs its stderr to be emptied
+		new Thread(() -> {_currentCommand.getError();}).start(); // ffmpeg needs its stderr to be emptied
 
-		//Wait for it to be done
+		// wait for it to be done
 		try {
 			if (_currentCommand.getProcess().waitFor() != 0) {
 				throw new Exception("Failed to merge video" + _currentCommand.getProcess().exitValue());

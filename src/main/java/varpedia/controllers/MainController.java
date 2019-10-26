@@ -157,12 +157,10 @@ public class MainController extends Controller {
      * the serialized data in a way that will become user-friendly output.
      */
     private void initializeColumns() {
-        creationThumbCol.setCellValueFactory((CellDataFeatures<Creation, Image> p) -> {
-            return new ObservableValueBase<Image>(){
-                public Image getValue() {
-                    return p.getValue().getImage();
-                }
-            };
+        creationThumbCol.setCellValueFactory((CellDataFeatures<Creation, Image> p) -> new ObservableValueBase<Image>(){
+            public Image getValue() {
+                return p.getValue().getImage();
+            }
         });
         
         creationThumbCol.setCellFactory((TableColumn<Creation, Image> col) -> new TableCell<Creation, Image>() {
@@ -206,45 +204,39 @@ public class MainController extends Controller {
             }	
         });
     	
-    	creationNameCol.setCellValueFactory((CellDataFeatures<Creation, String> p) -> {
-            return new ObservableValueBase<String>(){
-                public String getValue() {
-                    return p.getValue().getCreationName();
-                }
-            };
+    	creationNameCol.setCellValueFactory((CellDataFeatures<Creation, String> p) -> new ObservableValueBase<String>(){
+            public String getValue() {
+                return p.getValue().getCreationName();
+            }
         });
 
-        creationConfCol.setCellValueFactory((CellDataFeatures<Creation, String> p) -> {
-            return new ObservableValueBase<String>(){
-                public String getValue() {
-                    int conf = p.getValue().getConfidence();
+        creationConfCol.setCellValueFactory((CellDataFeatures<Creation, String> p) -> new ObservableValueBase<String>(){
+            public String getValue() {
+                int conf = p.getValue().getConfidence();
 
-                    if (conf == -1) {
-                        return "Unrated";
-                    } else {
-                        return conf + "/5";
-                    }
+                if (conf == -1) {
+                    return "Unrated";
+                } else {
+                    return conf + "/5";
                 }
-            };
+            }
         });
 
-        creationViewCol.setCellValueFactory((CellDataFeatures<Creation, String> p) -> {
-            return new ObservableValueBase<String>(){
-                public String getValue() {
-                    // formatter to parse the Instant into a user-readable format
-                    // ISO date format to ensure sorting works correctly
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm a")
-                            .withLocale(Locale.UK)
-                            .withZone(ZoneId.systemDefault());
-                    Instant conf = p.getValue().getLastViewed();
+        creationViewCol.setCellValueFactory((CellDataFeatures<Creation, String> p) -> new ObservableValueBase<String>(){
+            public String getValue() {
+                // formatter to parse the Instant into a user-readable format
+                // ISO date format to ensure sorting works correctly
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm a")
+                        .withLocale(Locale.UK)
+                        .withZone(ZoneId.systemDefault());
+                Instant conf = p.getValue().getLastViewed();
 
-                    if (conf == null) {
-                        return "Unwatched";
-                    } else {
-                        return formatter.format(conf);
-                    }
+                if (conf == null) {
+                    return "Unwatched";
+                } else {
+                    return formatter.format(conf);
                 }
-            };
+            }
         });
     }
 
@@ -342,7 +334,7 @@ public class MainController extends Controller {
         pool.submit(task);
     }
 
-    //TODO: This is running in the GUI thread to avoid race conditions. Could move it out.
+    // this is running in the GUI thread to avoid race conditions
     private void deleteAppfiles() {
     	Task<Void> task = new ClearTask(new File("appfiles"));
     	task.run();

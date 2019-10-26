@@ -34,13 +34,13 @@ public class FFMPEGVideoTask extends Task<Void> {
 	
 	@Override
 	protected Void call() throws Exception {
-		//Get the length of the audio file
+		// get the length of the audio file
 		AudioFileFormat file = AudioSystem.getAudioFileFormat(new File("appfiles/audio.wav"));
 		float length = file.getFrameLength() / file.getFormat().getFrameRate();
 
 		if (_images.size() > 2) {
-			//The normal method. Works with 3+ images.
-			//The command takes care of scaling images to a 960x540 yuv420p 25fps video, and draws the search term in appfiles/search-term.txt with a white border 3/4 of the way down the video.
+			// the normal method. Works with 3+ images.
+			// the command takes care of scaling images to a 960x540 yuv420p 25fps video, and draws the search term in appfiles/search-term.txt with a white border 3/4 of the way down the video.
 			FFMPEGCommand video = new FFMPEGCommand(_images.stream().map(i -> "appfiles/image" + i + ".jpg").toArray(String[]::new), length / _images.size(), false, "creations/" + _creation + ".mp4", "-i", "appfiles/audio.wav", "-vf", "scale=w=min(iw*540/ih\\,960):h=min(540\\,ih*960/iw),pad=w=960:h=540:x=(960-iw)/2:y=(540-ih)/2,drawtext=textfile=appfiles/search-term.txt:x=(w-text_w)/2:y=(h*3/4-text_h/2):fontsize=72:borderw=2:bordercolor=white:expansion=none", "-pix_fmt", "yuv420p", "-r", "25");
 
 			if (!video.pipeFilesIn(() -> isCancelled())) {
@@ -50,7 +50,7 @@ public class FFMPEGVideoTask extends Task<Void> {
 			try {
 				video.waitFor();
 			} catch (Exception e) {
-				//Try again with the old method
+				// try again with the old method
 				video.useOldCommand();
 
 				if (!video.pipeFilesIn(() -> isCancelled())) {
@@ -60,14 +60,14 @@ public class FFMPEGVideoTask extends Task<Void> {
 				video.waitFor();
 			}
 		} else if (_images.size() > 0) {
-			//FFMPEG and MediaPlayer do not work properly with 1-2 images with the other method, so it uses an alternative method.
+			// FFMPEG and MediaPlayer do not work properly with 1-2 images with the other method, so it uses an alternative method.
 			String[] strings = new String[2];
 
 			if (_images.size() > 1) {
 				strings[0] = "appfiles/image" + _images.get(0) + ".jpg";
 				strings[1] = "appfiles/image" + _images.get(1) + ".jpg";
 			} else {
-				//1 is not enough, it needs 2
+				// 1 is not enough, it needs 2
 				strings[0] = "appfiles/image" + _images.get(0) + ".jpg";
 				strings[1] = "appfiles/image" + _images.get(0) + ".jpg";
 			}
@@ -81,7 +81,7 @@ public class FFMPEGVideoTask extends Task<Void> {
 			video.waitFor();
 
 		} else {
-			//Method for no images. Just renders a white background
+			// method for no images. Just renders a white background
 			FFMPEGCommand video = new FFMPEGCommand(length, "creations/" + _creation + ".mp4", "-i", "appfiles/audio.wav", "-vf", "scale=w=min(iw*540/ih\\,960):h=min(540\\,ih*960/iw),pad=w=960:h=540:x=(960-iw)/2:y=(540-ih)/2,drawtext=textfile=appfiles/search-term.txt:x=(w-text_w)/2:y=(h*3/4-text_h/2):fontsize=72:borderw=2:bordercolor=white:expansion=none", "-pix_fmt", "yuv420p", "-r", "25");
 			video.waitFor();
 		}

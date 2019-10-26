@@ -61,7 +61,7 @@ public class PlaybackController extends Controller {
     
     @FXML
     private void initialize() {
-    	//Ensure media player fits in scene.
+    	// ensure media player fits in scene
         mediaPane.layoutBoundsProperty().addListener((Observable arg0) -> {
 			Bounds newBounds = mediaPane.getLayoutBounds();
 			mediaView.setFitWidth(newBounds.getWidth());
@@ -71,7 +71,7 @@ public class PlaybackController extends Controller {
 			mediaView.setLayoutY((newBounds.getHeight() - bounds.getHeight()) / 2);
 		});
     	
-        //Make the slider work properly
+        // make the slider work properly
 		timeSlider.valueProperty().addListener(_timeListener);
 		timeSlider.addEventFilter(MouseEvent.MOUSE_PRESSED, (MouseEvent e) -> {timeSlider.setValueChanging(true);});
 		timeSlider.addEventFilter(MouseEvent.MOUSE_RELEASED, (MouseEvent e) -> {timeSlider.setValueChanging(false);});
@@ -79,7 +79,7 @@ public class PlaybackController extends Controller {
 		timeSlider.setDisable(true);
 		volSlider.setValue(100);
     	
-    	timeSlider.valueChangingProperty().addListener((ObservableValue<? extends Boolean> obersvable, Boolean oldValue, Boolean newValue) -> {
+    	timeSlider.valueChangingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
 			if (newValue) {
 				_player.pause();
 			} else if (!_actualPaused) {
@@ -91,7 +91,6 @@ public class PlaybackController extends Controller {
 			_player.setVolume(newValue.doubleValue() / 100);
 		});
 
-
 		try {
 			if (_themeHelper.getDarkModeStatus()) {
 				volIconView.setImage(new Image(getClass().getResource("/varpedia/images/dark-theme-icons/volume_up_white.png").toURI().toString()));
@@ -100,7 +99,7 @@ public class PlaybackController extends Controller {
 			e.printStackTrace();
 		}
 		
-		//Play the selected media
+		// play the selected media
 		playMedia(new File("creations/" + getDataFromFile("playback-name.txt") + ".mp4"));
     }
 
@@ -128,26 +127,27 @@ public class PlaybackController extends Controller {
     @FXML
     private void pressExitButton(ActionEvent event) {
 		_player.stop();
+		timeSlider.setDisable(true);
+		createDialog(event, "/varpedia/fxml/RatingDialog.fxml", "Rate Your Confidence");
+
 		_player.dispose();
 		_player = null;
 		mediaView.setMediaPlayer(null);
-		timeSlider.setDisable(true);
-		createDialog(event, "/varpedia/fxml/RatingDialog.fxml", "Rate Your Confidence");
         changeScene(event, "/varpedia/fxml/MainScreen.fxml");
     }
 
-    public void playMedia(File file) {
+    private void playMedia(File file) {
 		Media media = new Media(file.toURI().toString());
 		MediaPlayer player = new MediaPlayer(media);
 		_player = player;
 		_player.setAutoPlay(true);
 		
 		_player.setOnReady(() -> {
-			//Enable the media player
+			// enable the media player
 			_duration = media.getDuration();
 			timeSlider.setDisable(false);
 			
-			//Do some jiggling to get the media player at the right size.
+			// do some jiggling to get the media player at the right size
 			double oldHeight = mediaPane.getHeight();
 			mediaPane.resize(mediaPane.getWidth(), 0);
 			mediaPane.resize(mediaPane.getWidth(), oldHeight);
@@ -155,7 +155,7 @@ public class PlaybackController extends Controller {
 		
 		_player.currentTimeProperty().addListener((ObservableValue<? extends Duration> observable, Duration oldValue, Duration newValue) -> {
 			if (_duration != null) {
-				//Update the duration text
+				// update the duration text
 				timeSlider.valueProperty().removeListener(_timeListener);
 				timeSlider.setValue((player.getCurrentTime().toMillis() / _duration.toMillis()) * 100);
 				timeSlider.valueProperty().addListener(_timeListener);

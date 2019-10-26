@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Main class of VARpedia.
  *
- * Authors: Di Kun Ong and Tudor Zagreanu
+ * @author Di Kun Ong and Tudor Zagreanu
  */
 public class VARpediaApp extends Application {
 

@@ -24,7 +24,7 @@ public abstract class Controller {
      * @param event The event causing the change (used to retrieve the JavaFX stage)
      * @param fxml The FXML window to switch to
      */
-    public void changeScene(ActionEvent event, String fxml) {
+    protected void changeScene(ActionEvent event, String fxml) {
         try {
         	Parent pane = FXMLLoader.load(getClass().getResource(fxml));
         	Scene currentScene = ((Node) event.getSource()).getScene();
@@ -78,7 +78,7 @@ public abstract class Controller {
      * @param msg String to be stored
      * @param filename File to store message in
      */
-    public void sendDataToFile(String msg, String filename) {
+    protected void sendDataToFile(String msg, String filename) {
         try {
             File file = new File("appfiles/" + filename);
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8));
@@ -94,7 +94,7 @@ public abstract class Controller {
      * @param filename File to retrieve message from
      * @return String that was stored
      */
-    public String getDataFromFile(String filename) {
+    protected String getDataFromFile(String filename) {
         String output = null;
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream("appfiles/" + filename), StandardCharsets.UTF_8));

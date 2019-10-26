@@ -16,15 +16,15 @@ import javafx.concurrent.Task;
  * @author Tudor Zagreanu
  */
 public class ClearTask extends Task<Void> {
-	public static void deleteTree(File root) throws IOException {
-		//Delete the files (basically everything, including the stuff in audio, but not the audio directory itself)
+	private static void deleteTree(File root) throws IOException {
+		// delete the files (basically everything, including the stuff in audio, but not the audio directory itself)
 		Path rootPath = root.toPath();
 		Path audioPath = new File(root, "audio").toPath();
 		
 		Files.walkFileTree(rootPath, new FileVisitor<Path>() {
 			@Override
 			public FileVisitResult postVisitDirectory(Path arg0, IOException arg1) throws IOException {
-				//Don't delete the protected directories
+				// don't delete the protected directories
 				if (!arg0.equals(rootPath) && !arg0.equals(audioPath)) {
 					Files.delete(arg0);
 				}

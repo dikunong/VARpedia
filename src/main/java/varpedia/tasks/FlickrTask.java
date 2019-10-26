@@ -32,26 +32,24 @@ import javafx.concurrent.Task;
 public class FlickrTask extends Task<Integer> {
 
 	private static List<String> search(String term, int count) throws FlickrException {
-		//Well, they wanted nothing
+		// well, they wanted nothing
 		if (count == 0) {
 			return new ArrayList<String>();
 		}
 		
-		//Read the api key in
+		// read the api key in
 		String key = null;
 		String secret = null;
 		
-		try (BufferedReader keys = new BufferedReader(new InputStreamReader(FlickrTask.class.getResourceAsStream("/varpedia/key.txt"))))
-		{
+		try (BufferedReader keys = new BufferedReader(new InputStreamReader(
+				FlickrTask.class.getResourceAsStream("/varpedia/key.txt")))) {
 			key = keys.readLine();
 			secret = keys.readLine();
-		}
-		catch (IOException e)
-		{
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
-		//Perform the actual search
+		// perform the actual search
 		List<String> list = new ArrayList<String>();
 		Flickr f = new Flickr(key, secret, new REST());
 		PhotosInterface photos = f.getPhotosInterface();
@@ -61,7 +59,7 @@ public class FlickrTask extends Task<Integer> {
 		params.setMedia("photos");
 		PhotoList<Photo> photoList = photos.search(params, count, 0);
 		
-		//The official sanctioned by flickr method for turning photos into URLs
+		// Flickr's official method for turning photos into URLs
 		for (Photo p : photoList) {
 			list.add("https://farm" + p.getFarm() + ".staticflickr.com/" + p.getServer() + "/" + p.getId() + "_" + p.getSecret() + ".jpg");
 		}
@@ -80,7 +78,7 @@ public class FlickrTask extends Task<Integer> {
 	
 	@Override
 	protected Integer call() throws Exception {
-		//Read the search term in
+		// read the search term in
         String term = null;
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream("appfiles/search-term.txt"), StandardCharsets.UTF_8));
@@ -94,7 +92,7 @@ public class FlickrTask extends Task<Integer> {
         	throw new IllegalStateException("No search term");
         }
         
-        //Run the search
+        // run the search
         List<String> list = search(term, _images);
 		int id = 0;
 		
@@ -102,7 +100,7 @@ public class FlickrTask extends Task<Integer> {
 			URL source = new URL(url);
 			File dest = new File("appfiles/image" + Integer.toString(id) + ".jpg");
 
-			//Download the image, saving as appfiles/image<id>.jpg
+			// download the image, saving as appfiles/image<id>.jpg
 			try (InputStream input = source.openStream(); FileOutputStream output = new FileOutputStream(dest)) {
 				byte[] transfer = new byte[4096];
 				int count;

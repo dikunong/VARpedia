@@ -69,7 +69,7 @@ public class PhotoPickerController extends Controller {
     @FXML
     private ListView<Integer> rightPhotoListView;
 
-    private Task<? extends Object> _createTask;
+    private Task<?> _createTask;
 
     private ExecutorService pool = VARpediaApp.newTimedCachedThreadPool();
     
@@ -156,7 +156,7 @@ public class PhotoPickerController extends Controller {
                         _createTask = null;
                         _alertHelper.showAlert(Alert.AlertType.INFORMATION, "Success", "Created creation.");
                         setLoadingInactive();
-                        changeScene(event, "/varpedia/fxml/MainScreen.fxml"); //TODO: Maybe go straight to player
+                        changeScene(event, "/varpedia/fxml/MainScreen.fxml");
                     });
                     _createTask.setOnCancelled(ev3 -> {
                         _createTask = null;
@@ -320,8 +320,8 @@ public class PhotoPickerController extends Controller {
                     setText(null);
                     setGraphic(null);
                 } else {
-                    // set the image to be no taller than 150 pixels but as wide
-                    // as possible while preserving aspect ratio
+                    // set the image to be no taller than 150 pixels,
+                    // but as wide as possible while preserving aspect ratio
                     imageView.setImage(new Image(new File("appfiles/image" + id + ".jpg").toURI().toString()));
                     imageView.setPreserveRatio(true);
                     imageView.fitWidthProperty().bind(leftPhotoListView.widthProperty().subtract(30));
@@ -348,8 +348,8 @@ public class PhotoPickerController extends Controller {
                     setText(null);
                     setGraphic(null);
                 } else {
-                    // set the image to be no taller than 150 pixels but as wide
-                    // as possible while preserving aspect ratio
+                    // set the image to be no taller than 150 pixels,
+                    // but as wide as possible while preserving aspect ratio
                     imageView.setImage(new Image(new File("appfiles/image" + id + ".jpg").toURI().toString()));
                     imageView.setPreserveRatio(true);
                     imageView.fitWidthProperty().bind(rightPhotoListView.widthProperty().subtract(30));

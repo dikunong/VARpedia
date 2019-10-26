@@ -77,7 +77,7 @@ public class Command {
         return output;
     }
     
-    public void writeString(String str) {
+    protected void writeString(String str) {
     	if (!str.endsWith("\n")) {
     		str = str + '\n';
     	}
@@ -96,9 +96,7 @@ public class Command {
 			try {
 				_process.waitFor();
 				break;
-			} catch (InterruptedException e) {
-				;
-			}
+			} catch (InterruptedException e) {	}
 		}
 	}
 

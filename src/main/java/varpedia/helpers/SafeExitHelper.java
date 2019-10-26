@@ -1,9 +1,10 @@
 package varpedia.helpers;
 
 /**
- * Singleton class that stores whether it is safe to close VARpedia on this screen.
+ * Singleton class that stores whether it is safe to close VARpedia on this screen
+ * - that is, when the user is currently making a creation.
  *
- * @author PisuCat
+ * @author Tudor Zagreanu
  */
 public final class SafeExitHelper {
 

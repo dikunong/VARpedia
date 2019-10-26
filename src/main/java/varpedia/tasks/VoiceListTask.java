@@ -11,17 +11,19 @@ import varpedia.models.VoiceList;
  * @author Tudor Zagreanu
  */
 public class VoiceListTask extends Task<VoiceList> {
-	//Returns the display name for the input. Currently hardcoded.
-	//Yes, the default festival voice is called Kevin.
+
+	// returns the display name for the input
+	// yes, the default festival voice is called Kevin
 	private static String getDisplayName(String name) {
-		if (name.equals("kal_diphone")) {
-			return "Kevin (Male US)";
-		} else if (name.equals("akl_nz_jdt_diphone")) {
-			return "Male NZ";
-		} else if (name.equals("akl_nz_cw_cg_cg")) {
-			return "Female NZ";
-		} else {
-			return name;
+		switch (name) {
+			case "kal_diphone":
+				return "Kevin (Male US)";
+			case "akl_nz_jdt_diphone":
+				return "Male NZ";
+			case "akl_nz_cw_cg_cg":
+				return "Female NZ";
+			default:
+				return name;
 		}
 	}
 	
@@ -31,7 +33,7 @@ public class VoiceListTask extends Task<VoiceList> {
 		cmd.run();
 		String output = cmd.getOutput();
 		
-		//Festival outputs "(<voice1> <voice2> <voice3>)\n(voice_<default>)\n"
+		// festival outputs "(<voice1> <voice2> <voice3>)\n(voice_<default>)\n"
 		String[] lines = output.split("\n");
 		String[] voices = lines[0].substring(1, lines[0].length() - 1).split(" ");
 		String defaultVoice = lines[1].substring(7, lines[1].length() - 1);

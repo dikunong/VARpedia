@@ -19,7 +19,7 @@ public class VoiceList {
 	public VoiceList(String defaultVoice, Audio... voices) {
 		_voices = voices;
 		
-		//Find the default voice
+		// find the default voice
 		for (int i = 0; i < voices.length; i++) {
 			if (voices[i].getName().equals(defaultVoice)) {
 				_defaultVoice = i;
@@ -27,7 +27,7 @@ public class VoiceList {
 			}
 		}
 		
-		//Set to -1 if the default voice shows up nowhere
+		// set to -1 if the default voice shows up nowhere
 		_defaultVoice = -1;
 	}
 }

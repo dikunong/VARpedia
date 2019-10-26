@@ -70,12 +70,12 @@ public class RatingController extends Controller {
         });
         
         _creationName = getDataFromFile("playback-name.txt");
-        _confidence = Integer.valueOf(getDataFromFile("playback-rating.txt"));
+        _confidence = Integer.parseInt(getDataFromFile("playback-rating.txt"));
     }
 
     @FXML
     private void pressSaveBtn(ActionEvent event) {
-        // save rating
+        // serialise the time viewed and new rating
     	try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(new File("creations/" + _creationName + ".dat")))) {
     		oos.writeObject(new Creation(_creationName, ratingSpinner.getValue(), Instant.now()));
     	} catch (IOException e) {
@@ -92,7 +92,7 @@ public class RatingController extends Controller {
                 "Are you sure you want to continue without rating?",
                 ButtonType.YES, ButtonType.CANCEL);
         if (_alertHelper.getResult() == ButtonType.YES) {
-        	// save last viewed time with previous rating
+        	// serialise the time viewed with previous rating
         	try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(new File("creations/" + _creationName + ".dat")))) {
         		oos.writeObject(new Creation(_creationName, _confidence, Instant.now()));
         	} catch (IOException e) {

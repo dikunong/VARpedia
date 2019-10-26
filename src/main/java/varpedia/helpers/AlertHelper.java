@@ -37,6 +37,8 @@ public final class AlertHelper {
         Alert alert = new Alert(type, msg, buttons);
         alert.setTitle(title);
         alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+
+        // apply the current theme to the dialog
         String themeCSS;
         if (_themeHelper.getDarkModeStatus()) {
             themeCSS = "/varpedia/styles/theme-dark.css";
@@ -50,7 +52,6 @@ public final class AlertHelper {
     }
 
     /**
-     *
      * @return the ButtonType that the user pressed
      */
     public ButtonType getResult() {
