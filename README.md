@@ -1,9 +1,33 @@
-# se206-a4 - VARpedia Beta
-Assignment 4 for SOFTENG 206 (VARpedia)
+# VARpedia - SOFTENG 206 Project
+### Group 12 - Di Kun Ong (dngo711) & Tudor Zagreanu (tzag747)
 
-Group 12 - Di Kun Ong (dngo711) & Tudor Zagreanu (tzag747)
+*Check out the VARpedia GitHub: https://github.com/dikunong/VARpedia*
 
 VARpedia is an encyclopedia tool that provides visual, aural and reading capabilities for **a second language learner, young adult (18-25 years).**
+
+## Running the JAR file
+
+#### On Windows AND On Linux (incl. Beta Linux in UoA labs)
+
+_For marking purposes, this should be tested on the Beta Linux image on the lab computers._
+
+_As stated above, the target audience of this app is a second language learner, young adult (18-25 years)._
+
+**_NOTE: VARpedia is dependent on an_** `ffmpeg` **_version of at least 4.x. Some lab computers have an older version 2.x, which will not work. Before marking, please check your computer's_** `ffmpeg` **_version using the following command:_**
+
+`ffmpeg -version`
+
+Execute the following command:
+
+`java -jar VARpedia.jar`
+
+#### On SOFTENG 206 VirtualBox Image ONLY
+
+A script file has been provided for running the JAR in the VirtualBox. It assumes that the JAR file has been moved out of /build/libs and into the root directory.
+
+`./run_varpedia_vbox.sh`
+
+*NOTE: If you are building your own JAR and wish for dev builds in IntelliJ and the production JAR to access the same /creations folder, move the JAR file from /build/libs to the root directory.*
 
 ## Building the JAR file
 
@@ -19,34 +43,6 @@ manually set it by creating a `gradle.properties` file in the root directory, wi
 `org.gradle.java.home=HOME_DIRECTORY`
 
 where `HOME_DIRECTORY` is your JDK install directory e.g. `C:\\Program Files\\Java\\jdk1.8.0_202`
-
-## Running the JAR file
-
-If you wish for dev builds in IntelliJ and the production JAR to access the same /creations folder, move the JAR file from /build/libs to the root directory.
-
-#### On Windows AND On Linux (incl. Beta Linux in UoA labs)
-
-_For marking purposes, this should be tested on the Beta Linux image on the lab computers._
-
-_As stated above, the target audience of this app is a second language learner, young adult (18-25 years)._
-
-**_NOTE: VARpedia is dependent on an_** `ffmpeg` **_version of at least 4.x. Some lab computers have an older version 2.x, which will not work. Before marking, please check your computer's_** `ffmpeg` **_version using the following command:_**
-
-`ffmpeg -version`
-
-Execute the following command:
-
-`java -jar VARpedia-1.0-SNAPSHOT-all.jar`
-
-#### On SOFTENG 206 VirtualBox Image ONLY
-
-A script file has been provided for running the JAR in the VirtualBox. It assumes that the JAR file has been moved out of /build/libs and into the root directory.
-
-`./run_varpedia.sh`
-
-Alternatively, you may navigate to the location of the JAR and manually run the following command in Bash:
-
-`/usr/lib/jvm/jdk-13/bin/java --module-path /home/student/Downloads/openjfx-13-rc+2_linux-x64_bin-sdk/javafx-sdk-13/lib --add-modules javafx.controls,javafx.fxml,javafx.graphics,javafx.media -jar VARpedia-1.0-SNAPSHOT-all.jar`
 
 ## Attribution
 

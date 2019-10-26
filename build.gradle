@@ -11,7 +11,11 @@ jar {
     }
 }
 
-version '1.0-SNAPSHOT'
+shadowJar {
+    classifier = null
+}
+
+version ''
 
 sourceCompatibility = 1.8
 
