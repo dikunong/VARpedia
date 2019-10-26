@@ -4,6 +4,7 @@
 
 * {
     -fx-primary-color: #8bb3f8;
+    -fx-accent-color: #a7c8fc; /*#7492f1;*/
     -fx-cancel-color: #cf6679;
     -fx-font-color: #ffffff;
     -fx-edge-color: #e0e0e0;
@@ -44,12 +45,21 @@
     -fx-light-text-color: -fx-font-color;
 }
 
+.main-button:hover {
+    -fx-background-color: -fx-accent-color;
+}
+
 /*------------------------------------*\
     #ICONS
 \*------------------------------------*/
 
 #themeBtn {
     -fx-background-image: url("../images/theme_dark.png");
+}
+
+#themeBtn:hover {
+    -fx-background-color: #ffffff;
+    -fx-background-image: url("../images/theme_light.png");
 }
 
 #playBtn {

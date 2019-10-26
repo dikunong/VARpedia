@@ -56,7 +56,7 @@
         </placeholder>
         <columns>
           <TableColumn fx:id="creationThumbCol" editable="false" minWidth="160.0" maxWidth="160.0" resizable="false" text="Thumbnail" />
-          <TableColumn fx:id="creationNameCol" editable="false" minWidth="110.0" prefWidth="${(creationTableView.width - 160) * 0.43}" resizable="false" text="Creation name" />
+          <TableColumn fx:id="creationNameCol" editable="false" minWidth="110.0" prefWidth="${(creationTableView.width - 160) * 0.40}" resizable="false" text="Creation name" />
           <TableColumn fx:id="creationConfCol" editable="false" minWidth="90.0" prefWidth="${(creationTableView.width - 160) * 0.20}" resizable="false" text="Confidence" />
           <TableColumn fx:id="creationViewCol" editable="false" minWidth="90.0" prefWidth="${(creationTableView.width - 160) * 0.35}" resizable="false" text="Last viewed" />
         </columns>

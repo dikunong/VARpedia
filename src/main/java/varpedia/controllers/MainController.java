@@ -85,30 +85,8 @@ public class MainController extends Controller {
     	populateTable();
         deleteAppfiles();
 
-        // enable toggling between light and dark themes
-        themeBtn.setOnAction(e -> {
-            if (themeBtn.isSelected()) {
-                themeLabel.setText("Theme: Dark mode");
-                Scene currentScene = ((Node) e.getSource()).getScene();
-                currentScene.getStylesheets().add(getClass().getResource("/varpedia/styles/theme-dark.css").toString());
-                currentScene.getStylesheets().remove(getClass().getResource("/varpedia/styles/theme-light.css").toString());
-                _themeHelper.setDarkModeStatus(true);
-            } else {
-                themeLabel.setText("Theme: Light mode");
-                Scene currentScene = ((Node) e.getSource()).getScene();
-                currentScene.getStylesheets().add(getClass().getResource("/varpedia/styles/theme-light.css").toString());
-                currentScene.getStylesheets().remove(getClass().getResource("/varpedia/styles/theme-dark.css").toString());
-                _themeHelper.setDarkModeStatus(false);
-            }
-            // update tableview default thumbnails
-            creationTableView.refresh();
-        });
-        
-        // set the dark mode status
-        if (_themeHelper.getDarkModeStatus()) {
-        	themeLabel.setText("Theme: Dark mode");
-            themeBtn.setSelected(true);
-        }
+        // set up the theme switcher
+        initializeThemes();
         
         // when entering the MainController it is safe to exit (all the unsaved progress is deleted anyway)
         _safeExitHelper.setSafeToExit(true);
@@ -368,5 +346,56 @@ public class MainController extends Controller {
     private void deleteAppfiles() {
     	Task<Void> task = new ClearTask(new File("appfiles"));
     	task.run();
+    }
+
+    /**
+     * Helper method that initializes the theme switching functionality.
+     */
+    private void initializeThemes() {
+        // enable toggling between light and dark themes
+        themeBtn.setOnAction(e -> {
+            if (themeBtn.isSelected()) {
+                themeLabel.setText("Theme: Dark mode");
+                Scene currentScene = ((Node) e.getSource()).getScene();
+                currentScene.getStylesheets().add(getClass().getResource("/varpedia/styles/theme-dark.css").toString());
+                currentScene.getStylesheets().remove(getClass().getResource("/varpedia/styles/theme-light.css").toString());
+                _themeHelper.setDarkModeStatus(true);
+            } else {
+                themeLabel.setText("Theme: Light mode");
+                Scene currentScene = ((Node) e.getSource()).getScene();
+                currentScene.getStylesheets().add(getClass().getResource("/varpedia/styles/theme-light.css").toString());
+                currentScene.getStylesheets().remove(getClass().getResource("/varpedia/styles/theme-dark.css").toString());
+                _themeHelper.setDarkModeStatus(false);
+            }
+            // update tableview default thumbnails
+            creationTableView.refresh();
+        });
+
+        // set the dark mode status
+        if (_themeHelper.getDarkModeStatus()) {
+            themeLabel.setText("Theme: Dark mode");
+            themeBtn.setSelected(true);
+        }
+
+        // set up hover messages to help user use theme switcher
+        themeBtn.hoverProperty().addListener((ov, oldValue, newValue) -> {
+            String hoverMsg = "";
+            if (newValue) {
+                // hovered
+                if (_themeHelper.getDarkModeStatus()) {
+                    hoverMsg = "Click to switch to light mode";
+                } else {
+                    hoverMsg = "Click to switch to dark mode";
+                }
+            } else {
+                // not hovered
+                if (_themeHelper.getDarkModeStatus()) {
+                    hoverMsg = "Theme: Dark mode";
+                } else {
+                    hoverMsg = "Theme: Light mode";
+                }
+            }
+            themeLabel.setText(hoverMsg);
+        });
     }
 }

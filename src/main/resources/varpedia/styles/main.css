@@ -40,10 +40,6 @@
     -fx-text-fill: -fx-bg-color;
 }
 
-.main-button:hover {
-    -fx-effect: dropshadow(three-pass-box, black, 10, 0, 0, 2);
-}
-
 .sec-button {
     -fx-background-color: -fx-bg-color;
     -fx-border-color: -fx-edge-color;
@@ -146,7 +142,7 @@
 
 .slider .track {
     -fx-padding: 2px;
-    -fx-background-color: -fx-primary-color;
+    -fx-background-color: -fx-accent-color;
 }
 
 .slider .thumb {

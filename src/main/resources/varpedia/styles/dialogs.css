@@ -39,5 +39,6 @@
 }
 
 .dialog-pane .button:default:hover {
+    -fx-background-color: -fx-accent-color;
     -fx-effect: dropshadow(three-pass-box, black, 10, 0, 0, 2);
 }
