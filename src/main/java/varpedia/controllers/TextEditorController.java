@@ -11,10 +11,10 @@ import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import varpedia.AlertHelper;
-import varpedia.Audio;
+import varpedia.helpers.AlertHelper;
+import varpedia.models.Audio;
 import varpedia.VARpediaApp;
-import varpedia.VoiceList;
+import varpedia.models.VoiceList;
 import varpedia.tasks.ListPopulateTask;
 import varpedia.tasks.PlayChunkTask;
 import varpedia.tasks.VoiceListTask;
@@ -205,7 +205,7 @@ public class TextEditorController extends Controller {
     	sendDataToFile(wikiTextArea.getText(), "search-output.txt");
         
         // open ChunkAssemblerScreen
-    	changeScene(event, "/varpedia/ChunkAssemblerScreen.fxml");
+    	changeScene(event, "/varpedia/fxml/ChunkAssemblerScreen.fxml");
     }
 
     @FXML
@@ -224,14 +224,14 @@ public class TextEditorController extends Controller {
 			if (_saveTask != null && _saveTask.isRunning()) {
 				_saveTask.cancel();
 			}
-            changeScene(event, "/varpedia/MainScreen.fxml");
+            changeScene(event, "/varpedia/fxml/MainScreen.fxml");
         }
     }
 
 	@FXML
 	private void pressBackButton(ActionEvent event) {
 		// open WikitSearchScreen
-		changeScene(event, "/varpedia/WikitSearchScreen.fxml");
+		changeScene(event, "/varpedia/fxml/WikitSearchScreen.fxml");
 	}
 
 	/**

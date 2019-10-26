@@ -1,4 +1,4 @@
-package varpedia;
+package varpedia.models;
 
 import java.io.BufferedReader;
 import java.io.IOException;

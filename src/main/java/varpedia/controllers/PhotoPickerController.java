@@ -9,8 +9,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import varpedia.AlertHelper;
-import varpedia.Audio;
+import varpedia.helpers.AlertHelper;
+import varpedia.models.Audio;
 import varpedia.VARpediaApp;
 import varpedia.tasks.FFMPEGAudioTask;
 import varpedia.tasks.FFMPEGVideoTask;
@@ -155,7 +155,7 @@ public class PhotoPickerController extends Controller {
                         _createTask = null;
                         _alertHelper.showAlert(Alert.AlertType.INFORMATION, "Success", "Created creation.");
                         setLoadingInactive();
-                        changeScene(event, "/varpedia/MainScreen.fxml"); //TODO: Maybe go straight to player
+                        changeScene(event, "/varpedia/fxml/MainScreen.fxml"); //TODO: Maybe go straight to player
                     });
                     _createTask.setOnCancelled(ev3 -> {
                         _createTask = null;
@@ -239,14 +239,14 @@ public class PhotoPickerController extends Controller {
                 _createTask.cancel();
             }
             // open MainScreen
-            changeScene(event, "/varpedia/MainScreen.fxml");
+            changeScene(event, "/varpedia/fxml/MainScreen.fxml");
         }
     }
 
     @FXML
     private void pressBackBtn(ActionEvent event) {
         // open TextEditorScreen - do not lose any progress
-        changeScene(event, "/varpedia/ChunkAssemblerScreen.fxml");
+        changeScene(event, "/varpedia/fxml/ChunkAssemblerScreen.fxml");
     }
 
     @FXML

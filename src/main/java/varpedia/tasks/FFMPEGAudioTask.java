@@ -5,8 +5,8 @@ import java.io.InputStream;
 import java.util.List;
 
 import javafx.concurrent.Task;
-import varpedia.Command;
-import varpedia.FFMPEGCommand;
+import varpedia.models.Command;
+import varpedia.models.FFMPEGCommand;
 
 /**
  * Background task that handles all FFMPEG commands for creation audio creation - including concatenation of audio chunks.

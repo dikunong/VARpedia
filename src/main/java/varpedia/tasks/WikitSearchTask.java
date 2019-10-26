@@ -1,7 +1,7 @@
 package varpedia.tasks;
 
 import javafx.concurrent.Task;
-import varpedia.Command;
+import varpedia.models.Command;
 
 import java.io.BufferedWriter;
 import java.io.File;

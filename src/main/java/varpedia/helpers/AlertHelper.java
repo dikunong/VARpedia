@@ -1,9 +1,8 @@
-package varpedia;
+package varpedia.helpers;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.layout.Region;
-import javafx.stage.StageStyle;
 
 /**
  * Singleton class that manages creation and display of alerts, as well as receiving user input in response.

@@ -1,9 +1,9 @@
 package varpedia.tasks;
 
 import javafx.concurrent.Task;
-import varpedia.Audio;
-import varpedia.Command;
-import varpedia.VoiceList;
+import varpedia.models.Audio;
+import varpedia.models.Command;
+import varpedia.models.VoiceList;
 
 /**
  * Background task that handles retrieving a list of all installed festival voices available on the user's system.

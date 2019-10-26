@@ -18,7 +18,7 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.scene.media.MediaPlayer.Status;
 import javafx.util.Duration;
-import varpedia.ThemeHelper;
+import varpedia.helpers.ThemeHelper;
 
 import java.io.File;
 import java.net.URISyntaxException;
@@ -132,8 +132,8 @@ public class PlaybackController extends Controller {
 		_player = null;
 		mediaView.setMediaPlayer(null);
 		timeSlider.setDisable(true);
-		createDialog(event, "/varpedia/RatingDialog.fxml", "Rate Your Confidence");
-        changeScene(event, "/varpedia/MainScreen.fxml");
+		createDialog(event, "/varpedia/fxml/RatingDialog.fxml", "Rate Your Confidence");
+        changeScene(event, "/varpedia/fxml/MainScreen.fxml");
     }
 
     public void playMedia(File file) {

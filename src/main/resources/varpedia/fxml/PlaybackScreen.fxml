@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.media.MediaView?>
 
-<VBox prefHeight="500.0" prefWidth="800.0" stylesheets="@styles/main.css" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="varpedia.controllers.PlaybackController">
+<VBox prefHeight="500.0" prefWidth="800.0" stylesheets="@../styles/main.css" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="varpedia.controllers.PlaybackController">
    <children>
       <Pane fx:id="mediaPane" VBox.vgrow="ALWAYS">
          <children>
@@ -42,7 +42,7 @@
             </Label>
             <ImageView fx:id="volIconView" fitHeight="36.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@images/light-theme-icons/volume_up_black.png" />
+                  <Image url="@../images/light-theme-icons/volume_up_black.png" />
                </image>
                <HBox.margin>
                   <Insets right="4.0" />

@@ -4,8 +4,8 @@ import javafx.beans.Observable;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import varpedia.AlertHelper;
-import varpedia.Creation;
+import varpedia.helpers.AlertHelper;
+import varpedia.models.Creation;
 
 import java.io.File;
 import java.io.FileOutputStream;

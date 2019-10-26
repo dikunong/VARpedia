@@ -15,10 +15,10 @@ import javafx.scene.control.TableColumn.SortType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.util.StringConverter;
-import varpedia.AlertHelper;
-import varpedia.Creation;
-import varpedia.SafeExitHelper;
-import varpedia.ThemeHelper;
+import varpedia.helpers.AlertHelper;
+import varpedia.models.Creation;
+import varpedia.helpers.SafeExitHelper;
+import varpedia.helpers.ThemeHelper;
 import varpedia.VARpediaApp;
 import varpedia.tasks.ClearTask;
 import varpedia.tasks.ListPopulateTask;
@@ -104,7 +104,7 @@ public class MainController extends Controller {
         // store a creation's name and rating and open PlaybackScreen
         sendDataToFile(getSelectedName(), "playback-name.txt");
         sendDataToFile(creationTableView.getSelectionModel().getSelectedItem().getConfidence() + "", "playback-rating.txt");
-        changeScene(event, "/varpedia/PlaybackScreen.fxml");
+        changeScene(event, "/varpedia/fxml/PlaybackScreen.fxml");
     }
 
     @FXML
@@ -133,7 +133,7 @@ public class MainController extends Controller {
         // it is unsafe to exit when creating a creation
     	_safeExitHelper.setSafeToExit(false);
         // open WikitSearchScreen
-        changeScene(event, "/varpedia/WikitSearchScreen.fxml");
+        changeScene(event, "/varpedia/fxml/WikitSearchScreen.fxml");
     }
 
     /**
@@ -326,7 +326,7 @@ public class MainController extends Controller {
                     	
                     	if (creationFile.exists()) {
 	                    	try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(creationFile))) {
-	                    		creationList.add((Creation)ois.readObject());
+	                    		creationList.add((Creation) ois.readObject());
 	                        } catch (IOException | ClassNotFoundException e) {
 								e.printStackTrace();
 							}

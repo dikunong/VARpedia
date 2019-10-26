@@ -1,4 +1,4 @@
-package varpedia;
+package varpedia.helpers;
 
 /**
  * Singleton class that stores the current theme state.

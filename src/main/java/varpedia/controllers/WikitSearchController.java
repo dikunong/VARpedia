@@ -5,7 +5,7 @@ import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import varpedia.AlertHelper;
+import varpedia.helpers.AlertHelper;
 import varpedia.VARpediaApp;
 import varpedia.tasks.WikitSearchTask;
 
@@ -61,7 +61,7 @@ public class WikitSearchController extends Controller {
                 boolean success = _wikitTask.get();
                 if (success) {
                     // open TextEditorScreen
-                    changeScene(event, "/varpedia/TextEditorScreen.fxml");
+                    changeScene(event, "/varpedia/fxml/TextEditorScreen.fxml");
                 } else {
                     setLoadingInactive();
                     _alertHelper.showAlert(Alert.AlertType.ERROR, "Error", "No valid Wikipedia articles found, or there might be a network issue.");
@@ -91,7 +91,7 @@ public class WikitSearchController extends Controller {
             _wikitTask.cancel();
         }
         // open MainScreen
-        changeScene(event, "/varpedia/MainScreen.fxml");
+        changeScene(event, "/varpedia/fxml/MainScreen.fxml");
     }
 
     /**

@@ -10,8 +10,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import javafx.concurrent.Task;
-import varpedia.Command;
-import varpedia.FFMPEGCommand;
+import varpedia.models.Command;
+import varpedia.models.FFMPEGCommand;
 
 /**
  * Background task that handles the previewing/saving of audio chunks, using the festival voice synthesizer.

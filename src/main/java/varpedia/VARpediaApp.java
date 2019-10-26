@@ -10,6 +10,8 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import varpedia.helpers.AlertHelper;
+import varpedia.helpers.SafeExitHelper;
 import varpedia.tasks.ClearTask;
 
 import java.io.File;
@@ -42,11 +44,10 @@ public class VARpediaApp extends Application {
             Font.loadFont(VARpediaApp.class.getResource("fonts/Montserrat-Medium.ttf").toExternalForm(),10);
 
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(this.getClass().getResource("MainScreen.fxml"));
+            loader.setLocation(this.getClass().getResource("/varpedia/fxml/MainScreen.fxml"));
             Parent layout = loader.load();
 
             // load light theme by default
-            // TODO: save the user's last set theme (in setOnCloseRequest)
             Scene scene = new Scene(layout);
             scene.getStylesheets().add(getClass().getResource("/varpedia/styles/theme-light.css").toString());
 

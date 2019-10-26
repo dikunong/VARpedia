@@ -16,8 +16,8 @@ import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import varpedia.AlertHelper;
-import varpedia.Audio;
+import varpedia.helpers.AlertHelper;
+import varpedia.models.Audio;
 import varpedia.VARpediaApp;
 import varpedia.tasks.FlickrTask;
 import varpedia.tasks.ListPopulateTask;
@@ -108,7 +108,7 @@ public class ChunkAssemblerController extends Controller {
                 		sendDataToFile(selected.toString(), "selected-chunks.txt");
 
                 		setLoadingInactive();
-                		changeScene(event, "/varpedia/PhotoPickerScreen.fxml");
+                		changeScene(event, "/varpedia/fxml/PhotoPickerScreen.fxml");
                 	} catch (InterruptedException | ExecutionException e) {
 						e.printStackTrace();
 					}
@@ -144,14 +144,14 @@ public class ChunkAssemblerController extends Controller {
                 _photoTask.cancel();
             }
             // open MainScreen
-            changeScene(event, "/varpedia/MainScreen.fxml");
+            changeScene(event, "/varpedia/fxml/MainScreen.fxml");
         }
     }
 
     @FXML
     private void pressBackButton(ActionEvent event) {
         // open TextEditorScreen - do not lose any progress
-        changeScene(event, "/varpedia/TextEditorScreen.fxml");
+        changeScene(event, "/varpedia/fxml/TextEditorScreen.fxml");
     }
 
     @FXML

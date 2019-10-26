@@ -10,7 +10,7 @@ import javax.sound.sampled.AudioFileFormat;
 import javax.sound.sampled.AudioSystem;
 
 import javafx.concurrent.Task;
-import varpedia.FFMPEGCommand;
+import varpedia.models.FFMPEGCommand;
 
 /**
  * Background task that handles all FFMPEG commands for creation video creation.
