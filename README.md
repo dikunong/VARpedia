@@ -1,7 +1,8 @@
 # VARpedia - SOFTENG 206 Project
 ### Group 12 - Di Kun Ong (dngo711) & Tudor Zagreanu (tzag747)
 
-*Check out the VARpedia GitHub: https://github.com/dikunong/VARpedia*
+*Check out the VARpedia GitHub: https://github.com/dikunong/VARpedia*  
+*Our project devlog can be accessed in the file DEVLOG.md, or at: https://github.com/dikunong/VARpedia/wiki/Development-Log*
 
 VARpedia is an encyclopedia tool that provides visual, aural and reading capabilities for **a second language learner, young adult (18-25 years).**
 
@@ -44,7 +45,31 @@ manually set it by creating a `gradle.properties` file in the root directory, wi
 
 where `HOME_DIRECTORY` is your JDK install directory e.g. `C:\\Program Files\\Java\\jdk1.8.0_202`
 
+## Flickr API
+
+VARpedia makes use of the Flickr API to download publicly available images for use in user creations.
+
+If you wish to run this application from the source code or build it yourself, you will need to supply your own Flickr API keys in the following location:
+
+`src/main/resources/varpedia/key.txt`
+
+This file should have the apiKey on the first and the sharedSecret on the second line.
+There should be no labels or other text in the file, like below:
+
+`xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`  
+`xxxxxxxxxxxxxxxx`
+
 ## Attribution
+
+### Libraries
+
+#### Flickr4Java
+Available at https://github.com/boncey/Flickr4Java
+
+#### SLF4J (used by Flickr4Java)
+Available at http://www.slf4j.org/
+
+### Music
 
 #### src/main/resources/varpedia/music/perspective.mp3
 
